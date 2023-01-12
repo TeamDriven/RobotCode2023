@@ -16,4 +16,10 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class DrivetrainConstants {
+    public static final double PX_CONTROLLER = 0.3; // TODO tune this
+    public static final double PY_CONTROLLER = PX_CONTROLLER;
+    public static final double PTHETA_CONTROLLER = 6; // TODO tune this
+  }
 }
