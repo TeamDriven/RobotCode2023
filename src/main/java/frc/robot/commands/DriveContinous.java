@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LimeLight;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
@@ -15,6 +16,7 @@ public class DriveContinous extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivetrain m_drivetrain;
   private final XboxController m_controller;
+  private final LimeLight m_limelight; 
 
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -25,9 +27,10 @@ public class DriveContinous extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveContinous(Drivetrain subsystem, XboxController controller) {
+  public DriveContinous(Drivetrain subsystem, LimeLight limelight, XboxController controller) {
     m_drivetrain = subsystem;
     m_controller = controller;
+    m_limelight = limelight;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -62,9 +65,22 @@ public class DriveContinous extends CommandBase {
           
     if (m_controller.getAButton()) {
       m_drivetrain.drive(0, 0, 0, true);
-    } else {
-      m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+    }else if (m_controller.getBButton()) {
+      System.out.printf("x: %f\r\n",m_limelight.getX());
+      if(m_limelight.getX()<=-1){
+        m_drivetrain.drive(0, -0.2, 0, false);
+
+      }else if (m_limelight.getX()>=1){
+        m_drivetrain.drive(0, 0.2, 0, false);
+      }
+        
+      else {
+        m_drivetrain.drive(0, 0, 0, false);
+      }
     }
+    else {
+      m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+    } 
   }
 
   // Called once the command ends or is interrupted.

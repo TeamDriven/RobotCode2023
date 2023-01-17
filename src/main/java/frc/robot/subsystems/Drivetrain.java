@@ -119,7 +119,7 @@ public class Drivetrain extends SubsystemBase {
     //m_frontLeft.printencoder("fl");
     //m_frontRight.printencoder("fr");
 
-    System.out.println(Rotation2d.fromDegrees(m_pigey.getFusedHeading()));
+    //System.out.println(Rotation2d.fromDegrees(m_pigey.getFusedHeading()));
 
     moveSwerve();
   }
@@ -127,7 +127,7 @@ public class Drivetrain extends SubsystemBase {
   public void drive(SwerveModuleState[] swerveModuleStates) {
     this.swerveModuleStates = swerveModuleStates;
     
-    System.out.println(Rotation2d.fromDegrees(m_pigey.getFusedHeading()));
+    //System.out.println(Rotation2d.fromDegrees(m_pigey.getFusedHeading()));
 
     moveSwerve();
   }
@@ -354,7 +354,7 @@ public class Drivetrain extends SubsystemBase {
         m_drivePIDController.calculate(m_driveMotor.getSelectedSensorVelocity() / COUNTS_PER_METER, state.speedMetersPerSecond);
 
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
-    System.out.println(state.angle);
+    //System.out.println(state.angle);
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
         m_turningPIDController.calculate(tempEncoderCycle,state.angle.getRadians());
@@ -369,7 +369,7 @@ public class Drivetrain extends SubsystemBase {
     m_turningMotor.set(TalonFXControlMode.PercentOutput,turnOutput + turnFeedforward);
   }
   public void printencoder(String label){
-    System.out.println(label + ": " + m_turningEncoder.getDistance()*Math.PI*2);
+    //System.out.println(label + ": " + m_turningEncoder.getDistance()*Math.PI*2);
   }
   }
 }
