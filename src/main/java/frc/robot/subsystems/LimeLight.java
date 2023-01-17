@@ -21,6 +21,20 @@ public class LimeLight extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public LimeLight() {
     updateLimeLight();
+
+    // turnOffLimelight();
+  }
+
+  public void turnOnLimelight() {
+    NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("camMode").setNumber(0);
+  }
+
+  public void turnOffLimelight() {
+    NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("camMode").setNumber(1);
+  }
+
+  public void setLimelightPipeline(int pipelineNumber) {
+    NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("pipeline").setNumber(pipelineNumber);
   }
 
   public void updateLimeLight() {
@@ -33,6 +47,17 @@ public class LimeLight extends SubsystemBase {
     // table.putValue("ledMode", 3);
 
     // final ShuffleboardTab tab = Shuffleboard.getTab(LIMELIGHT);
+    SmartDashboard.putNumber("ta", targetArea);
+    SmartDashboard.putNumber("ts", targetSkew);
+    SmartDashboard.putNumber("tx", tx);
+    SmartDashboard.putNumber("ty", targetOffsetAngle_Vertical);
+  }
+
+  public void resetLimelight() {
+    tx = 0;
+    double targetOffsetAngle_Vertical = 0;
+    double targetArea = 0;
+    double targetSkew = 0;
     SmartDashboard.putNumber("ta", targetArea);
     SmartDashboard.putNumber("ts", targetSkew);
     SmartDashboard.putNumber("tx", tx);
