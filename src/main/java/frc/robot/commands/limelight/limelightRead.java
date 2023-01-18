@@ -31,7 +31,9 @@ public class limelightRead extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_subsystem.setLights(0);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

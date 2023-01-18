@@ -32,7 +32,8 @@ public class readAprilTags extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_subsystem.turnOnLimelight();
+    m_subsystem.turnOnLimelight();
+    m_subsystem.setLights(0);
     m_subsystem.setLimelightPipeline(0);
   }
 

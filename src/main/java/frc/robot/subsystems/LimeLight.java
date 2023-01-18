@@ -22,7 +22,8 @@ public class LimeLight extends SubsystemBase {
   public LimeLight() {
     updateLimeLight();
 
-    // turnOffLimelight();
+    turnOffLimelight();
+    setLights(1);
   }
 
   public void turnOnLimelight() {
@@ -33,6 +34,12 @@ public class LimeLight extends SubsystemBase {
     NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("camMode").setNumber(1);
   }
 
+  // 0 for default, 1 for off, 2 for blink, 3 for on
+  public void setLights(int lightMode) {
+    NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("ledMode").setNumber(lightMode);
+  } 
+
+  // 0 for Apriltags, 1 for Retroreflective Tape
   public void setLimelightPipeline(int pipelineNumber) {
     NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("pipeline").setNumber(pipelineNumber);
   }
@@ -62,6 +69,9 @@ public class LimeLight extends SubsystemBase {
     SmartDashboard.putNumber("ts", targetSkew);
     SmartDashboard.putNumber("tx", tx);
     SmartDashboard.putNumber("ty", targetOffsetAngle_Vertical);
+
+    setLights(1);
+    turnOffLimelight();
   }
 
   public void readAprilTags() {
@@ -96,6 +106,7 @@ public class LimeLight extends SubsystemBase {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
+
 
   @Override
   public void periodic() {
