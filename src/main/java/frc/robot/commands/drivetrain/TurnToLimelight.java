@@ -43,10 +43,10 @@ public class TurnToLimelight extends CommandBase {
     System.out.printf("x: %f\r\n",m_limelight.getX());
 
     if(m_limelight.getX()<=-1){
-      m_drivetrain.drive(0, -0.2, 0, false);
+      m_drivetrain.drive(0, 0.2, 0, false);
       
     } else if (m_limelight.getX()>=1){
-      m_drivetrain.drive(0, 0.2, 0, false);
+      m_drivetrain.drive(0, -0.2, 0, false);
       
     } else {
       m_drivetrain.drive(0, 0, 0, false);
