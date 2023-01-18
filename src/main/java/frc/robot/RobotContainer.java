@@ -10,7 +10,6 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.setMotorToPosition;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.drivetrain.TurnToLimelight;
-import frc.robot.commands.limelight.limelightRead;
 import frc.robot.commands.limelight.readAprilTags;
 import frc.robot.commands.limelight.readRetroreflectiveTape;
 import frc.robot.subsystems.Drivetrain;
@@ -61,12 +60,12 @@ public class RobotContainer {
    */
   private void configureBindings() {
     new Trigger(m_controller::getYButton).whileTrue(new readAprilTags(m_limelight));
+    new Trigger(m_controller::getYButton).whileTrue(new TurnToLimelight(m_drivetrain, m_limelight));
+
     new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
+    new Trigger(m_controller::getXButton).whileTrue(new TurnToLimelight(m_drivetrain, m_limelight));
 
-    new Trigger(m_controller::getBButton).whileTrue(new limelightRead(m_limelight));
-    new Trigger(m_controller::getBButton).whileTrue(new TurnToLimelight(m_drivetrain, m_limelight));
-
-    new Trigger(m_controller::getYButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, Constants.posOne));
+    new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, Constants.posOne));
     new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, Constants.posTwo));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
