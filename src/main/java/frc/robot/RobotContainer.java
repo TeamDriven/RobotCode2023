@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.setMotorToPosition;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.drivetrain.TurnToLimelight;
 import frc.robot.commands.limelight.limelightRead;
@@ -15,6 +16,7 @@ import frc.robot.commands.limelight.readRetroreflectiveTape;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLight;
+import frc.robot.subsystems.motionMagicMotor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -33,6 +35,8 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final LimeLight m_limelight = new LimeLight();
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final motionMagicMotor m_motionMagicMotor = new motionMagicMotor();
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -61,6 +65,9 @@ public class RobotContainer {
 
     new Trigger(m_controller::getBButton).whileTrue(new limelightRead(m_limelight));
     new Trigger(m_controller::getBButton).whileTrue(new TurnToLimelight(m_drivetrain, m_limelight));
+
+    new Trigger(m_controller::getYButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, Constants.posOne));
+    new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, Constants.posTwo));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));

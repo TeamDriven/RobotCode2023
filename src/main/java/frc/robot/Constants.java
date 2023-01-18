@@ -23,4 +23,10 @@ public final class Constants {
     public static final double PY_CONTROLLER = PX_CONTROLLER;
     public static final double PTHETA_CONTROLLER = 6; // TODO tune this
   }
+
+public static int kPIDLoopIdx = 0;
+public static int kTimeoutMs = 30;
+public static double posOne = 1000;
+public static double posTwo = 100;
+public static final int kSlotIdx = 0;
 }
