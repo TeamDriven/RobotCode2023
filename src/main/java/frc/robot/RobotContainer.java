@@ -6,12 +6,14 @@ package frc.robot;
 
 import frc.robot.Constants.MotionMagicConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.moveElevator;
 import frc.robot.commands.setMotorToPosition;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.drivetrain.MoveToLimelight;
 import frc.robot.commands.limelight.read2DAprilTags;
 import frc.robot.commands.limelight.readRetroreflectiveTape;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.motionMagicMotor;
 import edu.wpi.first.wpilibj.XboxController;
@@ -33,6 +35,7 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final LimeLight m_limelight = new LimeLight();
   private final motionMagicMotor m_motionMagicMotor = new motionMagicMotor();
+  private final Elevator m_elevator = new Elevator();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,8 +67,10 @@ public class RobotContainer {
     // new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
     // new Trigger(m_controller::getXButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
 
-    new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posOne));
-    new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posTwo));
+    // new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posOne));
+    // new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posTwo));
+    new Trigger(m_controller::getAButton).whileTrue(new moveElevator(m_elevator, 0.5));
+    new Trigger(m_controller::getBButton).whileTrue(new moveElevator(m_elevator, -0.5));
   }
 
   /**
