@@ -5,7 +5,6 @@
 package frc.robot.commands.drivetrain;
 
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.LimeLight;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
@@ -30,7 +29,7 @@ public class DriveContinous extends CommandBase {
     m_drivetrain = subsystem;
     m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.

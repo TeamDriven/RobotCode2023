@@ -5,33 +5,32 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimeLight extends SubsystemBase {
   public static final String LIMELIGHT = "limelight";
   public static double tx = 0;
+  public static double ty = 0;
+  public static double ta = 0;
+  public static double ts = 0;
 
   /** Creates a new ExampleSubsystem. */
   public LimeLight() {
     updateLimeLight();
 
     turnOffLimelight();
-    setLights(1);
   }
 
   public void turnOnLimelight() {
     NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("camMode").setNumber(0);
+    setLights(0);
   }
 
   public void turnOffLimelight() {
     NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("camMode").setNumber(1);
+    setLights(1);
   }
 
   // 0 for default, 1 for off, 2 for blink, 3 for on
@@ -47,66 +46,48 @@ public class LimeLight extends SubsystemBase {
   public void updateLimeLight() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable(LIMELIGHT);
     tx = table.getEntry("tx").getDouble(0);
-    double targetOffsetAngle_Vertical = table.getEntry("ty").getDouble(0);
-    double targetArea = table.getEntry("ta").getDouble(0);
-    double targetSkew = table.getEntry("ts").getDouble(0);
+    ty = table.getEntry("ty").getDouble(0);
+    ta = table.getEntry("ta").getDouble(0);
+    ts = table.getEntry("ts").getDouble(0);
 
     // table.putValue("ledMode", 3);
 
     // final ShuffleboardTab tab = Shuffleboard.getTab(LIMELIGHT);
-    SmartDashboard.putNumber("ta", targetArea);
-    SmartDashboard.putNumber("ts", targetSkew);
+    SmartDashboard.putNumber("ta", ta);
+    SmartDashboard.putNumber("ts", ts);
     SmartDashboard.putNumber("tx", tx);
-    SmartDashboard.putNumber("ty", targetOffsetAngle_Vertical);
+    SmartDashboard.putNumber("ty", ty);
   }
 
   public void resetLimelight() {
     tx = 0;
-    double targetOffsetAngle_Vertical = 0;
-    double targetArea = 0;
-    double targetSkew = 0;
-    SmartDashboard.putNumber("ta", targetArea);
-    SmartDashboard.putNumber("ts", targetSkew);
-    SmartDashboard.putNumber("tx", tx);
-    SmartDashboard.putNumber("ty", targetOffsetAngle_Vertical);
+    ty = 0;
+    ta = 0;
+    ts = 0;
 
-    setLights(1);
+    SmartDashboard.putNumber("ta", ta);
+    SmartDashboard.putNumber("ts", ts);
+    SmartDashboard.putNumber("tx", tx);
+    SmartDashboard.putNumber("ty", ty);
+
     turnOffLimelight();
   }
 
-  public void readAprilTags() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable(LIMELIGHT);
-    
-  }
-
-  public double getX() {
+  public double getTX() {
     return tx;
   }
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+  public double getTY() {
+    return ty;
   }
 
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public double getTA() {
+    return ta;
   }
 
+  public double getTS() {
+    return ts;
+  }
 
   @Override
   public void periodic() {

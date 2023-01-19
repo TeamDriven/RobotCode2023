@@ -15,7 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.Constants;
+import frc.robot.Constants.MotionMagicConstants;
 
 public class motionMagicMotor extends SubsystemBase {
     final double kP = 0.8;
@@ -29,18 +29,18 @@ public class motionMagicMotor extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public motionMagicMotor() {
-    _talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.kPIDLoopIdx,
-    Constants.kTimeoutMs);
+    _talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, MotionMagicConstants.kPIDLoopIdx,
+    MotionMagicConstants.kTimeoutMs);
 
     _talon.configFactoryDefault();
 
 		/* Configure Sensor Source for Pirmary PID */
-		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx,
-				Constants.kTimeoutMs);
+		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, MotionMagicConstants.kPIDLoopIdx,
+				MotionMagicConstants.kTimeoutMs);
 
 		/* set deadband to super small 0.001 (0.1 %).
 			The default deadband is 0.04 (4 %) */
-		_talon.configNeutralDeadband(0.04, Constants.kTimeoutMs);
+		_talon.configNeutralDeadband(0.04, MotionMagicConstants.kTimeoutMs);
 
 		/**
 		 * Configure Talon SRX Output and Sensor direction accordingly Invert Motor to
@@ -51,30 +51,30 @@ public class motionMagicMotor extends SubsystemBase {
 		_talon.setInverted(true);
 
 		/* Set relevant frame periods to be at least as fast as periodic rate */
-		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
+		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, MotionMagicConstants.kTimeoutMs);
+		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, MotionMagicConstants.kTimeoutMs);
 
 		/* Set the peak and nominal outputs */
-		_talon.configNominalOutputForward(0, Constants.kTimeoutMs);
-		_talon.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		_talon.configPeakOutputForward(1, Constants.kTimeoutMs);
-		_talon.configPeakOutputReverse(-1, Constants.kTimeoutMs);
+		_talon.configNominalOutputForward(0, MotionMagicConstants.kTimeoutMs);
+		_talon.configNominalOutputReverse(0, MotionMagicConstants.kTimeoutMs);
+		_talon.configPeakOutputForward(1, MotionMagicConstants.kTimeoutMs);
+		_talon.configPeakOutputReverse(-1, MotionMagicConstants.kTimeoutMs);
 
     
     
 		/* Set Motion Magic gains in slot0 - see documentation */
-		_talon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-		_talon.config_kF(Constants.kSlotIdx, kF, Constants.kTimeoutMs);
-		_talon.config_kP(Constants.kSlotIdx, kP, Constants.kTimeoutMs);
-		_talon.config_kI(Constants.kSlotIdx, kI, Constants.kTimeoutMs);
-		_talon.config_kD(Constants.kSlotIdx, kD, Constants.kTimeoutMs);
+		_talon.selectProfileSlot(MotionMagicConstants.kSlotIdx, MotionMagicConstants.kPIDLoopIdx);
+		_talon.config_kF(MotionMagicConstants.kSlotIdx, kF, MotionMagicConstants.kTimeoutMs);
+		_talon.config_kP(MotionMagicConstants.kSlotIdx, kP, MotionMagicConstants.kTimeoutMs);
+		_talon.config_kI(MotionMagicConstants.kSlotIdx, kI, MotionMagicConstants.kTimeoutMs);
+		_talon.config_kD(MotionMagicConstants.kSlotIdx, kD, MotionMagicConstants.kTimeoutMs);
 
     /* Set acceleration and vcruise velocity - see documentation */
-		_talon.configMotionCruiseVelocity(3000, Constants.kTimeoutMs);
-		_talon.configMotionAcceleration(3000, Constants.kTimeoutMs);
+		_talon.configMotionCruiseVelocity(3000, MotionMagicConstants.kTimeoutMs);
+		_talon.configMotionAcceleration(3000, MotionMagicConstants.kTimeoutMs);
 
 		/* Zero the sensor once on robot boot up */
-		_talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+		_talon.setSelectedSensorPosition(0, MotionMagicConstants.kPIDLoopIdx, MotionMagicConstants.kTimeoutMs);
   }
  
   /**

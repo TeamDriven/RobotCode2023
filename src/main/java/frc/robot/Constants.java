@@ -13,20 +13,40 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-   
+
+  public final static class DrivetrainConstants {
+    public static final double kPXController = 0.3; // TODO tune this
+    public static final double kPYController = kPXController;
+    public static final double kPThetaController = 6; // TODO tune this
+
+    public static final int FLDriveMotorChannel = 3;
+    public static final int FRDriveMotorChannel = 5;
+    public static final int BLDriveMotorChannel = 1;
+    public static final int BRDriveMotorChannel = 7;
+
+    public static final int FLTurningMotorChannel = 4;
+    public static final int FRTurningMotorChannel = 6;
+    public static final int BLTurningMotorChannel = 2;
+    public static final int BRTurningMotorChannel = 8;
+
+    public static final int FLTurningEncoderChannel = 1;
+    public static final int FRTurningEncoderChannel = 2;
+    public static final int BLTurningEncoderChannel = 0;
+    public static final int BRTurningEncoderChannel = 3;
+
+    public static final double FLOffset = 5.649738110618463;
+    public static final double FROffset = 0.9418667305466683+3.14;
+    public static final double BLOffset = 0.16685627318886792;
+    public static final double BROffset = -0.4638748593756933;
+
+    public static final int pigeyDeviceNumber = 11;
   }
 
-  public static class DrivetrainConstants {
-    public static final double PX_CONTROLLER = 0.3; // TODO tune this
-    public static final double PY_CONTROLLER = PX_CONTROLLER;
-    public static final double PTHETA_CONTROLLER = 6; // TODO tune this
+  public final static class MotionMagicConstants {
+    public static int kPIDLoopIdx = 0;
+    public static int kTimeoutMs = 30;
+    public static double posOne = 1000;
+    public static double posTwo = 100;
+    public static final int kSlotIdx = 0;
   }
-
-public static int kPIDLoopIdx = 0;
-public static int kTimeoutMs = 30;
-public static double posOne = 1000;
-public static double posTwo = 100;
-public static final int kSlotIdx = 0;
 }

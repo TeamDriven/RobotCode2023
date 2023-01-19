@@ -4,20 +4,19 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.MotionMagicConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.setMotorToPosition;
 import frc.robot.commands.drivetrain.DriveContinous;
-import frc.robot.commands.drivetrain.TurnToLimelight;
-import frc.robot.commands.limelight.readAprilTags;
+import frc.robot.commands.drivetrain.MoveToLimelight;
+import frc.robot.commands.limelight.read2DAprilTags;
 import frc.robot.commands.limelight.readRetroreflectiveTape;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.motionMagicMotor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -33,19 +32,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final LimeLight m_limelight = new LimeLight();
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final motionMagicMotor m_motionMagicMotor = new motionMagicMotor();
-
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    // m_limelight.setDefaultCommand(new limelightRead(m_limelight));
+  
     m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain, m_controller));
   }
 
@@ -59,21 +52,20 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new Trigger(m_controller::getYButton).whileTrue(new readAprilTags(m_limelight));
-    new Trigger(m_controller::getYButton).whileTrue(new TurnToLimelight(m_drivetrain, m_limelight));
+    new Trigger(m_controller::getYButton).whileTrue(new ParallelRaceGroup(
+      new read2DAprilTags(m_limelight), 
+      new MoveToLimelight(m_drivetrain, m_limelight)));
+    // new Trigger(m_controller::getYButton).whileTrue(new read2DAprilTags(m_limelight));
+    // new Trigger(m_controller::getYButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
 
-    new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
-    new Trigger(m_controller::getXButton).whileTrue(new TurnToLimelight(m_drivetrain, m_limelight));
+    new Trigger(m_controller::getXButton).whileTrue(new ParallelRaceGroup(
+      new readRetroreflectiveTape(m_limelight), 
+      new MoveToLimelight(m_drivetrain, m_limelight)));
+    // new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
+    // new Trigger(m_controller::getXButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
 
-    new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, Constants.posOne));
-    new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, Constants.posTwo));
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posOne));
+    new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posTwo));
   }
 
   /**
@@ -83,6 +75,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return Autos.exampleAuto();
   }
 }

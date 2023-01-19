@@ -6,12 +6,11 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.motionMagicMotor;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 
 /** An example command that uses an example subsystem. */
 public class setMotorToPosition extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final motionMagicMotor m_subsystem;
+  private final motionMagicMotor m_motionMagicMotor;
   private final double m_targetPos;
 
   /**
@@ -20,11 +19,11 @@ public class setMotorToPosition extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public setMotorToPosition(motionMagicMotor subsystem, double targetPos) {
-    m_subsystem = subsystem;
+    m_motionMagicMotor = subsystem;
     m_targetPos = targetPos;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(m_motionMagicMotor);
   }
 
   // Called when the command is initially scheduled.
@@ -34,7 +33,7 @@ public class setMotorToPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setToPosition(m_targetPos);
+    m_motionMagicMotor.setToPosition(m_targetPos);
   }
 
   // Called once the command ends or is interrupted.

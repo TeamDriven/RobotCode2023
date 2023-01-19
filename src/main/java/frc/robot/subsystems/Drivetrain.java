@@ -40,12 +40,12 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-0.267, 0.267);
   private final Translation2d m_backRightLocation = new Translation2d(-0.267, -0.267);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 5.649738110618463);
-  private final SwerveModule m_frontRight = new SwerveModule(5, 6, 2, 0.9418667305466683+3.14);
-  private final SwerveModule m_backLeft = new SwerveModule(1, 2, 0, 0.16685627318886792);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, -0.4638748593756933);
+  private final SwerveModule m_frontLeft = new SwerveModule(DrivetrainConstants.FLDriveMotorChannel, DrivetrainConstants.FLTurningMotorChannel, DrivetrainConstants.FLTurningEncoderChannel, DrivetrainConstants.FLOffset);
+  private final SwerveModule m_frontRight = new SwerveModule(DrivetrainConstants.FRDriveMotorChannel, DrivetrainConstants.FRTurningMotorChannel, DrivetrainConstants.FRTurningEncoderChannel, DrivetrainConstants.FROffset);
+  private final SwerveModule m_backLeft = new SwerveModule(DrivetrainConstants.BLDriveMotorChannel, DrivetrainConstants.BLTurningMotorChannel, DrivetrainConstants.BLTurningEncoderChannel, DrivetrainConstants.BLOffset);
+  private final SwerveModule m_backRight = new SwerveModule(DrivetrainConstants.BRDriveMotorChannel, DrivetrainConstants.BRTurningMotorChannel, DrivetrainConstants.BRTurningEncoderChannel, DrivetrainConstants.BROffset);
 
-  private final static PigeonIMU m_pigey = new PigeonIMU(11);
+  private final static PigeonIMU m_pigey = new PigeonIMU(DrivetrainConstants.pigeyDeviceNumber);
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
@@ -67,9 +67,9 @@ public class Drivetrain extends SubsystemBase {
   private Rotation2d m_startYaw;
   private SwerveModuleState[] swerveModuleStates;
   
-  private static final PIDController m_xController = new PIDController(DrivetrainConstants.PX_CONTROLLER, 0, 0);
-  private static final PIDController m_yController = new PIDController(DrivetrainConstants.PY_CONTROLLER, 0, 0);
-  private static final PIDController m_thetaController = new PIDController(DrivetrainConstants.PTHETA_CONTROLLER, 0, 0);
+  private static final PIDController m_xController = new PIDController(DrivetrainConstants.kPXController, 0, 0);
+  private static final PIDController m_yController = new PIDController(DrivetrainConstants.kPYController, 0, 0);
+  private static final PIDController m_thetaController = new PIDController(DrivetrainConstants.kPThetaController, 0, 0);
 
   public Drivetrain() {
     m_startYaw = new Rotation2d();
@@ -163,7 +163,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getAdjustedHeading() {
-    // TODO compass heading only returns 180 now... why?
   //  if (m_navx.isMagnetometerCalibrated()) {
      // We will only get valid fused headings if the magnetometer is calibrated
     //  return Rotation2d.fromDegrees(m_navx.getCompassHeading()).rotateBy(getHeadingAdjust());
