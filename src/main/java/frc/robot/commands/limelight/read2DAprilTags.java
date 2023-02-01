@@ -35,6 +35,7 @@ public class read2DAprilTags extends CommandBase {
   @Override
   public void execute() {
     m_limelight.updateLimeLight();
+    m_limelight.getApriltagID();
   }
 
   // Called once the command ends or is interrupted.

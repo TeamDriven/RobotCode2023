@@ -69,8 +69,35 @@ public class LimeLight extends SubsystemBase {
     SmartDashboard.putNumber("ts", ts);
     SmartDashboard.putNumber("tx", tx);
     SmartDashboard.putNumber("ty", ty);
+    SmartDashboard.putNumber("Apriltag id", -1);
 
     turnOffLimelight();
+  }
+
+  public double getApriltagID() {
+    double id = NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("tid").getDouble(0);
+    SmartDashboard.putNumber("Apriltag id", id);
+    return id;
+  }
+
+  /**
+   * Finds the pose of the robot when detecting 3D april tags
+   * @return An array of doubles in the order of X, Y, Z, Pitch, Yaw, Roll
+   */
+  public double[] getRobotPose() {
+    double[] pose = {0.0, 0.0, 0.0};
+    try{
+      pose = NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("botpose").getDoubleArray(pose);
+      SmartDashboard.putNumber("PoseX", pose[0]);
+      SmartDashboard.putNumber("PoseY", pose[1]);
+      SmartDashboard.putNumber("PoseZ", pose[2]);
+      SmartDashboard.putNumber("PosePitch", pose[3]);
+      SmartDashboard.putNumber("PoseYaw", pose[4]);
+      SmartDashboard.putNumber("PoseRoll", pose[5]);
+    } catch(ArrayIndexOutOfBoundsException e) {
+      System.out.println("No 3D April tag detected");
+    }
+    return pose;
   }
 
   public double getTX() {

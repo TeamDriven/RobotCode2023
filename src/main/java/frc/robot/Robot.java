@@ -4,7 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Joystick;
+
+// import com.revrobotics.Rev2mDistanceSensor;
+// import com.revrobotics.Rev2mDistanceSensor.Port;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -14,11 +25,16 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
+  private CANSparkMax intakeHigh = new CANSparkMax(21, MotorType.kBrushless);
+  private CANSparkMax intakeLow = new CANSparkMax(23, MotorType.kBrushless);
+  private TalonFX arm = new TalonFX(10);
+  private Joystick stick = new Joystick(1);
+  //private Rev2mDistanceSensor distOnboard; 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,6 +44,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    //distOnboard = new Rev2mDistanceSensor(Port.kOnboard);
+
   }
 
   /**
@@ -43,7 +61,7 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+    //CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -77,12 +95,35 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    
+    //if(distOnboard.isRangeValid()) {
+      //SmartDashboard.putNumber("Range Onboard", distOnboard.getRange());
+      //SmartDashboard.putNumber("Timestamp Onboard", distOnboard.getTimestamp());
+    //}
+    double speed = 1.0;
+    if (stick.getRawButton(1)) {
+      intakeLow.set(speed);
+      intakeHigh.set(speed);
+    } else if (stick.getRawButton(2)) {
+      intakeLow.set(-speed);
+      intakeHigh.set(-speed);
+    } else {
+      intakeLow.set(0.0);
+      intakeHigh.set(0.0);
+    }
+
+    if (stick.getRawButton(3)) {
+      arm.set(TalonFXControlMode.PercentOutput, -0.3);
+    } else if (stick.getRawButton(4)) {
+      arm.set(TalonFXControlMode.PercentOutput, 0.3);
+    } else {
+      arm.set(TalonFXControlMode.PercentOutput, 0);
+    }
   }
 
   @Override
@@ -93,7 +134,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    m_robotContainer.testEncoder();
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

@@ -4,27 +4,24 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.motionMagicLibrary;
 
-
-import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.Constants.MotionMagicConstants;
-
-public class MotionMagicMotor extends SubsystemBase {
-  double targetPos = 0;
-
-  WPI_TalonSRX _talon = new WPI_TalonSRX(30);
-	Joystick _joy = new Joystick(0);
-
+public class Intake extends SubsystemBase {
+  public CANSparkMax intakeHigh = new CANSparkMax(21, MotorType.kBrushless);
+  public CANSparkMax intakeLow = new CANSparkMax(23, MotorType.kBrushless);
+  
   /** Creates a new ExampleSubsystem. */
-  public MotionMagicMotor() {
-    motionMagicLibrary.setMotionMagicMotorParameters(_talon);
+  public Intake() {
+    //intakeHigh.setInverted(false);
+    //intakeLow.setInverted(false);
+    intakeLow.restoreFactoryDefaults();
+    intakeHigh.restoreFactoryDefaults();
   }
- 
+
   /**
    * Example command factory method.
    *
@@ -39,19 +36,19 @@ public class MotionMagicMotor extends SubsystemBase {
         });
   }
 
-  public void setToPosition(double position){
-    //double rghtYstick = 1.0 * _joy.getRawAxis(5);
-    // double targetPos = rghtYstick * 4096 * 1.0;
-    targetPos = position;
-    _talon.set(ControlMode.MotionMagic, targetPos);
+  public void spinWheels(double speed) {
+    intakeHigh.set(speed);
+    intakeLow.set(speed);
   }
 
-  public void printMotionMagicValues(){
-     System.out.print("Talon position: " + _talon.getSelectedSensorPosition());
-     System.out.print("  Motor Percentage: " + _talon.getMotorOutputPercent());
-     System.out.print("  Target Position: " + targetPos);
-    // System.out.println(rghtYstick);
-    //_talon.set(ControlMode.PercentOutput, leftYstick);
+  public void spinWheelsParallel(double speed) {
+     intakeHigh.set(speed);
+     intakeLow.set(-speed);
+  }
+
+  public void stopWheels() {
+    intakeHigh.set(0);
+    intakeLow.set(0);
   }
 
   /**

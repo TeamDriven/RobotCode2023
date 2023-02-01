@@ -4,24 +4,28 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import frc.robot.motionMagicLibrary;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
-  VictorSPX elevatorMotor1 = new VictorSPX(13);
-  VictorSPX elevatorMotor2 = new VictorSPX(14);
-
+  WPI_TalonSRX elevatorMotor1 = new WPI_TalonSRX(14);
+  VictorSPX elevatorMotor2 = new VictorSPX(13);
+  double targetPos = 0;
   /** Creates a new ExampleSubsystem. */
   public Elevator() {
-    elevatorMotor1.setInverted(true);
-    elevatorMotor2.setInverted(false);
+    motionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1);
+    elevatorMotor1.setInverted(false);
+    elevatorMotor2.setInverted(true);
   }
 
-  public void moveElevator(double speed) {
-    elevatorMotor1.set(VictorSPXControlMode.PercentOutput, speed);
-    elevatorMotor2.set(VictorSPXControlMode.PercentOutput, speed);
+  public void motionMagicElevator(double position) {
+    targetPos = position;
+    elevatorMotor1.set(ControlMode.MotionMagic, targetPos);
+    elevatorMotor2.follow(elevatorMotor1);
   }
 
   @Override

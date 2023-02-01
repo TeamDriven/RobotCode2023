@@ -8,7 +8,7 @@ import frc.robot.subsystems.motionMagicMotor;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class setMotorToPosition extends CommandBase {
+public class SetMotorToPosition extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final motionMagicMotor m_motionMagicMotor;
   private final double m_targetPos;
@@ -18,7 +18,7 @@ public class setMotorToPosition extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public setMotorToPosition(motionMagicMotor subsystem, double targetPos) {
+  public SetMotorToPosition(motionMagicMotor subsystem, double targetPos) {
     m_motionMagicMotor = subsystem;
     m_targetPos = targetPos;
 

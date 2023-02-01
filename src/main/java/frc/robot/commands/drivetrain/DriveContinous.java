@@ -43,14 +43,14 @@ public class DriveContinous extends CommandBase {
     // negative values when we push forward.
     final var xSpeed =
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.02))
-            * m_drivetrain.kMaxSpeed;
+            * Drivetrain.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
         -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.02))
-            * m_drivetrain.kMaxSpeed;
+            * Drivetrain.kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
@@ -58,7 +58,7 @@ public class DriveContinous extends CommandBase {
     // the right by default.
     final var rot =
         -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.02))
-            * m_drivetrain.kMaxAngularSpeed;
+            * Drivetrain.kMaxAngularSpeed;
           
 
       m_drivetrain.drive(xSpeed, ySpeed, rot, true);

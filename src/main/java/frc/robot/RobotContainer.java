@@ -4,18 +4,25 @@
 
 package frc.robot;
 
-import frc.robot.Constants.MotionMagicConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.moveElevator;
-import frc.robot.commands.setMotorToPosition;
+import static frc.robot.Constants.MotionMagicConstants.*;
+import frc.robot.commands.MoveElevator;
+import frc.robot.commands.SetMotorToPosition;
+import frc.robot.commands.auto.Autos;
+import frc.robot.commands.auto.DriveForward;
+import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.drivetrain.MoveToLimelight;
+import frc.robot.commands.intake.SpinIntake;
+import frc.robot.commands.intake.SpinIntakeParallel;
+import frc.robot.commands.intake.StopIntake;
 import frc.robot.commands.limelight.read2DAprilTags;
+import frc.robot.commands.limelight.read3DAprilTags;
 import frc.robot.commands.limelight.readRetroreflectiveTape;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
-import frc.robot.subsystems.motionMagicMotor;
+import frc.robot.subsystems.MotionMagicMotor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -34,8 +41,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final LimeLight m_limelight = new LimeLight();
-  private final motionMagicMotor m_motionMagicMotor = new motionMagicMotor();
+  //private final motionMagicMotor m_motionMagicMotor = new motionMagicMotor();
   private final Elevator m_elevator = new Elevator();
+  private final Intake m_intake = new Intake();
+
+  private final DriveForward m_DriveForward = new DriveForward(m_drivetrain);
+  private final TestPath m_TestPath = new TestPath(m_drivetrain);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,6 +54,11 @@ public class RobotContainer {
     configureBindings();
   
     m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain, m_controller));
+  }
+
+  public void testEncoder() {
+    m_drivetrain.printEncoders();
+    // m_drivetrain.drive(0, 0, 0, false);
   }
 
   /**
@@ -55,22 +71,52 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new Trigger(m_controller::getYButton).whileTrue(new ParallelRaceGroup(
+    /* Desired Controls:
+     * 
+     * RT: Intake
+     * LT: Outtake
+     * RB: April tags
+     * LB: Retroreflective tape
+     * 
+     * XYAB: placement
+     * 
+     * DPAD: Extra claw/elevator controls
+     */
+
+
+    /*new Trigger(m_controller::getYButton).whileTrue(new ParallelRaceGroup(
       new read2DAprilTags(m_limelight), 
       new MoveToLimelight(m_drivetrain, m_limelight)));
+      */
     // new Trigger(m_controller::getYButton).whileTrue(new read2DAprilTags(m_limelight));
     // new Trigger(m_controller::getYButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
+    // new Trigger(m_controller::getYButton).whileTrue(new read3DAprilTags(m_limelight));
 
-    new Trigger(m_controller::getXButton).whileTrue(new ParallelRaceGroup(
+    /*new Trigger(m_controller::getXButton).whileTrue(new ParallelRaceGroup(
       new readRetroreflectiveTape(m_limelight), 
       new MoveToLimelight(m_drivetrain, m_limelight)));
+      */
     // new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
     // new Trigger(m_controller::getXButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
 
-    // new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posOne));
-    // new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, MotionMagicConstants.posTwo));
-    new Trigger(m_controller::getAButton).whileTrue(new moveElevator(m_elevator, 0.5));
-    new Trigger(m_controller::getBButton).whileTrue(new moveElevator(m_elevator, -0.5));
+    // new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, posOne));
+    // new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, posTwo));
+
+    //new Trigger(m_controller::getAButton).whileTrue(new moveElevator(m_elevator,elevator20Inches));
+    //new Trigger(m_controller::getBButton).whileTrue(new moveElevator(m_elevator,elevatorStartPos));
+
+    new Trigger(m_controller::getAButton)
+        .onTrue(new SpinIntake(m_intake, -1.0))
+        .onFalse(new StopIntake(m_intake));
+    new Trigger(m_controller::getBButton)
+        .onTrue(new SpinIntake(m_intake, 1.0))
+        .onFalse(new StopIntake(m_intake));
+    new Trigger(m_controller::getRightBumper)
+      .onTrue(new SpinIntakeParallel(m_intake, -1.0))
+      .onFalse(new StopIntake(m_intake));
+    new Trigger(m_controller::getLeftBumper)
+      .onTrue(new SpinIntakeParallel(m_intake, 1.0))
+      .onFalse(new StopIntake(m_intake));
   }
 
   /**
@@ -80,6 +126,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto();
+    return m_TestPath;
+    // return Autos.exampleAuto();
   }
 }

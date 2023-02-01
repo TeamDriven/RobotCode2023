@@ -47,6 +47,11 @@ public final class Constants {
     public static int kTimeoutMs = 30;
     public static double posOne = 1000;
     public static double posTwo = 100;
+    public static double elevatorUpPos = 1000;
+    public static double elevatorMidPos = 5000;
+    public static double elevatorStartPos = 0;
+    public static double elevatorTicksPerInches = 370;
+    public static double elevator20Inches = 20*elevatorTicksPerInches;
     public static final int kSlotIdx = 0;
   }
 }
