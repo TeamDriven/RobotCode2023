@@ -14,14 +14,14 @@ import frc.robot.motionMagicLibrary;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.MotionMagicConstants;
 
-public class MotionMagicMotor extends SubsystemBase {
+public class motionMagicMotor extends SubsystemBase {
   double targetPos = 0;
 
   WPI_TalonSRX _talon = new WPI_TalonSRX(30);
 	Joystick _joy = new Joystick(0);
 
   /** Creates a new ExampleSubsystem. */
-  public MotionMagicMotor() {
+  public motionMagicMotor() {
     motionMagicLibrary.setMotionMagicMotorParameters(_talon);
   }
  

@@ -7,19 +7,24 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   public CANSparkMax intakeHigh = new CANSparkMax(21, MotorType.kBrushless);
   public CANSparkMax intakeLow = new CANSparkMax(23, MotorType.kBrushless);
+  public DoubleSolenoid intakeCylinder = new DoubleSolenoid(30, PneumaticsModuleType.REVPH, 1, 0);
   
   /** Creates a new ExampleSubsystem. */
   public Intake() {
-    //intakeHigh.setInverted(false);
-    //intakeLow.setInverted(false);
     intakeLow.restoreFactoryDefaults();
     intakeHigh.restoreFactoryDefaults();
+
+    intakeHigh.setInverted(true);
+    intakeLow.setInverted(true);
   }
 
   /**
@@ -49,6 +54,18 @@ public class Intake extends SubsystemBase {
   public void stopWheels() {
     intakeHigh.set(0);
     intakeLow.set(0);
+  }
+
+  public void intakePosition(boolean position){
+    if (position) {
+      intakeCylinder.set(Value.kForward);
+    } else {
+      intakeCylinder.set(Value.kReverse);
+    }
+  }
+
+  public void resetIntakePosition() {
+    intakeCylinder.set(Value.kOff);
   }
 
   /**

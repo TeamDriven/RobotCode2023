@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.SetMotorToPosition;
@@ -12,6 +13,8 @@ import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.drivetrain.MoveToLimelight;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetIntakePosition;
 import frc.robot.commands.intake.SpinIntake;
 import frc.robot.commands.intake.SpinIntakeParallel;
 import frc.robot.commands.intake.StopIntake;
@@ -22,10 +25,13 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
-import frc.robot.subsystems.MotionMagicMotor;
+import frc.robot.subsystems.motionMagicMotor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -105,18 +111,33 @@ public class RobotContainer {
     //new Trigger(m_controller::getAButton).whileTrue(new moveElevator(m_elevator,elevator20Inches));
     //new Trigger(m_controller::getBButton).whileTrue(new moveElevator(m_elevator,elevatorStartPos));
 
-    new Trigger(m_controller::getAButton)
-        .onTrue(new SpinIntake(m_intake, -1.0))
-        .onFalse(new StopIntake(m_intake));
-    new Trigger(m_controller::getBButton)
-        .onTrue(new SpinIntake(m_intake, 1.0))
-        .onFalse(new StopIntake(m_intake));
+    // new Trigger(m_controller::getAButton)
+    //     .onTrue(new SpinIntake(m_intake, -1.0))
+    //     .onFalse(new StopIntake(m_intake));
+    // new Trigger(m_controller::getBButton)
+    //     .onTrue(new SpinIntake(m_intake, 1.0))
+    //     .onFalse(new StopIntake(m_intake));
+    // new Trigger(m_controller::getRightBumper)
+    //   .onTrue(new SpinIntakeParallel(m_intake, -1.0))
+    //   .onFalse(new StopIntake(m_intake));
+    // new Trigger(m_controller::getLeftBumper)
+    //   .onTrue(new SpinIntakeParallel(m_intake, 1.0))
+    //   .onFalse(new StopIntake(m_intake));
+
     new Trigger(m_controller::getRightBumper)
-      .onTrue(new SpinIntakeParallel(m_intake, -1.0))
-      .onFalse(new StopIntake(m_intake));
-    new Trigger(m_controller::getLeftBumper)
-      .onTrue(new SpinIntakeParallel(m_intake, 1.0))
-      .onFalse(new StopIntake(m_intake));
+      // .whileTrue(new RunIntake(m_intake, kIntakeSpeed))
+      .whileTrue(new ParallelCommandGroup(
+        new SetIntakePosition(m_intake, true),
+        new SpinIntake(m_intake, kIntakeSpeed)
+      ))
+      .onFalse(new ParallelDeadlineGroup(
+        new WaitCommand(2),
+        new SetIntakePosition(m_intake, false),
+        new SpinIntakeParallel(m_intake, -kIntakeSpeed)
+      ));
+
+    new Trigger(m_controller::getYButton)
+      .whileTrue(new SpinIntake(m_intake, -kIntakeSpeed));
   }
 
   /**

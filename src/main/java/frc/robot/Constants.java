@@ -14,6 +14,8 @@ package frc.robot;
  */
 public final class Constants {
 
+  public static final double kIntakeSpeed = 0.85;
+
   public final static class DrivetrainConstants {
     public static final double kPXController = 0.3; // TODO tune this
     public static final double kPYController = kPXController;

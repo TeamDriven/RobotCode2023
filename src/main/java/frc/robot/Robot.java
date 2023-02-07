@@ -30,10 +30,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private CANSparkMax intakeHigh = new CANSparkMax(21, MotorType.kBrushless);
-  private CANSparkMax intakeLow = new CANSparkMax(23, MotorType.kBrushless);
-  private TalonFX arm = new TalonFX(10);
-  private Joystick stick = new Joystick(1);
   //private Rev2mDistanceSensor distOnboard; 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -61,7 +57,7 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    //CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -105,25 +101,6 @@ public class Robot extends TimedRobot {
       //SmartDashboard.putNumber("Range Onboard", distOnboard.getRange());
       //SmartDashboard.putNumber("Timestamp Onboard", distOnboard.getTimestamp());
     //}
-    double speed = 1.0;
-    if (stick.getRawButton(1)) {
-      intakeLow.set(speed);
-      intakeHigh.set(speed);
-    } else if (stick.getRawButton(2)) {
-      intakeLow.set(-speed);
-      intakeHigh.set(-speed);
-    } else {
-      intakeLow.set(0.0);
-      intakeHigh.set(0.0);
-    }
-
-    if (stick.getRawButton(3)) {
-      arm.set(TalonFXControlMode.PercentOutput, -0.3);
-    } else if (stick.getRawButton(4)) {
-      arm.set(TalonFXControlMode.PercentOutput, 0.3);
-    } else {
-      arm.set(TalonFXControlMode.PercentOutput, 0);
-    }
   }
 
   @Override

@@ -8,7 +8,7 @@ import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class stopIntake extends CommandBase {
+public class StopIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_Intake;
 
@@ -17,7 +17,7 @@ public class stopIntake extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public stopIntake(Intake subsystem) {
+  public StopIntake(Intake subsystem) {
     m_Intake = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

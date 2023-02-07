@@ -8,7 +8,7 @@ import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class spinIntake extends CommandBase {
+public class SpinIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_Intake;
   double m_speed;
@@ -18,7 +18,7 @@ public class spinIntake extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public spinIntake(Intake subsystem, double speed) {
+  public SpinIntake(Intake subsystem, double speed) {
     m_Intake = subsystem;
     m_speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
