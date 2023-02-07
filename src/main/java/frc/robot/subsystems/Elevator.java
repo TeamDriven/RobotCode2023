@@ -12,19 +12,28 @@ import frc.robot.motionMagicLibrary;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
-  WPI_TalonSRX elevatorMotor1 = new WPI_TalonSRX(14);
-  VictorSPX elevatorMotor2 = new VictorSPX(13);
-  double targetPos = 0;
+  WPI_TalonSRX elevatorMotor1 = new WPI_TalonSRX(9);
+  VictorSPX elevatorMotor2 = new VictorSPX(10);
+  public double targetPos = 0;
   /** Creates a new ExampleSubsystem. */
   public Elevator() {
+    elevatorMotor1.configFactoryDefault();
+    elevatorMotor2.configFactoryDefault();
+
     motionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1);
     elevatorMotor1.setInverted(false);
     elevatorMotor2.setInverted(true);
   }
 
   public void motionMagicElevator(double position) {
+    // System.out.println("run");
     targetPos = position;
     elevatorMotor1.set(ControlMode.MotionMagic, targetPos);
+    elevatorMotor2.follow(elevatorMotor1);
+  }
+
+  public void runElevator() {
+    elevatorMotor1.set(ControlMode.PercentOutput, 0.25);
     elevatorMotor2.follow(elevatorMotor1);
   }
 

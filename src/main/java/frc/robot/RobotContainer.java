@@ -6,7 +6,11 @@ package frc.robot;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
+
+import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
+
 import frc.robot.commands.MoveElevator;
+import frc.robot.commands.MoveElevatorManual;
 import frc.robot.commands.SetMotorToPosition;
 import frc.robot.commands.auto.Autos;
 import frc.robot.commands.auto.DriveForward;
@@ -28,9 +32,11 @@ import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.motionMagicMotor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -59,7 +65,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
   
-    m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain, m_controller));
+    //m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain, m_controller));
   }
 
   public void testEncoder() {
@@ -77,18 +83,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    /* Desired Controls:
-     * 
-     * RT: Intake
-     * LT: Outtake
-     * RB: April tags
-     * LB: Retroreflective tape
-     * 
-     * XYAB: placement
-     * 
-     * DPAD: Extra claw/elevator controls
-     */
 
+    // new Trigger(this::getDpadUp)
+    //   .onTrue(new PrintCommand("Up"));
+    // new Trigger(this::getDpadRight)
+    //   .onTrue(new PrintCommand("Right"));
+    // new Trigger(this::getDpadDown)
+    //   .onTrue(new PrintCommand("Down"));
+    // new Trigger(this::getDpadLeft)
+    //   .onTrue(new PrintCommand("Left"));
 
     /*new Trigger(m_controller::getYButton).whileTrue(new ParallelRaceGroup(
       new read2DAprilTags(m_limelight), 
@@ -124,6 +127,7 @@ public class RobotContainer {
     //   .onTrue(new SpinIntakeParallel(m_intake, 1.0))
     //   .onFalse(new StopIntake(m_intake));
 
+    //Intake
     new Trigger(m_controller::getRightBumper)
       // .whileTrue(new RunIntake(m_intake, kIntakeSpeed))
       .whileTrue(new ParallelCommandGroup(
@@ -138,6 +142,62 @@ public class RobotContainer {
 
     new Trigger(m_controller::getYButton)
       .whileTrue(new SpinIntake(m_intake, -kIntakeSpeed));
+
+
+    //Elevator
+    new Trigger(this::getDpadRight)
+      // .whileTrue(new PrintCommand("up"))
+      // .whileTrue(new InstantCommand(m_elevator::runElevator));
+      .whileTrue(new MoveElevator(m_elevator, elevatorUpPos));
+
+    new Trigger(this::getDpadLeft)
+    // .whileTrue(new PrintCommand("down"))
+      .whileTrue(new MoveElevator(m_elevator, elevatorMidPos));
+
+    new Trigger(m_controller::getBButton)
+      .whileTrue(new MoveElevator(m_elevator, elevatorStartPos));
+
+    new Trigger(this::getDpadUp)
+      .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches / 4));
+    
+    new Trigger(this::getDpadDown)
+      .whileTrue(new MoveElevatorManual(m_elevator, -elevatorTicksPerInches / 4));
+  }
+
+  public void printPOV() {
+    System.out.println(m_controller.getPOV());
+  }
+
+  public boolean getDpadUp() {
+    if (m_controller.getPOV() == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean getDpadRight() {
+    if (m_controller.getPOV() == 90) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean getDpadDown() {
+    if (m_controller.getPOV() == 180) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean getDpadLeft() {
+    if (m_controller.getPOV() == 270) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

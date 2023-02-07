@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.Elevator;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -49,11 +51,11 @@ public final class Constants {
     public static int kTimeoutMs = 30;
     public static double posOne = 1000;
     public static double posTwo = 100;
-    public static double elevatorUpPos = 1000;
-    public static double elevatorMidPos = 5000;
     public static double elevatorStartPos = 0;
     public static double elevatorTicksPerInches = 370;
     public static double elevator20Inches = 20*elevatorTicksPerInches;
+    public static double elevatorUpPos = elevatorTicksPerInches * 53;
+    public static double elevatorMidPos = elevatorTicksPerInches * 35;
     public static final int kSlotIdx = 0;
   }
 }
