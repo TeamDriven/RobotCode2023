@@ -16,11 +16,11 @@ import frc.robot.subsystems.Elevator;
  */
 public final class Constants {
 
-  public static final double kIntakeSpeed = 0.85;
+  public static final double kIntakeSpeed = 0.7;
 
   public final static class DrivetrainConstants {
-    public static final double kPXController = 0.3; // TODO tune this
-    public static final double kPYController = kPXController;
+    public static final double kPXController = 2.0; // TODO tune this
+    public static final double kPYController = 0;//kPXController;
     public static final double kPThetaController = 6; // TODO tune this
 
     public static final int FLDriveMotorChannel = 3;
@@ -51,11 +51,19 @@ public final class Constants {
     public static int kTimeoutMs = 30;
     public static double posOne = 1000;
     public static double posTwo = 100;
+
     public static double elevatorStartPos = 0;
     public static double elevatorTicksPerInches = 370;
     public static double elevator20Inches = 20*elevatorTicksPerInches;
     public static double elevatorUpPos = elevatorTicksPerInches * 53;
     public static double elevatorMidPos = elevatorTicksPerInches * 35;
+
+    public static double armTicksPerDegree = -1137.7777;
+    public static double armStartPos = 0;
+    public static double armDownPos = armTicksPerDegree * 125;
+    public static double armPlacePos = armTicksPerDegree * 42;
+    public static double armMaxPos = armTicksPerDegree * 170;
+
     public static final int kSlotIdx = 0;
   }
 }

@@ -42,6 +42,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void spinWheels(double speed) {
+    // System.out.println("SpinWheels");
     intakeHigh.set(speed);
     intakeLow.set(speed);
   }

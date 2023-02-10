@@ -89,7 +89,6 @@ public class Drivetrain extends SubsystemBase {
     m_pigey.setFusedHeading(0);
 
     swerveModuleStates = m_kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
-
     // m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -119,6 +118,8 @@ public class Drivetrain extends SubsystemBase {
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     this.swerveModuleStates = swerveModuleStates;
+
+    System.out.println(m_odometry.getPoseMeters());
     // m_frontLeft.setDesiredState(swerveModuleStates[0]);
     // m_frontRight.setDesiredState(swerveModuleStates[1]);
     // m_backLeft.setDesiredState(swerveModuleStates[2]);
@@ -139,6 +140,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(SwerveModuleState[] swerveModuleStates) {
     System.out.println(m_odometry.getPoseMeters());
+
+    // for (SwerveModuleState s : swerveModuleStates) {
+    //   System.out.println(s);
+    // }
 
     this.swerveModuleStates = swerveModuleStates;
 
@@ -257,7 +262,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public class SwerveModule {
-    double COUNTS_PER_METER = 51213;
+    // double COUNTS_PER_METER = 51213;
+    double COUNTS_PER_METER = 57032;
  // private static final double kWheelRadius = 0.0508;
 //  private static final int kEncoderResolution = 4096;
 
@@ -273,7 +279,7 @@ public class Drivetrain extends SubsystemBase {
  
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(0.0001, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.01, .001, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
@@ -306,6 +312,9 @@ public class Drivetrain extends SubsystemBase {
        {
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_turningMotor = new TalonFX(turningMotorChannel);
+
+    m_driveMotor.configFactoryDefault();
+    m_turningMotor.configFactoryDefault();
 
     //m_driveEncoder = new Encoder(driveEncoderChannelA, driveEncoderChannelB);
     m_turningEncoder = new DutyCycleEncoder(turningEncoderChannel);
@@ -342,7 +351,7 @@ public class Drivetrain extends SubsystemBase {
    */
   //TODO: Check to make sure this is right
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(m_driveMotor.getSelectedSensorPosition() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get()));
+    return new SwerveModulePosition(m_driveMotor.getSelectedSensorPosition() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get() * Math.PI * 2 - offSet));
     // return new SwerveModulePosition(m_driveMotor.getSelectedSensorVelocity() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get()));
   }
 

@@ -9,11 +9,14 @@ import static frc.robot.Constants.MotionMagicConstants.*;
 
 import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
 
+import frc.robot.commands.MoveClaw;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveElevatorManual;
+import frc.robot.commands.SetClawPosition;
 import frc.robot.commands.SetMotorToPosition;
 import frc.robot.commands.auto.Autos;
 import frc.robot.commands.auto.DriveForward;
+import frc.robot.commands.auto.DriveUp;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.drivetrain.MoveToLimelight;
@@ -25,6 +28,7 @@ import frc.robot.commands.intake.StopIntake;
 import frc.robot.commands.limelight.read2DAprilTags;
 import frc.robot.commands.limelight.read3DAprilTags;
 import frc.robot.commands.limelight.readRetroreflectiveTape;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -49,6 +53,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
+  private final Claw m_claw = new Claw();
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -57,6 +62,7 @@ public class RobotContainer {
   private final Elevator m_elevator = new Elevator();
   private final Intake m_intake = new Intake();
 
+  private final DriveUp m_DriveUp = new DriveUp(m_drivetrain);
   private final DriveForward m_DriveForward = new DriveForward(m_drivetrain);
   private final TestPath m_TestPath = new TestPath(m_drivetrain);
 
@@ -65,7 +71,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
   
-    //m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain, m_controller));
+    m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain, m_controller));
   }
 
   public void testEncoder() {
@@ -129,39 +135,50 @@ public class RobotContainer {
 
     //Intake
     new Trigger(m_controller::getRightBumper)
-      // .whileTrue(new RunIntake(m_intake, kIntakeSpeed))
-      .whileTrue(new ParallelCommandGroup(
-        new SetIntakePosition(m_intake, true),
-        new SpinIntake(m_intake, kIntakeSpeed)
-      ))
+      .whileTrue(new RunIntake(m_intake, kIntakeSpeed))
+      // .whileTrue(new ParallelCommandGroup(
+      //   new SetIntakePosition(m_intake, true),
+      //   new SpinIntake(m_intake, kIntakeSpeed)
+      // ))
       .onFalse(new ParallelDeadlineGroup(
         new WaitCommand(2),
         new SetIntakePosition(m_intake, false),
-        new SpinIntakeParallel(m_intake, -kIntakeSpeed)
+        new SpinIntakeParallel(m_intake, kIntakeSpeed)
       ));
 
     new Trigger(m_controller::getYButton)
-      .whileTrue(new SpinIntake(m_intake, -kIntakeSpeed));
+      .whileTrue(new SpinIntakeParallel(m_intake, -kIntakeSpeed));
 
 
     //Elevator
     new Trigger(this::getDpadRight)
-      // .whileTrue(new PrintCommand("up"))
+       .whileTrue(new PrintCommand("top"))
       // .whileTrue(new InstantCommand(m_elevator::runElevator));
       .whileTrue(new MoveElevator(m_elevator, elevatorUpPos));
 
     new Trigger(this::getDpadLeft)
-    // .whileTrue(new PrintCommand("down"))
+     .whileTrue(new PrintCommand("mid"))
       .whileTrue(new MoveElevator(m_elevator, elevatorMidPos));
 
-    new Trigger(m_controller::getBButton)
-      .whileTrue(new MoveElevator(m_elevator, elevatorStartPos));
+    new Trigger(m_controller::getAButton)
+      .onTrue(new PrintCommand("start"))
+      .onTrue(new MoveElevator(m_elevator, elevatorStartPos));
 
     new Trigger(this::getDpadUp)
-      .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches / 4));
+      .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches * 0.25));
     
     new Trigger(this::getDpadDown)
-      .whileTrue(new MoveElevatorManual(m_elevator, -elevatorTicksPerInches / 4));
+      .whileTrue(new MoveElevatorManual(m_elevator, -elevatorTicksPerInches * 0.25));
+
+
+    //Claw
+    new Trigger(m_controller::getXButton)
+      .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * 0.4));
+      // .whileTrue(new SetClawPosition(m_claw, armDownPos));
+
+    new Trigger(m_controller::getBButton)
+      .whileTrue(new MoveClaw(m_claw, -armTicksPerDegree * 0.4));
+      // .whileTrue(new SetClawPosition(m_claw, armPlacePos));
   }
 
   public void printPOV() {

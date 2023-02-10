@@ -2,30 +2,36 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.drivetrain;
 
-import static frc.robot.Constants.MotionMagicConstants.*;
+import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
 
 /** An example command that uses an example subsystem. */
-public class MoveElevator extends CommandBase {
+public class Drive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Elevator m_elevator;
-  private final double m_targetPos;
-
+  private final Drivetrain m_drivetrain;
+  private final double m_xSpeed;
+  private final double m_ySpeed;
+  private final double m_rot;
+  private final boolean m_fieldRelative;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveElevator(Elevator subsystem, double targetPos) {
-    m_elevator = subsystem;
-    m_targetPos = targetPos;
-    
+  public Drive(Drivetrain subsystem, double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    m_drivetrain = subsystem;
+    m_xSpeed = xSpeed;
+    m_ySpeed = ySpeed;
+    m_rot = rot;
+    m_fieldRelative = fieldRelative;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_elevator);
+    addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -35,18 +41,12 @@ public class MoveElevator extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double targetPos = m_targetPos;
-    if (m_elevator.targetPos == targetPos) {
-      //targetPos = elevatorStartPos;
-    }
-    m_elevator.motionMagicElevator(targetPos);
+      m_drivetrain.drive(m_xSpeed, m_ySpeed, m_rot, m_fieldRelative);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

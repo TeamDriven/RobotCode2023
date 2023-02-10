@@ -41,7 +41,7 @@ public class MoveElevatorManual extends CommandBase {
     } else if (targetPos < elevatorStartPos) {
       targetPos = elevatorStartPos;
     }
-    System.out.println(targetPos);
+    // System.out.println(targetPos);
     m_elevator.motionMagicElevator(targetPos);
   }
 

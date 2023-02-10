@@ -17,8 +17,8 @@ public class Elevator extends SubsystemBase {
   public double targetPos = 0;
   /** Creates a new ExampleSubsystem. */
   public Elevator() {
-    elevatorMotor1.configFactoryDefault();
-    elevatorMotor2.configFactoryDefault();
+    // elevatorMotor1.configFactoryDefault();
+    // elevatorMotor2.configFactoryDefault();
 
     motionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1);
     elevatorMotor1.setInverted(false);
@@ -28,8 +28,6 @@ public class Elevator extends SubsystemBase {
   public void motionMagicElevator(double position) {
     // System.out.println("run");
     targetPos = position;
-    elevatorMotor1.set(ControlMode.MotionMagic, targetPos);
-    elevatorMotor2.follow(elevatorMotor1);
   }
 
   public void runElevator() {
@@ -40,6 +38,8 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    elevatorMotor1.set(ControlMode.MotionMagic, targetPos);
+    elevatorMotor2.follow(elevatorMotor1);
   }
 
   @Override

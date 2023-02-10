@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import static frc.robot.Constants.MotionMagicConstants.*;
@@ -61,19 +62,19 @@ public class motionMagicLibrary {
 		_talon.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
     }
 
-	public static void setMotionMagicMotorParameters(WPI_TalonFX _talon){
+	public static void setMotionMagicMotorParameters(TalonFX _talon){
     	final double kP = 0.8;
     	final double kI = 0.0;
     	final double kD = 0.0;
     	final double kF = 0.2;
 
   		/** Creates a new ExampleSubsystem. */
-    	_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, kPIDLoopIdx, kTimeoutMs);
+    	_talon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdx, kTimeoutMs);
 
     	_talon.configFactoryDefault();
 
 		/* Configure Sensor Source for Pirmary PID */
-		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, kPIDLoopIdx, kTimeoutMs);
+		_talon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kPIDLoopIdx, kTimeoutMs);
 
 		/* set deadband to super small 0.001 (0.1 %).
 			The default deadband is 0.04 (4 %) */
