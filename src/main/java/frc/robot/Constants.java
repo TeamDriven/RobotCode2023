@@ -54,15 +54,18 @@ public final class Constants {
 
     public static double elevatorStartPos = 0;
     public static double elevatorTicksPerInches = 370;
+    // public static double elevatorTicksPerInches = 281.9;
     public static double elevator20Inches = 20*elevatorTicksPerInches;
-    public static double elevatorUpPos = elevatorTicksPerInches * 53;
+    public static double elevatorUpPos = elevatorTicksPerInches * 55;
     public static double elevatorMidPos = elevatorTicksPerInches * 35;
+    public static double elevatorPickUpPos = elevatorTicksPerInches * 17;
 
-    public static double armTicksPerDegree = -1137.7777;
+    public static double armTicksPerDegree = -318.5778;
     public static double armStartPos = 0;
-    public static double armDownPos = armTicksPerDegree * 125;
-    public static double armPlacePos = armTicksPerDegree * 42;
-    public static double armMaxPos = armTicksPerDegree * 170;
+    public static double armDownPos = armTicksPerDegree * 135;
+    public static double armPlacePos = armTicksPerDegree * 30;
+    public static double armMaxPos = armTicksPerDegree * 180;
+    public static double armBottom = armTicksPerDegree * 100;
 
     public static final int kSlotIdx = 0;
   }

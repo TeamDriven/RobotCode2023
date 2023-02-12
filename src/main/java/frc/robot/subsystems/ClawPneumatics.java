@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -20,40 +19,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motionMagicLibrary;
 import frc.robot.Constants.MotionMagicConstants;
 
-public class Claw extends SubsystemBase {
-  public TalonFX clawMotor = new TalonFX(11);
-  public double m_targetPos;
+public class ClawPneumatics extends SubsystemBase {
+  public DoubleSolenoid clawCylinder = new DoubleSolenoid(30, PneumaticsModuleType.REVPH, 14, 15);
 
-  public Claw() {
-    clawMotor.configFactoryDefault();
-    motionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 1.0, 0.01, 0.0, 1.0, 10000, 8000);
-    clawMotor.setNeutralMode(NeutralMode.Brake);
+  public ClawPneumatics() {
     // clawMotor.setInverted(true);
   }
 
-  public void setClawPosition(double position) {
-    m_targetPos = position;
-    clawMotor.set(ControlMode.MotionMagic, m_targetPos);
+  public void setGrip(boolean close) {
+    if (close) {
+      clawCylinder.set(Value.kReverse);
+    } else {
+      clawCylinder.set(Value.kForward);
+    }
   }
 
-  public void runMotorForward() {
-    clawMotor.set(ControlMode.PercentOutput, 0.8); //change line 44 also
+  public void openClaw() {
+    clawCylinder.set(Value.kForward);
   }
 
-  public void runMotorBackward() {
-    clawMotor.set(ControlMode.PercentOutput, -0.8); //change line 40 also
-  }
-
-  public void stopMotor() {
-    clawMotor.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  public void printPosition() {
-    System.out.println("Claw Position: " + clawMotor.getSelectedSensorPosition());
-  }
-
-  public double getCurrentPosition() {
-    return clawMotor.getSelectedSensorPosition();
+  public void closeClaw() {
+    clawCylinder.set(Value.kReverse);
   }
   
   @Override

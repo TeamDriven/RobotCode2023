@@ -10,6 +10,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -119,7 +120,7 @@ public class Drivetrain extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     this.swerveModuleStates = swerveModuleStates;
 
-    System.out.println(m_odometry.getPoseMeters());
+    // System.out.println(m_odometry.getPoseMeters());
     // m_frontLeft.setDesiredState(swerveModuleStates[0]);
     // m_frontRight.setDesiredState(swerveModuleStates[1]);
     // m_backLeft.setDesiredState(swerveModuleStates[2]);
@@ -205,6 +206,7 @@ public class Drivetrain extends SubsystemBase {
     // Seconds += 0.25;
     // }
     // System.out.println("===== End Sampling Path =====");
+
     return new InstantCommand(() -> {
       if (shouldResetOdometry) {
         PathPlannerState initialSample = (PathPlannerState) trajectory.sample(0);

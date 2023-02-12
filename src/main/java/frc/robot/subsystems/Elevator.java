@@ -20,7 +20,7 @@ public class Elevator extends SubsystemBase {
     // elevatorMotor1.configFactoryDefault();
     // elevatorMotor2.configFactoryDefault();
 
-    motionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1);
+    motionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1, 0.8, 0.0, 0.0, 0.2, 8000, 8000);
     elevatorMotor1.setInverted(false);
     elevatorMotor2.setInverted(true);
   }
@@ -28,18 +28,22 @@ public class Elevator extends SubsystemBase {
   public void motionMagicElevator(double position) {
     // System.out.println("run");
     targetPos = position;
+    elevatorMotor1.set(ControlMode.MotionMagic, targetPos);
+    elevatorMotor2.follow(elevatorMotor1);
   }
 
-  public void runElevator() {
-    elevatorMotor1.set(ControlMode.PercentOutput, 0.25);
+  public void runElevator(double speed) {
+    elevatorMotor1.set(ControlMode.PercentOutput, speed);
     elevatorMotor2.follow(elevatorMotor1);
+  }
+
+  public void printPosition() {
+    System.out.println("Elevator Position: " + elevatorMotor1.getSelectedSensorPosition());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    elevatorMotor1.set(ControlMode.MotionMagic, targetPos);
-    elevatorMotor2.follow(elevatorMotor1);
   }
 
   @Override

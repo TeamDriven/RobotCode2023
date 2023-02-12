@@ -2,21 +2,30 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import static frc.robot.Constants.MotionMagicConstants.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Elevator;
 
-public class MoveClaw extends CommandBase {
-  Claw m_claw; 
-  double m_speed;
-  /** Creates a new setClawPosition. */
-  public MoveClaw(Claw claw, double speed) {
-    m_claw = claw;
-    m_speed = speed; 
-    addRequirements(claw);
+/** An example command that uses an example subsystem. */
+public class RunElevator extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Elevator m_elevator;
+  private final double m_speed;
+
+
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public RunElevator(Elevator subsystem, double speed) {
+    m_elevator = subsystem;
+    m_speed = speed;
+    
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -26,19 +35,14 @@ public class MoveClaw extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double targetPos = m_claw.m_targetPos + m_speed;
-    if (targetPos > armStartPos) {
-      targetPos = armStartPos;
-    } else if (targetPos < armMaxPos) {
-      targetPos = armMaxPos;
-    }
-    System.out.println(targetPos);
-    m_claw.setClawPosition(targetPos);
+    m_elevator.runElevator(m_speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    
+  }
 
   // Returns true when the command should end.
   @Override

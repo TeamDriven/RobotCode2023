@@ -9,17 +9,21 @@ import static frc.robot.Constants.MotionMagicConstants.*;
 
 import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
 
-import frc.robot.commands.MoveClaw;
-import frc.robot.commands.MoveElevator;
-import frc.robot.commands.MoveElevatorManual;
-import frc.robot.commands.SetClawPosition;
+import frc.robot.commands.AutoPlaceConeHigh;
+import frc.robot.commands.AutoResetElevatorAndClaw;
 import frc.robot.commands.SetMotorToPosition;
 import frc.robot.commands.auto.Autos;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.DriveUp;
 import frc.robot.commands.auto.TestPath;
+import frc.robot.commands.claw.MoveClaw;
+import frc.robot.commands.claw.SetClawPosition;
+import frc.robot.commands.claw.ToggleGrip;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.drivetrain.MoveToLimelight;
+import frc.robot.commands.elevator.MoveElevator;
+import frc.robot.commands.elevator.MoveElevatorManual;
+import frc.robot.commands.elevator.RunElevator;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePosition;
 import frc.robot.commands.intake.SpinIntake;
@@ -29,6 +33,7 @@ import frc.robot.commands.limelight.read2DAprilTags;
 import frc.robot.commands.limelight.read3DAprilTags;
 import frc.robot.commands.limelight.readRetroreflectiveTape;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.ClawPneumatics;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -54,6 +59,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
   private final Claw m_claw = new Claw();
+  private final ClawPneumatics m_ClawPneumatics = new ClawPneumatics();
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -152,37 +158,87 @@ public class RobotContainer {
 
     //Elevator
     new Trigger(this::getDpadRight)
-       .whileTrue(new PrintCommand("top"))
+      .whileTrue(new PrintCommand("top"))
       // .whileTrue(new InstantCommand(m_elevator::runElevator));
       .whileTrue(new MoveElevator(m_elevator, elevatorUpPos));
 
     new Trigger(this::getDpadLeft)
-     .whileTrue(new PrintCommand("mid"))
+      .whileTrue(new PrintCommand("mid"))
       .whileTrue(new MoveElevator(m_elevator, elevatorMidPos));
 
-    new Trigger(m_controller::getAButton)
-      .onTrue(new PrintCommand("start"))
-      .onTrue(new MoveElevator(m_elevator, elevatorStartPos));
+    new Trigger(m_controller::getStartButton)
+      .onTrue(new AutoPlaceConeHigh(m_intake, m_elevator, m_claw, m_ClawPneumatics));
+      
+    new Trigger(m_controller::getBackButton)
+      .onTrue(new AutoResetElevatorAndClaw(m_elevator, m_claw, m_ClawPneumatics));
+      // .whileTrue(new AutoResetElevatorAndClaw(m_elevator, m_claw, m_ClawPneumatics));
+      // .whileTrue(new SetClawPosition(m_claw, armDownPos));
+
+    // new Trigger(m_controller::getAButton)
+    //   .onTrue(new PrintCommand("start"))
+    //   .onTrue(new MoveElevator(m_elevator, elevatorStartPos));
 
     new Trigger(this::getDpadUp)
-      .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches * 0.25));
+      .whileTrue(new InstantCommand(m_elevator::printPosition))
+      .whileTrue(new RunElevator(m_elevator, 1.0)) // change
+      .onFalse(new RunElevator(m_elevator, 0.0));
+      // .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches * 0.4));
     
     new Trigger(this::getDpadDown)
-      .whileTrue(new MoveElevatorManual(m_elevator, -elevatorTicksPerInches * 0.25));
+      .whileTrue(new InstantCommand(m_elevator::printPosition))
+      .whileTrue(new RunElevator(m_elevator, -1.0)) // change
+      .onFalse(new RunElevator(m_elevator, 0.0));
+      // .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches * -0.4));
 
 
     //Claw
-    new Trigger(m_controller::getXButton)
-      .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * 0.4));
-      // .whileTrue(new SetClawPosition(m_claw, armDownPos));
+    new Trigger(this::getNotLeftBumper)
+      .and(new Trigger(m_controller::getXButton))
+        // .whileTrue(new InstantCommand(m_claw::printPosition))
+        .whileTrue(new InstantCommand(m_claw::runMotorForward))
+        .onFalse(new InstantCommand(m_claw::stopMotor));
+        // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * 0.8));
+        // .whileTrue(new SetClawPosition(m_claw, armDownPos));
 
-    new Trigger(m_controller::getBButton)
-      .whileTrue(new MoveClaw(m_claw, -armTicksPerDegree * 0.4));
-      // .whileTrue(new SetClawPosition(m_claw, armPlacePos));
+    new Trigger(this::getNotLeftBumper)
+      .and(new Trigger(m_controller::getBButton))
+        // .whileTrue(new InstantCommand(m_claw::printPosition))
+        .whileTrue(new InstantCommand(m_claw::runMotorBackward))
+        .onFalse(new InstantCommand(m_claw::stopMotor));
+        // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * -0.8));
+        // .whileTrue(new SetClawPosition(m_claw, armPlacePos));
+
+    new Trigger(this::getNotLeftBumper)
+      .and(new Trigger(m_controller::getAButton))
+        .toggleOnTrue(new ToggleGrip(m_ClawPneumatics));
+        // .whileTrue(new InstantCommand(m_claw::closeClaw, m_claw))
+        // .whileFalse(new InstantCommand(m_claw::openClaw, m_claw));
+
+    new Trigger(m_controller::getLeftBumper)
+      .and(new Trigger(m_controller::getXButton))
+        .whileTrue(new SetClawPosition(m_claw, armDownPos));
+        // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * 0.8));
+
+    new Trigger(m_controller::getLeftBumper)
+        .and(new Trigger(m_controller::getBButton))
+          .whileTrue(new SetClawPosition(m_claw, armPlacePos));
+          // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * -0.8));
+
+    new Trigger(m_controller::getLeftBumper)
+      .and(new Trigger(m_controller::getAButton))
+        .whileTrue(new SetClawPosition(m_claw, armStartPos));
   }
 
-  public void printPOV() {
-    System.out.println(m_controller.getPOV());
+  // public void printPOV() {
+  //   System.out.println(m_controller.getPOV());
+  // }
+
+  public boolean getNotLeftBumper() {
+    if (!m_controller.getLeftBumper()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public boolean getDpadUp() {

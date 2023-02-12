@@ -16,6 +16,8 @@ public class DriveContinous extends CommandBase {
   private final Drivetrain m_drivetrain;
   private final XboxController m_controller;
 
+  private final double m_deadZone = 0.07;
+
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
@@ -42,14 +44,14 @@ public class DriveContinous extends CommandBase {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightY(), 0.08))
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightY(), m_deadZone))
             * Drivetrain.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.08))
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), m_deadZone))
             * Drivetrain.kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
@@ -57,7 +59,7 @@ public class DriveContinous extends CommandBase {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final var rot =
-        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.08))
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), m_deadZone))
             * Drivetrain.kMaxAngularSpeed;
           
 
