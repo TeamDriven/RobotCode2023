@@ -4,27 +4,23 @@
 
 package frc.robot.commands.auto;
 
-// import edu.wpi.first.wpilibj2.command.CommandBase;
-// import edu.wpi.first.wpilibj2.command.Commands;
-// import edu.wpi.first.wpilibj2.command.InstantCommand;
-// import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-// import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.drivetrain.AutoBalance;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain;
 
-public final class DriveUp extends ParallelRaceGroup {
+public final class  balanceauto extends SequentialCommandGroup {
 
   /** Example static factory for an autonomous command. */
   // public static CommandBase exampleAuto(ExampleSubsystem subsystem) {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public DriveUp(final Drivetrain m_Drivetrain) {
+  public balanceauto(final Drivetrain m_Drivetrain) {
     addCommands(
-      new Drive(m_Drivetrain, 1, 0, 0, true),
-      new WaitCommand(1)
+      new Drive(m_Drivetrain, 0.2, 0, 0, true).withTimeout(4),
+      new AutoBalance(m_Drivetrain)
+      // new Drive(m_Drivetrain,0,0,0,false)
     );
   }
 }

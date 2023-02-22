@@ -31,6 +31,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.drivetrain.FindPath;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
 
@@ -45,12 +48,20 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-0.273, 0.33);
   private final Translation2d m_backRightLocation = new Translation2d(-0.273, -0.33);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 7.26186181491516);
-  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1546138688759355);
-  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.775713308823037);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.207007467506754);
+  // private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 7.26186181491516);
+  // private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1546138688759355);
+  // private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.775713308823037);
+  // private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.207007467506754);
+  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 7.258332235480612);
+  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1099677520818219);
+  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.694360665467085);
+  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.1582267005178846);
 
   private final static PigeonIMU m_pigey = new PigeonIMU(11);
+
+  private final static double startingPitch = m_pigey.getPitch();
+  private final static double startingRoll = m_pigey.getRoll();
+  private final static double startingYaw = m_pigey.getYaw();
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
@@ -95,7 +106,30 @@ public class Drivetrain extends SubsystemBase {
 
   public void rememberStartingPosition() {
     m_startYaw = Rotation2d.fromDegrees(m_pigey.getYaw());
+  
   }
+  public double getYaw(){
+    // System.out.println("Pitch: " + m_pigey.getPitch());
+    // System.out.println("Yaw: " + m_pigey.getYaw());
+    // System.out.println("Roll: " + m_pigey.getRoll());
+    return m_pigey.getYaw() - startingYaw;
+  }
+
+  public double getRoll(){
+    return m_pigey.getRoll() - startingRoll;
+  }
+
+  public double getPitch() {
+    return m_pigey.getPitch() - startingPitch;
+  }
+
+// public void zeroRoll(){
+//   m_pigey.
+// }
+
+
+ 
+
 
   public void reZeroFromStartingPositon() {
     setHeadingAdjust(Rotation2d.fromDegrees(m_pigey.getCompassHeading()).minus(m_startYaw));
@@ -108,6 +142,18 @@ public class Drivetrain extends SubsystemBase {
   private void setHeadingAdjust(final Rotation2d headingAdjust) {
     m_headingAdjust = headingAdjust;
     // System.out.println("Set heading adjust: " + m_headingAdjust.getDegrees());
+  }
+
+  public void resetOdometry(Pose2d initialPose) {
+    m_odometry.resetPosition(
+      Rotation2d.fromDegrees(m_pigey.getFusedHeading()),
+      new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_backLeft.getPosition(),
+        m_backRight.getPosition()
+      }, 
+      initialPose);
   }
 
   @SuppressWarnings("ParameterName")
@@ -151,6 +197,22 @@ public class Drivetrain extends SubsystemBase {
     moveSwerve();
   }
 
+  public void boxWheels() {
+    var swerveModuleStates =
+        m_kinematics.toSwerveModuleStates(
+                new ChassisSpeeds(0, 0, 0.5));
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, 0);
+    this.swerveModuleStates = swerveModuleStates;
+    // SwerveModuleState[] swerveModuleStates = {
+    //   new SwerveModuleState(0, new Rotation2d(45 / 360 * Math.PI * 2)),
+    //   new SwerveModuleState(0, new Rotation2d(-45 / 360 * Math.PI * 2)),
+    //   new SwerveModuleState(0, new Rotation2d(45 / 360 * Math.PI * 2)),
+    //   new SwerveModuleState(0, new Rotation2d(-45 / 360 * Math.PI * 2))
+    // };
+    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+    // this.swerveModuleStates = swerveModuleStates;
+  }
+
   public void moveSwerve() {
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
@@ -158,6 +220,14 @@ public class Drivetrain extends SubsystemBase {
     m_backRight.setDesiredState(swerveModuleStates[3]);
     updateOdometry();
   }
+
+  //public void boxWheels() {
+    //m_frontLeft.Rotation2d(angleDeg:45);
+    //m_frontRight.Rotation2d(angleDeg:-45);
+    //m_backRight.Rotation2d(angleDeg:45);
+    //m_backLeft.Rotation2d(angleDeg:-45);    
+
+  //}
 
   public void printEncoders() {
     m_backLeft.printencoder("bl");
@@ -250,6 +320,76 @@ public class Drivetrain extends SubsystemBase {
     // )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
   }
 
+  public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, PathPlannerTrajectory trajectory) {
+    
+    // final Trajectory trajectory = generateTrajectory(waypoints);
+    // final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 3.5, 3   );
+    // System.out.println(trajectory);
+    // double Seconds = 0.0;
+    // System.out.println("===== Begin Sampling path =====");
+    // while(trajectory.getTotalTimeSeconds() > Seconds) {
+    //   PathPlannerState state = (PathPlannerState) trajectory.sample(Seconds);
+    //   System.out.println(
+    //     "time: " + Seconds
+    //     + ", x: " + state.poseMeters.getX()
+    //     + ", y: " + state.poseMeters.getY()
+    //     + ", angle: " + state.poseMeters.getRotation().getDegrees()
+    //     + ", holo: " + state.holonomicRotation.getDegrees()
+    //   );
+    // Seconds += 0.25;
+    // }
+    // System.out.println("===== End Sampling Path =====");
+
+    return new InstantCommand(() -> {
+      if (shouldResetOdometry) {
+        PathPlannerState initialSample = (PathPlannerState) trajectory.sample(0);
+        Pose2d initialPose = new Pose2d(initialSample.poseMeters.getTranslation(), initialSample.holonomicRotation);
+        m_odometry.resetPosition(
+          Rotation2d.fromDegrees(m_pigey.getFusedHeading()),
+          new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
+          }, 
+          initialPose);
+      }
+      // m_xController.reset();
+      // m_yController.reset();
+      // m_thetaController.reset();
+    }).andThen(new PPSwerveControllerCommand(
+      trajectory,
+      () -> getPose(),
+      m_kinematics,
+      m_xController,
+      m_yController,
+      m_thetaController,
+      (SwerveModuleState[] moduleStates) -> {
+        drive(moduleStates);
+      },
+      this
+    )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
+    // .andThen(new FindPath(
+    //   trajectory,
+    //   () -> getPose(),
+    //   m_kinematics,
+    //   m_xController,
+    //   m_yController,
+    //   m_thetaController,
+    //   (SwerveModuleState[] moduleStates) -> {
+    //     drive(moduleStates);
+    //   },
+    //   this
+    // )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
+  }
+
+  public void setPID(double kp, double ki, double kd) {
+    m_frontLeft.setDrivePIDController(kp, ki, kd);
+    m_frontRight.setDrivePIDController(kp, ki, kd);
+    m_backLeft.setDrivePIDController(kp, ki, kd);
+    m_backRight.setDrivePIDController(kp, ki, kd);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -281,7 +421,7 @@ public class Drivetrain extends SubsystemBase {
  
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(0.01, .001, 0);
+  private PIDController m_drivePIDController = new PIDController(1.0, .001, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
@@ -335,6 +475,10 @@ public class Drivetrain extends SubsystemBase {
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+  }
+
+  public void setDrivePIDController(double kp, double ki, double kd) {
+    m_drivePIDController = new PIDController(kp, ki, kd);
   }
 
   /**

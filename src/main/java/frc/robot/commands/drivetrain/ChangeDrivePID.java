@@ -2,51 +2,53 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.elevator;
+package frc.robot.commands.drivetrain;
 
-// import static frc.robot.Constants.MotionMagicConstants.*;
+import frc.robot.subsystems.Drivetrain;
+// import edu.wpi.first.math.MathUtil;
+// import edu.wpi.first.math.filter.SlewRateLimiter;
+// import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
 
 /** An example command that uses an example subsystem. */
-public class RunElevator extends CommandBase {
+public class ChangeDrivePID extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Elevator m_elevator;
-  private final double m_speed;
-
+  private final Drivetrain m_drivetrain;
+  private double m_kp;
+  private double m_ki;
+  private double m_kd;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RunElevator(Elevator subsystem, double speed) {
-    m_elevator = subsystem;
-    m_speed = speed;
-    
+  public ChangeDrivePID(Drivetrain subsystem, double kp, double ki, double kd) {
+    m_drivetrain = subsystem;
+    m_kp = kp;
+    m_ki = ki;
+    m_kd = kd;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_elevator);
+    addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_drivetrain.setPID(m_kp, m_ki, m_kd);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_elevator.runElevator(m_speed);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

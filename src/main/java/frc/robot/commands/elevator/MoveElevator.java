@@ -4,7 +4,7 @@
 
 package frc.robot.commands.elevator;
 
-import static frc.robot.Constants.MotionMagicConstants.*;
+// import static frc.robot.Constants.MotionMagicConstants.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
 
@@ -35,11 +35,11 @@ public class MoveElevator extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double targetPos = m_targetPos;
-    if (m_elevator.targetPos == targetPos) {
+    // double targetPos = m_targetPos;
+    // if (m_elevator.targetPos == targetPos) {
       //targetPos = elevatorStartPos;
-    }
-    m_elevator.motionMagicElevator(targetPos);
+    // }
+    m_elevator.motionMagicElevator(m_targetPos);
   }
 
   // Called once the command ends or is interrupted.

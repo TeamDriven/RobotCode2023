@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  public CANSparkMax intakeHigh = new CANSparkMax(21, MotorType.kBrushless);
+  public CANSparkMax intakeHigh = new CANSparkMax(0, MotorType.kBrushless); // should be 21
   public CANSparkMax intakeLow = new CANSparkMax(23, MotorType.kBrushless);
   public DoubleSolenoid intakeCylinder = new DoubleSolenoid(30, PneumaticsModuleType.REVPH, 1, 0);
   

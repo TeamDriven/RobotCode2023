@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.MotionMagicConstants.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -13,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -22,6 +24,7 @@ import frc.robot.Constants.MotionMagicConstants;
 
 public class Claw extends SubsystemBase {
   public TalonFX clawMotor = new TalonFX(11);
+  public DigitalInput testInput = new DigitalInput(4);
   public double m_targetPos;
 
   public Claw() {
@@ -29,6 +32,10 @@ public class Claw extends SubsystemBase {
     motionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 1.0, 0.01, 0.0, 1.0, 10000, 8000);
     clawMotor.setNeutralMode(NeutralMode.Brake);
     // clawMotor.setInverted(true);
+  }
+
+  public void zeroPosition() {
+    clawMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
   }
 
   public void setClawPosition(double position) {
@@ -48,8 +55,12 @@ public class Claw extends SubsystemBase {
     clawMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
-  public void printPosition() {
-    System.out.println("Claw Position: " + clawMotor.getSelectedSensorPosition());
+  public void printInput() {
+    System.out.println(!testInput.get());
+  }
+
+  public double getVelocity() {
+    return clawMotor.getSelectedSensorVelocity();
   }
 
   public double getCurrentPosition() {

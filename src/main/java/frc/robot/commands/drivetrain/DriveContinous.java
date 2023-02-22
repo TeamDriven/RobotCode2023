@@ -16,7 +16,7 @@ public class DriveContinous extends CommandBase {
   private final Drivetrain m_drivetrain;
   private final XboxController m_controller;
 
-  private final double m_deadZone = 0.07;
+  private final double m_deadZone = 0.1;
 
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);

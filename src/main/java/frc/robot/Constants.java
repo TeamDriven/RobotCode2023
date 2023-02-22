@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.Elevator;
+// import frc.robot.subsystems.Elevator;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -16,11 +16,12 @@ import frc.robot.subsystems.Elevator;
  */
 public final class Constants {
 
-  public static final double kIntakeSpeed = 0.7;
+  public static final double kIntakeSpeed = 0.85;
+  
 
   public final static class DrivetrainConstants {
     public static final double kPXController = 2.0; // TODO tune this
-    public static final double kPYController = 0;//kPXController;
+    public static final double kPYController = 2.0;//kPXController;
     public static final double kPThetaController = 6; // TODO tune this
 
     public static final int FLDriveMotorChannel = 3;
@@ -44,6 +45,8 @@ public final class Constants {
     public static final double BROffset = -0.4638748593756933;
 
     public static final int pigeyDeviceNumber = 11;
+
+    public static final double rollTarget = 11;
   }
 
   public final static class MotionMagicConstants {
@@ -54,11 +57,10 @@ public final class Constants {
 
     public static double elevatorStartPos = 0;
     public static double elevatorTicksPerInches = 370;
-    // public static double elevatorTicksPerInches = 281.9;
     public static double elevator20Inches = 20*elevatorTicksPerInches;
     public static double elevatorUpPos = elevatorTicksPerInches * 55;
     public static double elevatorMidPos = elevatorTicksPerInches * 35;
-    public static double elevatorPickUpPos = elevatorTicksPerInches * 17;
+    public static double elevatorPickUpPos = elevatorTicksPerInches * 17; //17
 
     public static double armTicksPerDegree = -318.5778;
     public static double armStartPos = 0;

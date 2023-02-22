@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.claw.SetClawPnuematics;
 import frc.robot.commands.claw.SetClawPosition;
-import frc.robot.commands.claw.ToggleGrip;
+// import frc.robot.commands.claw.ToggleGrip;
 import frc.robot.commands.elevator.MoveElevator;
 import frc.robot.commands.intake.SetIntakePosition;
 import frc.robot.commands.intake.SpinIntake;
@@ -17,7 +17,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ClawPneumatics;
-import static frc.robot.Constants.*;
+// import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -36,7 +36,7 @@ public class AutoPlaceConeHigh extends SequentialCommandGroup {
                 new SetIntakePosition(intake, true),
                 new SpinIntake(intake, -0.5)
             ),
-      new SetClawPosition(claw, armStartPos),
+      new SetClawPosition(claw, armPlacePos),
       new MoveElevator(elevator, elevatorUpPos),
       new WaitCommand(0.5),
       new SetIntakePosition(intake, false)

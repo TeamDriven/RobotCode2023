@@ -4,38 +4,26 @@
 
 package frc.robot.commands.claw;
 
-import static frc.robot.Constants.MotionMagicConstants.*;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Claw;
 
-public class SetClawPositionWaitForFinish extends CommandBase {
+public class detectSensor extends CommandBase {
   Claw m_claw; 
-  double m_targetPos;
-
-  double tolerance = 250;
-  double pauseTime = 0.2;
-
-  double startingTime;
   /** Creates a new setClawPosition. */
-  public SetClawPositionWaitForFinish(Claw claw, double targetPos) {
+  public detectSensor(Claw claw) {
     m_claw = claw;
-    m_targetPos = targetPos; 
     addRequirements(claw);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    startingTime = Timer.getFPGATimestamp();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_claw.setClawPosition(m_targetPos);
+    m_claw.printInput();
   }
 
   // Called once the command ends or is interrupted.
@@ -45,10 +33,6 @@ public class SetClawPositionWaitForFinish extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(m_claw.getVelocity());
-    if (Math.abs(m_claw.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
-      return true;
-    }
     return false;
   }
 }
