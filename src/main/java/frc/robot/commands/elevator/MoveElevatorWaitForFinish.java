@@ -4,18 +4,21 @@
 
 package frc.robot.commands.elevator;
 
+import edu.wpi.first.wpilibj.Timer;
 // import static frc.robot.Constants.MotionMagicConstants.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
 
 /** An example command that uses an example subsystem. */
-public class RunElevator extends CommandBase {
+public class MoveElevatorWaitForFinish extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Elevator m_elevator;
-  private final double m_speed;
+  private final double m_targetPos;
 
-  double tolerance = 250;
+  double tolerance = 100;
   double pauseTime = 0.2;
+
+  double startingTime;
 
 
   /**
@@ -23,9 +26,9 @@ public class RunElevator extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RunElevator(Elevator subsystem, double speed) {
+  public MoveElevatorWaitForFinish(Elevator subsystem, double targetPos) {
     m_elevator = subsystem;
-    m_speed = speed;
+    m_targetPos = targetPos;
     
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_elevator);
@@ -33,12 +36,18 @@ public class RunElevator extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    startingTime = Timer.getFPGATimestamp();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_elevator.runElevator(m_speed);
+    // double targetPos = m_targetPos;
+    // if (m_elevator.targetPos == targetPos) {
+      //targetPos = elevatorStartPos;
+    // }
+    m_elevator.motionMagicElevator(m_targetPos);
   }
 
   // Called once the command ends or is interrupted.
@@ -50,6 +59,10 @@ public class RunElevator extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println(m_elevator.getVelocity());
+    if (Math.abs(m_elevator.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
+      return true;
+    }
     return false;
   }
 }

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.motionMagicLibrary;
+import frc.robot.MotionMagicLibrary;
 
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -22,7 +22,7 @@ public class motionMagicMotor extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public motionMagicMotor() {
-    motionMagicLibrary.setMotionMagicMotorParameters(_talon);
+    MotionMagicLibrary.setMotionMagicMotorParameters(_talon);
   }
  
   /**

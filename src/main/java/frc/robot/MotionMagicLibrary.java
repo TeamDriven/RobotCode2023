@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import static frc.robot.Constants.MotionMagicConstants.*;
 
-public class motionMagicLibrary {
+public class MotionMagicLibrary {
 	
     public static void setMotionMagicMotorParameters(WPI_TalonSRX _talon){
     	final double kP = 0.8;
@@ -42,8 +42,8 @@ public class motionMagicLibrary {
 		/* Set the peak and nominal outputs */
 		_talon.configNominalOutputForward(0, kTimeoutMs);
 		_talon.configNominalOutputReverse(0, kTimeoutMs);
-		_talon.configPeakOutputForward(0.3, kTimeoutMs);
-		_talon.configPeakOutputReverse(-0.3, kTimeoutMs);
+		_talon.configPeakOutputForward(1.0, kTimeoutMs);
+		_talon.configPeakOutputReverse(-1.0, kTimeoutMs);
 
     
     
@@ -91,8 +91,8 @@ public class motionMagicLibrary {
 		/* Set the peak and nominal outputs */
 		_talon.configNominalOutputForward(0, kTimeoutMs);
 		_talon.configNominalOutputReverse(0, kTimeoutMs);
-		_talon.configPeakOutputForward(0.3, kTimeoutMs);
-		_talon.configPeakOutputReverse(-0.3, kTimeoutMs);
+		_talon.configPeakOutputForward(1.0, kTimeoutMs);
+		_talon.configPeakOutputReverse(-1.0, kTimeoutMs);
 
     
     
@@ -144,8 +144,8 @@ public class motionMagicLibrary {
 		/* Set the peak and nominal outputs */
 		_talon.configNominalOutputForward(0, kTimeoutMs);
 		_talon.configNominalOutputReverse(0, kTimeoutMs);
-		_talon.configPeakOutputForward(0.3, kTimeoutMs);
-		_talon.configPeakOutputReverse(-0.3, kTimeoutMs);
+		_talon.configPeakOutputForward(1.0, kTimeoutMs);
+		_talon.configPeakOutputReverse(-1.0, kTimeoutMs);
 
     
     
@@ -193,8 +193,8 @@ public class motionMagicLibrary {
 		/* Set the peak and nominal outputs */
 		_talon.configNominalOutputForward(0, kTimeoutMs);
 		_talon.configNominalOutputReverse(0, kTimeoutMs);
-		_talon.configPeakOutputForward(0.3, kTimeoutMs);
-		_talon.configPeakOutputReverse(-0.3, kTimeoutMs);
+		_talon.configPeakOutputForward(1.0, kTimeoutMs);
+		_talon.configPeakOutputReverse(-1.0, kTimeoutMs);
 
     
     

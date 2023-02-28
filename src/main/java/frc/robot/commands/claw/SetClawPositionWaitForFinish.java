@@ -45,7 +45,7 @@ public class SetClawPositionWaitForFinish extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(m_claw.getVelocity());
+    // System.out.println(m_claw.getVelocity());
     if (Math.abs(m_claw.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
       return true;
     }

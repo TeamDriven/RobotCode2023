@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.motionMagicLibrary;
+import frc.robot.MotionMagicLibrary;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,10 +17,10 @@ public class Elevator extends SubsystemBase {
   public double targetPos = 0;
   /** Creates a new ExampleSubsystem. */
   public Elevator() {
-    // elevatorMotor1.configFactoryDefault();
+    // elevatorMotor1.configFactoryDefault(); //phoenix tuner kept reseting( max speeds)
     // elevatorMotor2.configFactoryDefault();
 
-    motionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1, 0.8, 0.0, 0.0, 0.2, 8000, 8000);
+    MotionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1, 0.8, 0.0, 0.0, 0.2, 8000, 8000);
     elevatorMotor1.setInverted(false);
     elevatorMotor2.setInverted(true);
   }
@@ -39,6 +39,10 @@ public class Elevator extends SubsystemBase {
 
   public void printPosition() {
     System.out.println("Elevator Position: " + elevatorMotor1.getSelectedSensorPosition());
+  }
+
+  public double getVelocity() {
+    return elevatorMotor1.getSelectedSensorVelocity();
   }
 
   @Override

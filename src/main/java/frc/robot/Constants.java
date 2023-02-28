@@ -16,12 +16,12 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static final double kIntakeSpeed = 0.85;
+  public static final double kIntakeSpeed = 1;
   
 
   public final static class DrivetrainConstants {
-    public static final double kPXController = 2.0; // TODO tune this
-    public static final double kPYController = 2.0;//kPXController;
+    public static final double kPXController = 0.2; // TODO tune this
+    public static final double kPYController = 0.2;//kPXController;
     public static final double kPThetaController = 6; // TODO tune this
 
     public static final int FLDriveMotorChannel = 3;
@@ -58,14 +58,19 @@ public final class Constants {
     public static double elevatorStartPos = 0;
     public static double elevatorTicksPerInches = 370;
     public static double elevator20Inches = 20*elevatorTicksPerInches;
-    public static double elevatorUpPos = elevatorTicksPerInches * 55;
+    public static double elevatorUpPos = elevatorTicksPerInches * 44;
+    public static double elevatorUpPosAuto = elevatorTicksPerInches * 46;
     public static double elevatorMidPos = elevatorTicksPerInches * 35;
-    public static double elevatorPickUpPos = elevatorTicksPerInches * 17; //17
+    public static double elevatorPickUpPos = elevatorTicksPerInches * 7;
 
-    public static double armTicksPerDegree = -318.5778;
+    // public static double armTicksPerDegree = -318.5778;
+    //public static double armTicksPerDegree = -1137.778; // practice bot
+    public static double armTicksPerDegree = -1820.44444;
     public static double armStartPos = 0;
-    public static double armDownPos = armTicksPerDegree * 135;
-    public static double armPlacePos = armTicksPerDegree * 30;
+    public static double armUpPos = armTicksPerDegree * 13;
+    public static double armDownPos = armTicksPerDegree * 60;
+    public static double armPlacePos = armTicksPerDegree * 48;
+    public static double armPlacePosAuto = armTicksPerDegree * 45;
     public static double armMaxPos = armTicksPerDegree * 180;
     public static double armBottom = armTicksPerDegree * 100;
 

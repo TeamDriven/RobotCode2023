@@ -4,20 +4,20 @@
 
 package frc.robot.commands.intake;
 
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.OldIntake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class StopIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Intake m_Intake;
+  private final OldIntake m_Intake;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public StopIntake(Intake subsystem) {
+  public StopIntake(OldIntake subsystem) {
     m_Intake = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

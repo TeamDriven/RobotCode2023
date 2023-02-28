@@ -14,11 +14,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 // import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivetrain;
 
-public final class TestPath extends CommandBase {
-  private Drivetrain m_drivetrain;
+public final class TestPath extends SequentialCommandGroup {
 
   /** Example static factory for an autonomous command. */
   // public static CommandBase exampleAuto(ExampleSubsystem subsystem) {
@@ -26,36 +27,11 @@ public final class TestPath extends CommandBase {
   // }
 
   public TestPath(final Drivetrain drivetrain) {
-    m_drivetrain = drivetrain;
-
-    final PathPlannerTrajectory trajectory = PathPlanner.loadPath("test", 3, 3);
-    HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put("marker1", new PrintCommand("reached!!!!"));
-    
-    FollowPathWithEvents command = new FollowPathWithEvents(
-      drivetrain.followPathCommand(true, trajectory),
-      trajectory.getMarkers(),
-      eventMap
+    addCommands(
+      drivetrain.followPathCommand(true, "test"),
+      new WaitCommand(3),
+      drivetrain.followPathCommand(true, "test")
     );
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_drivetrain.drive(0, 0, 0, true);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
 }

@@ -7,12 +7,12 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 // import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.OldIntake;
 
 public class RunIntake extends SequentialCommandGroup {
     
 
-    public RunIntake(Intake intake, double speed) {
+    public RunIntake(OldIntake intake, double speed) {
 
         addCommands(
             // new PrintCommand("RunIntake"),

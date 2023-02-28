@@ -5,6 +5,9 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.MotionMagicConstants.*;
+
+import java.util.ResourceBundle.Control;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -19,17 +22,17 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.motionMagicLibrary;
+import frc.robot.MotionMagicLibrary;
 import frc.robot.Constants.MotionMagicConstants;
 
 public class Claw extends SubsystemBase {
   public TalonFX clawMotor = new TalonFX(11);
-  public DigitalInput testInput = new DigitalInput(4);
+  // public DigitalInput testInput = new DigitalInput(4);
   public double m_targetPos;
 
   public Claw() {
     clawMotor.configFactoryDefault();
-    motionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 1.0, 0.01, 0.0, 1.0, 10000, 8000);
+    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, .6, 0.01, 0.0, 1.0, 14000, 14000);
     clawMotor.setNeutralMode(NeutralMode.Brake);
     // clawMotor.setInverted(true);
   }
@@ -44,20 +47,24 @@ public class Claw extends SubsystemBase {
   }
 
   public void runMotorForward() {
-    clawMotor.set(ControlMode.PercentOutput, 0.8); //change line 44 also
+    clawMotor.set(ControlMode.PercentOutput, 0.5); //change line 44 also
   }
 
   public void runMotorBackward() {
-    clawMotor.set(ControlMode.PercentOutput, -0.8); //change line 40 also
+    clawMotor.set(ControlMode.PercentOutput, -0.5); //change line 40 also
   }
 
   public void stopMotor() {
     clawMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
-  public void printInput() {
-    System.out.println(!testInput.get());
+  public void changeMode(NeutralMode mode){
+    clawMotor.setNeutralMode(mode);
   }
+
+  // public void printInput() {
+  //   System.out.println(!testInput.get());
+  // }
 
   public double getVelocity() {
     return clawMotor.getSelectedSensorVelocity();

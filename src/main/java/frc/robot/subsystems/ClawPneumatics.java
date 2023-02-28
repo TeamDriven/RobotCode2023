@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.motionMagicLibrary;
+import frc.robot.MotionMagicLibrary;
 import frc.robot.Constants.MotionMagicConstants;
 
 public class ClawPneumatics extends SubsystemBase {

@@ -7,6 +7,13 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
 
+import java.util.HashMap;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
+
 // import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
 
 import frc.robot.commands.AutoPlaceConeHigh;
@@ -14,15 +21,14 @@ import frc.robot.commands.AutoResetElevatorAndClaw;
 import frc.robot.commands.RunTempIntake;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.DriveUp;
+import frc.robot.commands.auto.PlaceCone;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.balanceauto;
-import frc.robot.commands.claw.ResetClawPosition;
 import frc.robot.commands.claw.SetClawPosition;
 import frc.robot.commands.claw.SetClawPositionWaitForFinish;
-import frc.robot.commands.claw.ToggleGrip;
 import frc.robot.commands.claw.detectSensor;
 import frc.robot.commands.drivetrain.AutoBalance;
-import frc.robot.commands.drivetrain.ChangeDrivePID;
+import frc.robot.commands.drivetrain.ChangeMaxSpeed;
 import frc.robot.commands.drivetrain.DriveContinous;
 import frc.robot.commands.elevator.RunElevator;
 import frc.robot.commands.intake.RunIntake;
@@ -32,9 +38,9 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ClawPneumatics;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.OldIntake;
 import frc.robot.subsystems.LimeLight;
-import frc.robot.subsystems.tempIntake;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -61,15 +67,16 @@ public class RobotContainer {
   private final LimeLight m_limelight = new LimeLight();
   //private final motionMagicMotor m_motionMagicMotor = new motionMagicMotor();
   private final Elevator m_elevator = new Elevator();
+  private final OldIntake m_oldIntake = new OldIntake();
   private final Intake m_intake = new Intake();
-  private final tempIntake m_tempIntake = new tempIntake();
 
   private final DriveUp m_DriveUp = new DriveUp(m_drivetrain);
   private final DriveForward m_DriveForward = new DriveForward(m_drivetrain);
   private final TestPath m_TestPath = new TestPath(m_drivetrain);
   private final balanceauto m_balanceauto = new balanceauto(m_drivetrain);
+  private final PlaceCone m_PlaceCone = new PlaceCone(m_drivetrain, m_intake, m_elevator, m_claw);
 
-  private boolean isFast = true;
+  private boolean isFast = false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -84,6 +91,10 @@ public class RobotContainer {
     // m_drivetrain.drive(0, 0, 0, false);
   }
 
+  public void changeClawMode(NeutralMode mode) {
+    m_claw.changeMode(mode);
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -95,14 +106,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // new Trigger(this::getDpadUp)
-    //   .onTrue(new PrintCommand("Up"));
-    // new Trigger(this::getDpadRight)
-    //   .onTrue(new PrintCommand("Right"));
-    // new Trigger(this::getDpadDown)
-    //   .onTrue(new PrintCommand("Down"));
-    // new Trigger(this::getDpadLeft)
-    //   .onTrue(new PrintCommand("Left"));
+    //Limelight
 
     /*new Trigger(m_controller::getYButton).whileTrue(new ParallelRaceGroup(
       new read2DAprilTags(m_limelight), 
@@ -119,148 +123,71 @@ public class RobotContainer {
     // new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
     // new Trigger(m_controller::getXButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
 
-    // new Trigger(m_controller::getBButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, posOne));
-    // new Trigger(m_controller::getAButton).whileTrue(new setMotorToPosition(m_motionMagicMotor, posTwo));
-
-    //new Trigger(m_controller::getAButton).whileTrue(new moveElevator(m_elevator,elevator20Inches));
-    //new Trigger(m_controller::getBButton).whileTrue(new moveElevator(m_elevator,elevatorStartPos));
-
-    // new Trigger(m_controller::getAButton)
-    //     .onTrue(new SpinIntake(m_intake, -1.0))
-    //     .onFalse(new StopIntake(m_intake));
-    // new Trigger(m_controller::getBButton)
-    //     .onTrue(new SpinIntake(m_intake, 1.0))
-    //     .onFalse(new StopIntake(m_intake));
-    // new Trigger(m_controller::getRightBumper)
-    //   .onTrue(new SpinIntakeParallel(m_intake, -1.0))
-    //   .onFalse(new StopIntake(m_intake));
-    // new Trigger(m_controller::getLeftBumper)
-    //   .onTrue(new SpinIntakeParallel(m_intake, 1.0))
-    //   .onFalse(new StopIntake(m_intake));
-
     //Intake
     new Trigger(m_controller::getRightBumper)
-      // .whileTrue(new RunTempIntake(m_tempIntake, kIntakeSpeed));
-      .whileTrue(new RunIntake(m_intake, kIntakeSpeed))
-      // .whileTrue(new ParallelCommandGroup(
-      //   new SetIntakePosition(m_intake, true),
-      //   new SpinIntake(m_intake, kIntakeSpeed)
-      // ))
-      .onFalse(new ParallelDeadlineGroup(
-        new WaitCommand(2),
-        new SetIntakePosition(m_intake, false),
-        new SpinIntakeParallel(m_intake, kIntakeSpeed)
-      ));
+      .whileTrue(new RunTempIntake(m_intake, kIntakeSpeed));
 
-    new Trigger(m_controller::getYButton)
-      // .whileTrue(new RunTempIntake(m_tempIntake, -kIntakeSpeed));
-      // .whileTrue(new detectSensor(m_claw));
-      .whileTrue(new SpinIntakeParallel(m_intake, -kIntakeSpeed));
-      // .whileTrue(new GetYaw(m_drivetrain));
-
-
+    new Trigger(m_controller::getLeftBumper)
+      .whileTrue(new RunTempIntake(m_intake, -kIntakeSpeed));
 
     //Elevator
     new Trigger(this::getDpadRight)
-      // .whileTrue(new PrintCommand("top"))
-      // .whileTrue(new InstantCommand(m_elevator::runElevator));
-      // .whileTrue(new MoveElevator(m_elevator, elevatorUpPos));
-      // .whileTrue(new InstantCommand(m_elevator::printPosition))
-      .onTrue(new AutoPlaceConeHigh(m_intake, m_elevator, m_claw, m_ClawPneumatics));
+      .onTrue(new AutoPlaceConeHigh(m_intake, m_elevator, m_claw));
 
     new Trigger(this::getDpadLeft)
-      .onTrue(new AutoResetElevatorAndClaw(m_elevator, m_claw, m_ClawPneumatics));
-    //   .whileTrue(new PrintCommand("mid"))
-      // .whileTrue(new InstantCommand(m_elevator::printPosition))
-      // .whileTrue(new MoveElevator(m_elevator, elevatorStartPos));
+      .onTrue(new AutoResetElevatorAndClaw(m_elevator, m_claw));
 
-    new Trigger(this::isFast)
-      .and(m_controller::getStartButton)
-        .onTrue(new PrintCommand("isFast"))
-        .onTrue(new ChangeDrivePID(m_drivetrain, 0.01, 0.001, 0))
-        .onFalse(new InstantCommand(this::changeSpeed));
-      // .onFalse(new ChangeDrivePID(m_drivetrain, 1.0, 0.001, 0));
-    //   .onTrue(new AutoPlaceConeHigh(m_intake, m_elevator, m_claw, m_ClawPneumatics));
+    new Trigger(this::getRightTrigger)
+      .whileTrue(new ChangeMaxSpeed(m_drivetrain, 10))
+      .onFalse(new ChangeMaxSpeed(m_drivetrain, 3));
+
+
+    // new Trigger(this::isFast)
+    //   .and(m_controller::getStartButton)
+    //     // .onTrue(new PrintCommand("isFast"))
+    //     // .onTrue(new ChangeMaxSpeed(m_drivetrain, 3))
+    //     // .onFalse(new InstantCommand(this::changeSpeed));
+    //   // .onFalse(new ChangeDrivePID(m_drivetrain, 1.0, 0.001, 0));
+    // //   .onTrue(new AutoPlaceConeHigh(m_intake, m_elevator, m_claw, m_ClawPneumatics));
     
-    new Trigger(this::isSlow)
-      .and(m_controller::getStartButton)
-        .onTrue(new PrintCommand("isSlow"))
-        .onTrue(new ChangeDrivePID(m_drivetrain, 1.0, 0.001, 0))
-        .onFalse(new InstantCommand(this::changeSpeed));
+    // new Trigger(this::isSlow)
+    //   .and(m_controller::getStartButton)
+    //     // .onTrue(new PrintCommand("isSlow"))
+    //     // .onTrue(new ChangeMaxSpeed(m_drivetrain, 10))
+    //     // .onFalse(new InstantCommand(this::changeSpeed));
 
     new Trigger(m_controller::getBackButton)
       // .whileTrue(new PrintCommand("Box wheels"))
       // .whileTrue(new InstantCommand(m_drivetrain::boxWheels));
       .whileTrue(new AutoBalance(m_drivetrain));
 
-      //.onTrue(new AutoResetElevatorAndClaw(m_elevator, m_claw, m_ClawPneumatics));
-      // .whileTrue(new AutoResetElevatorAndClaw(m_elevator, m_claw, m_ClawPneumatics));
-      // .whileTrue(new SetClawPosition(m_claw, armDownPos));
-
-     //new Trigger(m_controller::getAButton)
-    //   .onTrue(new PrintCommand("start"))
-    //   .onTrue(new MoveElevator(m_elevator, elevatorStartPos));
-
-    new Trigger(this::getDpadUp)
+    new Trigger(m_controller::getXButton)
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
-      .whileTrue(new RunElevator(m_elevator, 1.0)) // change
+      .whileTrue(new RunElevator(m_elevator, 0.5)) // change
       .onFalse(new RunElevator(m_elevator, 0.0));
-      // .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches * 0.4));
     
-    new Trigger(this::getDpadDown)
+    new Trigger(m_controller::getBButton)
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
-      .whileTrue(new RunElevator(m_elevator, -1.0)) // change
+      .whileTrue(new RunElevator(m_elevator, -.5)) // change
       .onFalse(new RunElevator(m_elevator, 0.0));
-      // .whileTrue(new MoveElevatorManual(m_elevator, elevatorTicksPerInches * -0.4));
 
-
-    //Claw
-    new Trigger(this::getNotLeftBumper)
-      .and(new Trigger(m_controller::getXButton))
+      //Test Intake
+      new Trigger(this::getDpadUp)
         // .whileTrue(new InstantCommand(m_claw::printPosition))
         .whileTrue(new InstantCommand(m_claw::runMotorForward))
         .onFalse(new InstantCommand(m_claw::stopMotor));
-        // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * 0.8));
-        // .whileTrue(new SetClawPosition(m_claw, armDownPos));
 
-    new Trigger(this::getNotLeftBumper)
-      .and(new Trigger(m_controller::getBButton))
-        // .whileTrue(new InstantCommand(m_claw::printPosition))
-        .whileTrue(new InstantCommand(m_claw::runMotorBackward))
-        .onFalse(new InstantCommand(m_claw::stopMotor));
-        // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * -0.8));
-        // .whileTrue(new SetClawPosition(m_claw, armPlacePos));
+      
+        new Trigger(this::getDpadDown)
+          // .whileTrue(new InstantCommand(m_claw::printPosition))
+          .whileTrue(new InstantCommand(m_claw::runMotorBackward))
+          .onFalse(new InstantCommand(m_claw::stopMotor));
 
-    new Trigger(this::getNotLeftBumper)
-      .and(new Trigger(m_controller::getAButton))
-        .toggleOnTrue(new ToggleGrip(m_ClawPneumatics));
-        // .whileTrue(new InstantCommand(m_claw::closeClaw, m_claw))
-        // .whileFalse(new InstantCommand(m_claw::openClaw, m_claw));
-
-    new Trigger(m_controller::getLeftBumper)
-      .and(new Trigger(m_controller::getXButton))
-        // .onTrue(new SequentialCommandGroup(
-        //   new SetClawPositionWaitForFinish(m_claw, armPlacePos),
-        //   new PrintCommand("done")
-        // ));
-        .whileTrue(new SetClawPosition(m_claw, armPlacePos));
-        // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * 0.8));
-
-    new Trigger(m_controller::getLeftBumper)
-        .and(new Trigger(m_controller::getBButton))
-          // .onTrue(new SequentialCommandGroup(
-          //   new SetClawPositionWaitForFinish(m_claw, armDownPos),
-          //   new PrintCommand("done")
-          // ));
-          .whileTrue(new SetClawPosition(m_claw, armDownPos));
-          // .whileTrue(new MoveClaw(m_claw, armTicksPerDegree * -0.8));
-
-    new Trigger(m_controller::getLeftBumper)
-      .and(new Trigger(m_controller::getAButton))
-        .whileTrue(new ResetClawPosition(m_claw));
-  }
+  
+ 
+}
 
   public void changeSpeed() {
     isFast = !isFast;
@@ -318,14 +245,39 @@ public class RobotContainer {
     }
   }
 
+  public boolean getRightTrigger() {
+    if (m_controller.getRightTriggerAxis() > 0.5) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean getLeftTrigger() {
+    if (m_controller.getLeftTriggerAxis() > 0.5) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    // final PathPlannerTrajectory trajectory = PathPlanner.loadPath("test", 3, 3);
+    // HashMap<String, Command> eventMap = new HashMap<>();
+    // eventMap.put("Mark1", new PrintCommand("Mark 1"));
+    
+    // return new FollowPathWithEvents(
+    //   m_drivetrain.followPathCommand(true, trajectory),
+    //   trajectory.getMarkers(),
+    //   eventMap
+    // );
     // An example command will be run in autonomous
-    return m_balanceauto;
+    return m_PlaceCone;
     // return Autos.exampleAuto();
   }
 }

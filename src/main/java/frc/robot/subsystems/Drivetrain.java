@@ -39,7 +39,7 @@ import static frc.robot.Constants.DrivetrainConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   
-  public static final double kMaxSpeed = 3; // 3 meters per second
+  public double kMaxSpeed = 3; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI*4; // 1/2 rotation per second
   private static final double kMaxAngularAcceleration = 8 * Math.PI; // radians per second squared
   
@@ -57,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.694360665467085);
   private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.1582267005178846);
 
-  private final static PigeonIMU m_pigey = new PigeonIMU(11);
+  private final static PigeonIMU m_pigey = new PigeonIMU(12);
 
   private final static double startingPitch = m_pigey.getPitch();
   private final static double startingRoll = m_pigey.getRoll();
@@ -186,7 +186,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(SwerveModuleState[] swerveModuleStates) {
-    System.out.println(m_odometry.getPoseMeters());
+    // System.out.println(m_odometry.getPoseMeters());
 
     // for (SwerveModuleState s : swerveModuleStates) {
     //   System.out.println(s);
@@ -383,11 +383,8 @@ public class Drivetrain extends SubsystemBase {
     // )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
   }
 
-  public void setPID(double kp, double ki, double kd) {
-    m_frontLeft.setDrivePIDController(kp, ki, kd);
-    m_frontRight.setDrivePIDController(kp, ki, kd);
-    m_backLeft.setDrivePIDController(kp, ki, kd);
-    m_backRight.setDrivePIDController(kp, ki, kd);
+  public void setMaxSpeed(double speed) {
+    kMaxSpeed = speed;
   }
 
   @Override
@@ -421,7 +418,7 @@ public class Drivetrain extends SubsystemBase {
  
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private PIDController m_drivePIDController = new PIDController(1.0, .001, 0);
+  private PIDController m_drivePIDController = new PIDController(0.15, .001, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
@@ -477,9 +474,9 @@ public class Drivetrain extends SubsystemBase {
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
-  public void setDrivePIDController(double kp, double ki, double kd) {
-    m_drivePIDController = new PIDController(kp, ki, kd);
-  }
+  // public void setDrivePIDController(double kp, double ki, double kd) {
+  //   m_drivePIDController = new PIDController(kp, ki, kd);
+  // }
 
   /**
    * Returns the current state of the module.
