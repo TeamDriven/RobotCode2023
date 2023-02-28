@@ -12,12 +12,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  public PWMVictorSPX intakeRollers = new PWMVictorSPX(9);
+  // public VictorSPX intakeRollers = new VictorSPX(16);
+  public VictorSP intakeRollers = new VictorSP(7);
   
   /** Creates a new ExampleSubsystem. */
   public Intake() {
@@ -25,6 +27,7 @@ public class Intake extends SubsystemBase {
 
   public void runIntake(double speed) {
     // System.out.println("SpinWheels");
+    // intakeRollers.set(VictorSPXControlMode.PercentOutput, speed);
     intakeRollers.set(speed);
   }
 

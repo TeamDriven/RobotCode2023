@@ -68,8 +68,8 @@ public final class Constants {
     public static double armTicksPerDegree = -1820.44444;
     public static double armStartPos = 0;
     public static double armUpPos = armTicksPerDegree * 13;
-    public static double armDownPos = armTicksPerDegree * 60;
-    public static double armPlacePos = armTicksPerDegree * 48;
+    public static double armDownPos = armTicksPerDegree * 42.5;
+    public static double armPlacePos = armTicksPerDegree * 15;
     public static double armPlacePosAuto = armTicksPerDegree * 45;
     public static double armMaxPos = armTicksPerDegree * 180;
     public static double armBottom = armTicksPerDegree * 100;

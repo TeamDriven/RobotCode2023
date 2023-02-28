@@ -14,6 +14,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
+import frc.robot.commands.AutoMoveToMobilityPosition;
+
 // import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
 
 import frc.robot.commands.AutoPlaceConeHigh;
@@ -140,6 +142,9 @@ public class RobotContainer {
     new Trigger(this::getRightTrigger)
       .whileTrue(new ChangeMaxSpeed(m_drivetrain, 10))
       .onFalse(new ChangeMaxSpeed(m_drivetrain, 3));
+
+    new Trigger(this::getLeftTrigger)
+      .onTrue(new AutoMoveToMobilityPosition(m_elevator, m_claw));
 
 
     // new Trigger(this::isFast)
