@@ -4,6 +4,8 @@
 
 package frc.robot.commands.auto;
 
+import static frc.robot.Constants.MotionMagicConstants.*;
+
 import java.util.HashMap;
 
 import com.pathplanner.lib.PathPlanner;
@@ -17,9 +19,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.AutoPlaceConeHigh;
-import frc.robot.commands.AutoPlaceConeHighAuto;
-import frc.robot.commands.AutoResetElevatorAndClaw;
+import frc.robot.commands.AutoMoveElevatorAndClaw;
 import frc.robot.commands.RunTempIntake;
 import frc.robot.subsystems.Claw;
 // import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -36,12 +36,12 @@ public final class PlaceCone extends SequentialCommandGroup {
 
   public PlaceCone(Drivetrain drivetrain, Intake intake, Elevator elevator, Claw claw) {
     addCommands(
-      new AutoPlaceConeHighAuto(intake, elevator, claw),
+      new AutoMoveElevatorAndClaw(elevator, claw, elevatorUpPosAuto, armPlacePosAuto),
       new ParallelDeadlineGroup(
         new WaitCommand(1),
         new RunTempIntake(intake, -.5)
       ),
-      new AutoResetElevatorAndClaw(elevator, claw),
+      new AutoMoveElevatorAndClaw(elevator, claw, elevatorTicksPerInches, armStartPos),
       drivetrain.followPathCommand(true, "Taxi")
     );
   }

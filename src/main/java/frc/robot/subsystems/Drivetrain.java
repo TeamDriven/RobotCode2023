@@ -39,7 +39,9 @@ import static frc.robot.Constants.DrivetrainConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   
-  public double kMaxSpeed = 3; // 3 meters per second
+  public double maxSpeed = 3; // 3 meters per second
+  public double speedMultiplier;
+
   public static final double kMaxAngularSpeed = Math.PI*4; // 1/2 rotation per second
   private static final double kMaxAngularAcceleration = 8 * Math.PI; // radians per second squared
   
@@ -52,10 +54,10 @@ public class Drivetrain extends SubsystemBase {
   // private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1546138688759355);
   // private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.775713308823037);
   // private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.207007467506754);
-  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 7.258332235480612);
-  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1099677520818219);
-  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.694360665467085);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.1582267005178846);
+  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 5.1876707666212-Math.PI);
+  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1392184936921343);
+  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 2.7331350973097748-Math.PI);
+  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 2.60001528891379);
 
   private final static PigeonIMU m_pigey = new PigeonIMU(12);
 
@@ -161,9 +163,9 @@ public class Drivetrain extends SubsystemBase {
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,  Rotation2d.fromDegrees(m_pigey.getFusedHeading()))
-                : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed * speedMultiplier, ySpeed * speedMultiplier, rot * speedMultiplier,  Rotation2d.fromDegrees(m_pigey.getFusedHeading()))
+                : new ChassisSpeeds(xSpeed * speedMultiplier, ySpeed * speedMultiplier, rot * speedMultiplier));
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
     this.swerveModuleStates = swerveModuleStates;
 
     // System.out.println(m_odometry.getPoseMeters());
@@ -236,7 +238,7 @@ public class Drivetrain extends SubsystemBase {
      m_frontRight.printencoder("fr");
   }
 
-  public static void resetPidgey(){
+  public void resetPidgey(){
     m_pigey.setFusedHeading(0);
   }
   
@@ -384,7 +386,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setMaxSpeed(double speed) {
-    kMaxSpeed = speed;
+    maxSpeed = speed;
   }
 
   @Override
@@ -418,7 +420,7 @@ public class Drivetrain extends SubsystemBase {
  
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private PIDController m_drivePIDController = new PIDController(0.15, .001, 0);
+  private PIDController m_drivePIDController = new PIDController(0.01, 0, 0); // ki was .001
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =

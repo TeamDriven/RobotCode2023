@@ -15,8 +15,8 @@ public class MoveElevatorWaitForFinish extends CommandBase {
   private final Elevator m_elevator;
   private final double m_targetPos;
 
-  double tolerance = 100;
-  double pauseTime = 0.2;
+  double tolerance = 50;
+  double pauseTime = 0.3;
 
   double startingTime;
 

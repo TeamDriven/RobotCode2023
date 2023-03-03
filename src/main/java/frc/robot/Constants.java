@@ -58,18 +58,30 @@ public final class Constants {
     public static double elevatorStartPos = 0;
     public static double elevatorTicksPerInches = 370;
     public static double elevator20Inches = 20*elevatorTicksPerInches;
-    public static double elevatorUpPos = elevatorTicksPerInches * 44;
     public static double elevatorUpPosAuto = elevatorTicksPerInches * 46;
-    public static double elevatorMidPos = elevatorTicksPerInches * 35;
-    public static double elevatorPickUpPos = elevatorTicksPerInches * 7;
+
+    public static double elevatorConeUpPos = elevatorTicksPerInches * 54;
+    public static double elevatorConeMidPos = elevatorTicksPerInches * 32;
+    public static double elevatorPickUpConePos = elevatorTicksPerInches * 11;
+
+    public static double elevatorCubeUpPos = elevatorTicksPerInches * 52;
+    public static double elevatorCubeMidPos = elevatorTicksPerInches * 30;
+    public static double elevatorPickUpCubePos = elevatorTicksPerInches * 11;
 
     // public static double armTicksPerDegree = -318.5778;
-    //public static double armTicksPerDegree = -1137.778; // practice bot
-    public static double armTicksPerDegree = -1820.44444;
+    public static double armTicksPerDegree = 1137.778; // practice bot
+    // public static double armTicksPerDegree = 1820.44444;
     public static double armStartPos = 0;
     public static double armUpPos = armTicksPerDegree * 13;
-    public static double armDownPos = armTicksPerDegree * 42.5;
-    public static double armPlacePos = armTicksPerDegree * 15;
+
+    public static double armConePickupPos = armTicksPerDegree * 74;
+    public static double armHighPlaceConePos = armTicksPerDegree * 35;
+    public static double armMidPlaceConePos = armTicksPerDegree * 30;
+
+    public static double armCubePickupPos = armTicksPerDegree * 69;
+    public static double armHighPlaceCubePos = armTicksPerDegree * 15;
+    public static double armMidPlaceCubePos = armTicksPerDegree * 20;
+
     public static double armPlacePosAuto = armTicksPerDegree * 45;
     public static double armMaxPos = armTicksPerDegree * 180;
     public static double armBottom = armTicksPerDegree * 100;

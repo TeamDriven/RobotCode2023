@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
+import static frc.robot.Controls.*;
 
 import java.util.HashMap;
 
@@ -14,28 +15,30 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
-import frc.robot.commands.AutoMoveToMobilityPosition;
+import frc.robot.commands.AutoMoveElevatorAndClaw;
 
 // import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
 
-import frc.robot.commands.AutoPlaceConeHigh;
-import frc.robot.commands.AutoResetElevatorAndClaw;
 import frc.robot.commands.RunTempIntake;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.DriveUp;
 import frc.robot.commands.auto.PlaceCone;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.balanceauto;
+import frc.robot.commands.claw.ResetClawPosition;
 import frc.robot.commands.claw.SetClawPosition;
 import frc.robot.commands.claw.SetClawPositionWaitForFinish;
 import frc.robot.commands.claw.detectSensor;
 import frc.robot.commands.drivetrain.AutoBalance;
 import frc.robot.commands.drivetrain.ChangeMaxSpeed;
 import frc.robot.commands.drivetrain.DriveContinous;
+import frc.robot.commands.elevator.ResetElevatorPosition;
 import frc.robot.commands.elevator.RunElevator;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePosition;
 import frc.robot.commands.intake.SpinIntakeParallel;
+import frc.robot.commands.limelight.MoveTo2DAprilTags;
+import frc.robot.commands.limelight.MoveToRetroreflectiveTape;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ClawPneumatics;
 import frc.robot.subsystems.Drivetrain;
@@ -44,6 +47,7 @@ import frc.robot.subsystems.OldIntake;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -60,7 +64,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final XboxController m_controller = new XboxController(0);
   private final Claw m_claw = new Claw();
   private final ClawPneumatics m_ClawPneumatics = new ClawPneumatics();
 
@@ -78,14 +81,16 @@ public class RobotContainer {
   private final balanceauto m_balanceauto = new balanceauto(m_drivetrain);
   private final PlaceCone m_PlaceCone = new PlaceCone(m_drivetrain, m_intake, m_elevator, m_claw);
 
-  private boolean isFast = false;
+  private boolean coneMode = true;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    SmartDashboard.putBoolean("Cone Mode", coneMode);
   
-    m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain, m_controller));
+    m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain));
   }
 
   public void testEncoder() {
@@ -125,28 +130,65 @@ public class RobotContainer {
     // new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
     // new Trigger(m_controller::getXButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
 
-    //Intake
-    new Trigger(m_controller::getRightBumper)
-      .whileTrue(new RunTempIntake(m_intake, kIntakeSpeed));
+    new Trigger(resetDriveOrientationControl)
+      .onTrue(new InstantCommand(m_drivetrain::resetPidgey));
 
-    new Trigger(m_controller::getLeftBumper)
-      .whileTrue(new RunTempIntake(m_intake, -kIntakeSpeed));
+    new Trigger(resetElevatorAndClawPositionControl)
+      .onTrue(new ResetElevatorPosition(m_elevator))
+      .onTrue(new ResetClawPosition(m_claw));
+
+    //Intake
+    new Trigger(intakeControl)
+      .and(this::isConeMode)
+        .whileTrue(new RunTempIntake(m_intake, kIntakeSpeed));
+
+    new Trigger(outtakeControl)
+      .and(this::isConeMode)
+        .whileTrue(new RunTempIntake(m_intake, -kIntakeSpeed));
+
+    new Trigger(intakeControl)
+      .and(this::isCubeMode)
+        .whileTrue(new RunTempIntake(m_intake, -kIntakeSpeed));
+  
+    new Trigger(outtakeControl)
+      .and(this::isCubeMode)
+        .whileTrue(new RunTempIntake(m_intake, kIntakeSpeed));
 
     //Elevator
-    new Trigger(this::getDpadRight)
-      .onTrue(new AutoPlaceConeHigh(m_intake, m_elevator, m_claw));
+    new Trigger(autoPlaceHighControl)
+      .and(this::isConeMode)
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorConeUpPos, armHighPlaceConePos));
 
-    new Trigger(this::getDpadLeft)
-      .onTrue(new AutoResetElevatorAndClaw(m_elevator, m_claw));
+    new Trigger(autoPlaceMidControl)
+      .and(this::isConeMode)
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorConeMidPos, armMidPlaceConePos)); 
 
-    new Trigger(this::getRightTrigger)
-      .whileTrue(new ChangeMaxSpeed(m_drivetrain, 10))
-      .onFalse(new ChangeMaxSpeed(m_drivetrain, 3));
+    new Trigger(autoPickUpControl)
+      .and(this::isConeMode)
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorPickUpConePos, armConePickupPos));
 
-    new Trigger(this::getLeftTrigger)
-      .onTrue(new AutoMoveToMobilityPosition(m_elevator, m_claw));
+    new Trigger(autoPlaceHighControl)
+      .and(this::isCubeMode)
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorCubeUpPos, armHighPlaceCubePos));
+  
+    new Trigger(autoPlaceMidControl)
+      .and(this::isCubeMode)
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorCubeMidPos, armMidPlaceCubePos)); 
+  
+    new Trigger(autoPickUpControl)
+      .and(this::isCubeMode)
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorPickUpCubePos, armCubePickupPos));
 
+    new Trigger(autoTuckControl)
+      .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorTicksPerInches, armStartPos));
 
+    new Trigger(speedUpControl)
+      .whileTrue(new ChangeMaxSpeed(m_drivetrain, 30))
+      .onFalse(new ChangeMaxSpeed(m_drivetrain, 8));
+
+    new Trigger(changeModeControl)
+      .onTrue(new InstantCommand(this::changeMode));
+    
     // new Trigger(this::isFast)
     //   .and(m_controller::getStartButton)
     //     // .onTrue(new PrintCommand("isFast"))
@@ -161,49 +203,56 @@ public class RobotContainer {
     //     // .onTrue(new ChangeMaxSpeed(m_drivetrain, 10))
     //     // .onFalse(new InstantCommand(this::changeSpeed));
 
-    new Trigger(m_controller::getBackButton)
+    // new Trigger(Controls::getLeftTrigger)
+    //   .whileTrue(new MoveToRetroreflectiveTape(m_limelight, m_drivetrain)); 
+
+    // new Trigger(Controls::getRightTrigger)
+    //   .whileTrue(new MoveTo2DAprilTags(m_limelight, m_drivetrain)); 
+
+    new Trigger(autoBalanceControl)
       // .whileTrue(new PrintCommand("Box wheels"))
       // .whileTrue(new InstantCommand(m_drivetrain::boxWheels));
       .whileTrue(new AutoBalance(m_drivetrain));
 
-    new Trigger(m_controller::getXButton)
+    new Trigger(moveElevatorUpControl)
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
       .whileTrue(new RunElevator(m_elevator, 0.5)) // change
       .onFalse(new RunElevator(m_elevator, 0.0));
     
-    new Trigger(m_controller::getBButton)
+    new Trigger(moveElevatorDownControl)
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
       .whileTrue(new RunElevator(m_elevator, -.5)) // change
       .onFalse(new RunElevator(m_elevator, 0.0));
 
       //Test Intake
-      new Trigger(this::getDpadUp)
+      new Trigger(moveClawUpControl)
         // .whileTrue(new InstantCommand(m_claw::printPosition))
         .whileTrue(new InstantCommand(m_claw::runMotorForward))
         .onFalse(new InstantCommand(m_claw::stopMotor));
 
       
-        new Trigger(this::getDpadDown)
-          // .whileTrue(new InstantCommand(m_claw::printPosition))
-          .whileTrue(new InstantCommand(m_claw::runMotorBackward))
-          .onFalse(new InstantCommand(m_claw::stopMotor));
+      new Trigger(moveClawDownControl)
+        // .whileTrue(new InstantCommand(m_claw::printPosition))
+        .whileTrue(new InstantCommand(m_claw::runMotorBackward))
+        .onFalse(new InstantCommand(m_claw::stopMotor));
 
   
  
 }
 
-  public void changeSpeed() {
-    isFast = !isFast;
+  public void changeMode() {
+    coneMode = !coneMode;
+    SmartDashboard.putBoolean("Cone Mode", coneMode);
   }
 
-  public boolean isFast() {
-    return isFast;
+  public boolean isConeMode() {
+    return coneMode;
   }
 
-  public boolean isSlow() {
-    return !isFast;
+  public boolean isCubeMode() {
+    return !coneMode;
   }
 
   // public void printPOV() {
@@ -212,54 +261,6 @@ public class RobotContainer {
 
   public boolean getNotLeftBumper() {
     if (!m_controller.getLeftBumper()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean getDpadUp() {
-    if (m_controller.getPOV() == 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean getDpadRight() {
-    if (m_controller.getPOV() == 90) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean getDpadDown() {
-    if (m_controller.getPOV() == 180) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean getDpadLeft() {
-    if (m_controller.getPOV() == 270) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean getRightTrigger() {
-    if (m_controller.getRightTriggerAxis() > 0.5) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean getLeftTrigger() {
-    if (m_controller.getLeftTriggerAxis() > 0.5) {
       return true;
     } else {
       return false;

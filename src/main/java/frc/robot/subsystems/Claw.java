@@ -47,11 +47,11 @@ public class Claw extends SubsystemBase {
   }
 
   public void runMotorForward() {
-    clawMotor.set(ControlMode.PercentOutput, 0.5); //change line 44 also
+    clawMotor.set(ControlMode.PercentOutput, -0.5); //change line 44 also
   }
 
   public void runMotorBackward() {
-    clawMotor.set(ControlMode.PercentOutput, -0.5); //change line 40 also
+    clawMotor.set(ControlMode.PercentOutput, 0.5); //change line 40 also
   }
 
   public void stopMotor() {

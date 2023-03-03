@@ -36,8 +36,8 @@ public class MoveElevatorManual extends CommandBase {
   @Override
   public void execute() {
     double targetPos = m_elevator.targetPos + m_speed;
-    if (targetPos > elevatorUpPos) {
-      targetPos = elevatorUpPos;
+    if (targetPos > elevatorConeUpPos) {
+      targetPos = elevatorConeUpPos;
     } else if (targetPos < elevatorStartPos) {
       targetPos = elevatorStartPos;
     }

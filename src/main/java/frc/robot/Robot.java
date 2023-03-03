@@ -86,16 +86,15 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    
+    if(lol.getBoolean(false)){
+      m_robotContainer.changeClawMode(NeutralMode.Coast);
+    } else{
+      m_robotContainer.changeClawMode(NeutralMode.Brake);
+    }
   }
 
   @Override
-  public void disabledPeriodic() {
-    if(lol.getBoolean(false)){
-    m_robotContainer.changeClawMode(NeutralMode.Coast);
-  } else{
-    m_robotContainer.changeClawMode(NeutralMode.Brake);
-  }}
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -116,7 +115,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    //m_robotContainer.changeClawMode(NeutralMode.Brake);
+    m_robotContainer.changeClawMode(NeutralMode.Brake);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
