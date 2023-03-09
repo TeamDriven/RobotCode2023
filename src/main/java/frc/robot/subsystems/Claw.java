@@ -27,7 +27,7 @@ import frc.robot.Constants.MotionMagicConstants;
 
 public class Claw extends SubsystemBase {
   public TalonFX clawMotor = new TalonFX(11);
-  // public DigitalInput testInput = new DigitalInput(4);
+  public DigitalInput clawLimitSwitch = new DigitalInput(5);
   public double m_targetPos;
 
   public Claw() {
@@ -47,11 +47,13 @@ public class Claw extends SubsystemBase {
   }
 
   public void runMotorForward() {
-    clawMotor.set(ControlMode.PercentOutput, -0.5); //change line 44 also
+    if (clawLimitSwitch.get()){
+      clawMotor.set(ControlMode.PercentOutput, 0.5); //change line 44 also
+      }
   }
 
   public void runMotorBackward() {
-    clawMotor.set(ControlMode.PercentOutput, 0.5); //change line 40 also
+    clawMotor.set(ControlMode.PercentOutput, -0.5); //change line 40 also
   }
 
   public void stopMotor() {
@@ -73,10 +75,18 @@ public class Claw extends SubsystemBase {
   public double getCurrentPosition() {
     return clawMotor.getSelectedSensorPosition();
   }
+
+  public void resetClawEncoderWithSensor(){
+    if(clawLimitSwitch.get() == false){
+      clawMotor.setSelectedSensorPosition(0);
+    }
+  }
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println("Claw limit switch: " + clawLimitSwitch.get() + "  " + "Claw encoder position: " + clawMotor.getSelectedSensorPosition());
+    resetClawEncoderWithSensor();
     
   }
 

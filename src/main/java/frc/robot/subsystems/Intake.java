@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  public VictorSPX intakeRollers = new VictorSPX(16);
-  // public VictorSP intakeRollers = new VictorSP(7);
+  //public VictorSPX intakeRollers = new VictorSPX(16); //compbot
+  public VictorSP intakeRollers = new VictorSP(7);
   
   /** Creates a new ExampleSubsystem. */
   public Intake() {
@@ -27,8 +27,8 @@ public class Intake extends SubsystemBase {
 
   public void runIntake(double speed) {
     // System.out.println("SpinWheels");
-    intakeRollers.set(VictorSPXControlMode.PercentOutput, -speed);
-    // intakeRollers.set(speed);
+    //intakeRollers.set(VictorSPXControlMode.PercentOutput, -speed);
+    intakeRollers.set(speed);
   }
 
 
