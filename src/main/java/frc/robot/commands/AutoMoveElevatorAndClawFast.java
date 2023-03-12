@@ -24,20 +24,15 @@ import static frc.robot.Constants.MotionMagicConstants.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoMoveElevatorAndClaw extends SequentialCommandGroup {
+public class AutoMoveElevatorAndClawFast extends SequentialCommandGroup {
   /** Creates a new AutoPlaceConeHigh. */
-  public AutoMoveElevatorAndClaw(Elevator elevator, Claw claw, double elevatorPos, double clawPos) {
+  public AutoMoveElevatorAndClawFast(Elevator elevator, Claw claw, double elevatorPos, double clawPos) {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetClawPositionWaitForFinish(claw, armTuckPos), //was arm up pos
-      new MoveElevatorWaitForFinish(elevator, elevatorPos),
-      new SetClawPositionWaitForFinish(claw, clawPos)
-      // new ParallelDeadlineGroup(
-      //    new WaitCommand(1), 
-      //    new RunTempIntake(intake, -0.5)
-      //  )
+      new SetClawPosition(claw, clawPos),
+      new MoveElevatorWaitForFinish(elevator, elevatorPos)
     );
 
 

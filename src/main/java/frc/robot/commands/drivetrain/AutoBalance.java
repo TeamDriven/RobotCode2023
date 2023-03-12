@@ -11,6 +11,7 @@ import static frc.robot.Constants.DrivetrainConstants.*;
 public class AutoBalance extends CommandBase {
   /** Creates a new AutoBalance. */
   Drivetrain m_drivetrain;
+  double speed = 0.3;
   public AutoBalance(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
     addRequirements(m_drivetrain);
@@ -25,35 +26,35 @@ public class AutoBalance extends CommandBase {
   public void execute() {
     System.out.println("Roll: " + m_drivetrain.getRoll());
     System.out.println("Yaw: " + m_drivetrain.getYaw());
-    if (m_drivetrain.getYaw() > 135 || m_drivetrain.getYaw() < -135) {
+    if (m_drivetrain.getYaw() > 90 || m_drivetrain.getYaw() < -90) {
       if (m_drivetrain.getRoll() > rollTarget){
-        m_drivetrain.drive(0.25, 0, 0, true);
+        m_drivetrain.drive(-speed, 0, 0, false);
       } else if (m_drivetrain.getRoll() < -rollTarget) {
-        m_drivetrain.drive(-0.25, 0, 0, true);
+        m_drivetrain.drive(speed, 0, 0, false);
       } else {
         m_drivetrain.boxWheels();
       }
-    } else if (m_drivetrain.getYaw() > 45) {
-      if (m_drivetrain.getPitch() > rollTarget){
-        m_drivetrain.drive(-0.25, 0, 0, true);
-      } else if (m_drivetrain.getPitch() < -rollTarget) {
-        m_drivetrain.drive(0.25, 0, 0, true);
-      } else {
-        m_drivetrain.boxWheels();
-      }
-    } else if (m_drivetrain.getYaw() < -45) {
-      if (m_drivetrain.getPitch() > rollTarget){
-        m_drivetrain.drive(0.25, 0, 0, true);
-      } else if (m_drivetrain.getPitch() < -rollTarget) {
-        m_drivetrain.drive(-0.25, 0, 0, true);
-      } else {
-        m_drivetrain.boxWheels();
-      }
+    // } else if (m_drivetrain.getYaw() > 45) {
+    //   if (m_drivetrain.getPitch() > rollTarget){
+    //     m_drivetrain.drive(-speed, 0, 0, false);
+    //   } else if (m_drivetrain.getPitch() < -rollTarget) {
+    //     m_drivetrain.drive(speed, 0, 0, false);
+    //   } else {
+    //     m_drivetrain.boxWheels();
+    //   }
+    // } else if (m_drivetrain.getYaw() < -45) {
+    //   if (m_drivetrain.getPitch() > rollTarget){
+    //     m_drivetrain.drive(speed, 0, 0, false);
+    //   } else if (m_drivetrain.getPitch() < -rollTarget) {
+    //     m_drivetrain.drive(-speed, 0, 0, false);
+    //   } else {
+    //     m_drivetrain.boxWheels();
+    //   }
     } else {
       if (m_drivetrain.getRoll() > rollTarget){
-        m_drivetrain.drive(-0.25, 0, 0, true);
+        m_drivetrain.drive(-speed, 0, 0, false);
       } else if (m_drivetrain.getRoll() < -rollTarget) {
-        m_drivetrain.drive(0.25, 0, 0, true);
+        m_drivetrain.drive(speed, 0, 0, false);
       } else {
         m_drivetrain.boxWheels();
       }

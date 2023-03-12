@@ -16,7 +16,7 @@ public class MoveElevatorWaitForFinish extends CommandBase {
   private final double m_targetPos;
 
   double tolerance = 50;
-  double pauseTime = 0.3;
+  double pauseTime = 0.2;
 
   double startingTime;
 
@@ -59,7 +59,7 @@ public class MoveElevatorWaitForFinish extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(m_elevator.getVelocity());
+    //System.out.println(m_elevator.getVelocity());
     if (Math.abs(m_elevator.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
       return true;
     }

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
+
 // import frc.robot.subsystems.Elevator;
 
 /**
@@ -17,12 +19,17 @@ package frc.robot;
 public final class Constants {
 
   public static final double kIntakeSpeed = 1;
-  
 
   public final static class DrivetrainConstants {
-    public static final double kPXController = 0.2; // TODO tune this
-    public static final double kPYController = 0.2;//kPXController;
-    public static final double kPThetaController = 6; // TODO tune this
+    public static final double kSlowDriveSpeed = 2;
+    public static final double kFastDriveSpeed = 8;
+
+    public static final PIDController kAutoDrivePID = new PIDController(0.13433, 0, 0);
+    public static final PIDController kTeleOpDrivePID = new PIDController(0.5, 0, 0);
+
+    public static final double kPXController = 0.7; //0.7
+    public static final double kPYController = 0.7; //0.7
+    public static final double kPThetaController = 3; //6
 
     public static final int FLDriveMotorChannel = 3;
     public static final int FRDriveMotorChannel = 5;
@@ -58,31 +65,45 @@ public final class Constants {
     public static double elevatorStartPos = 0;
     public static double elevatorTicksPerInches = 370;
     public static double elevator20Inches = 20*elevatorTicksPerInches;
-    public static double elevatorUpPosAuto = elevatorTicksPerInches * 46;
+    public static double elevatorUpPosAuto = elevatorTicksPerInches * 52;
 
     public static double elevatorConeUpPos = elevatorTicksPerInches * 54;
-    public static double elevatorConeMidPos = elevatorTicksPerInches * 32;
-    public static double elevatorPickUpConePos = elevatorTicksPerInches * 11;
+    public static double elevatorConeMidPos = elevatorTicksPerInches * 28;
+    public static double elevatorPickUpConePos = elevatorTicksPerInches * 10;
 
-    public static double elevatorCubeUpPos = elevatorTicksPerInches * 52;
-    public static double elevatorCubeMidPos = elevatorTicksPerInches * 30;
-    public static double elevatorPickUpCubePos = elevatorTicksPerInches * 11;
+    public static double elevatorCubeUpPos = elevatorTicksPerInches * 50;
+    public static double elevatorCubeMidPos = elevatorTicksPerInches * 25;
+    public static double elevatorPickUpCubePos = elevatorTicksPerInches * 13;
 
-    // public static double armTicksPerDegree = -318.5778;
-    public static double armTicksPerDegree = 1137.778; // practice bot
-    // public static double armTicksPerDegree = 1820.44444;
+    public static double elevatorTuckPos = elevatorTicksPerInches * 3;
+
+    public static double elevatorSubstationPos = elevatorTicksPerInches * 2;
+    public static double elevatorAutoConeUpPos = elevatorTicksPerInches * 41;
+    public static double elevatorAutoConeMidPos = elevatorTicksPerInches * 27;
+
+    public static double armTicksPerDegree = 955.73;
+    // public static double armTicksPerDegree = 1137.778; // practice bot
+    // public static double armTicksPerDegree = 716.8;
     public static double armStartPos = 0;
+    public static double armTuckPos = armTicksPerDegree * 10;
     public static double armUpPos = armTicksPerDegree * 13;
 
-    public static double armConePickupPos = armTicksPerDegree * 74;
-    public static double armHighPlaceConePos = armTicksPerDegree * 35;
-    public static double armMidPlaceConePos = armTicksPerDegree * 30;
+    public static double armConePickupPos = armTicksPerDegree * 82;
+    public static double armHighPlaceConePos = armTicksPerDegree * 75; //41
+    public static double armMidPlaceConePos = armTicksPerDegree * 70; //36
 
-    public static double armCubePickupPos = armTicksPerDegree * 69;
+    public static double armCubePickupPos = armTicksPerDegree * 80;
     public static double armHighPlaceCubePos = armTicksPerDegree * 15;
-    public static double armMidPlaceCubePos = armTicksPerDegree * 20;
+    public static double armMidPlaceCubePos = armTicksPerDegree * 35;
 
-    public static double armPlacePosAuto = armTicksPerDegree * 45;
+    public static double armSubstationPos = armTicksPerDegree * 30;
+    public static double armHighPlaceAutoConePos = armTicksPerDegree * 35;
+    public static double armMidPlaceAutoConePos = armTicksPerDegree * 45;
+
+    public static double armOnHighPole = armTicksPerDegree * 75;
+    public static double armOnMidPole = armTicksPerDegree * 70;
+
+    public static double armPlacePosAuto = armTicksPerDegree * 65;
     public static double armMaxPos = armTicksPerDegree * 180;
     public static double armBottom = armTicksPerDegree * 100;
 

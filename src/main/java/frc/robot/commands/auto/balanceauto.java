@@ -18,7 +18,7 @@ public final class  balanceauto extends SequentialCommandGroup {
 
   public balanceauto(final Drivetrain m_Drivetrain) {
     addCommands(
-      new Drive(m_Drivetrain, 0.2, 0, 0, true).withTimeout(4),
+      new Drive(m_Drivetrain, 1.5, 0, 0, true).withTimeout(2),
       new AutoBalance(m_Drivetrain)
       // new Drive(m_Drivetrain,0,0,0,false)
     );

@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
+import static frc.robot.Constants.DrivetrainConstants.*;
 import static frc.robot.Controls.*;
 
 import java.util.HashMap;
@@ -16,14 +17,20 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 import frc.robot.commands.AutoMoveElevatorAndClaw;
+import frc.robot.commands.AutoMoveElevatorAndClawFast;
+//import frc.robot.commands.AutoTuck;
 
 // import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
 
 import frc.robot.commands.RunTempIntake;
+import frc.robot.commands.auto.ConeToCube;
+import frc.robot.commands.auto.ConeToParkTop;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.DriveUp;
 import frc.robot.commands.auto.PlaceCone;
 import frc.robot.commands.auto.TestPath;
+import frc.robot.commands.auto.TwoPlaceParkTopBlue;
+import frc.robot.commands.auto.TwoPlaceParkTopRed;
 import frc.robot.commands.auto.balanceauto;
 import frc.robot.commands.claw.ResetClawPosition;
 import frc.robot.commands.claw.SetClawPosition;
@@ -32,6 +39,7 @@ import frc.robot.commands.claw.detectSensor;
 import frc.robot.commands.drivetrain.AutoBalance;
 import frc.robot.commands.drivetrain.ChangeMaxSpeed;
 import frc.robot.commands.drivetrain.DriveContinous;
+import frc.robot.commands.elevator.MoveElevator;
 import frc.robot.commands.elevator.ResetElevatorPosition;
 import frc.robot.commands.elevator.RunElevator;
 import frc.robot.commands.intake.RunIntake;
@@ -47,9 +55,11 @@ import frc.robot.subsystems.OldIntake;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -77,11 +87,20 @@ public class RobotContainer {
 
   private final DriveUp m_DriveUp = new DriveUp(m_drivetrain);
   private final DriveForward m_DriveForward = new DriveForward(m_drivetrain);
-  private final TestPath m_TestPath = new TestPath(m_drivetrain);
+  private final TestPath m_TestPath = new TestPath(m_drivetrain, m_intake, m_elevator, m_claw);
   private final balanceauto m_balanceauto = new balanceauto(m_drivetrain);
   private final PlaceCone m_PlaceCone = new PlaceCone(m_drivetrain, m_intake, m_elevator, m_claw);
+  private final ConeToCube m_ConeToCube = new ConeToCube(m_drivetrain, m_intake, m_elevator, m_claw);
+  private final ConeToParkTop m_ConeToParkTop = new ConeToParkTop(m_drivetrain, m_intake, m_elevator, m_claw);
+  private final TwoPlaceParkTopBlue m_TwoPlaceParkTopBlue = new TwoPlaceParkTopBlue(m_drivetrain, m_intake, m_elevator, m_claw);
+  private final TwoPlaceParkTopRed m_TwoPlaceParkTopRed = new TwoPlaceParkTopRed(m_drivetrain, m_intake, m_elevator, m_claw);
 
   private boolean coneMode = true;
+
+  private boolean isTuckPos = true;
+  private boolean isPickUpPos = false;
+  private boolean isPlaceMidPos = false;
+  private boolean isPlaceHighPos = false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -89,6 +108,7 @@ public class RobotContainer {
     configureBindings();
 
     SmartDashboard.putBoolean("Cone Mode", coneMode);
+    // SmartDashboard.putBoolean("Substation Mode", substationMode);
   
     m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain));
   }
@@ -98,8 +118,16 @@ public class RobotContainer {
     // m_drivetrain.drive(0, 0, 0, false);
   }
 
+  public void boxWheels() {
+    m_drivetrain.boxWheels();
+  }
+
   public void changeClawMode(NeutralMode mode) {
     m_claw.changeMode(mode);
+  }
+
+  public void changeOffset(double offset) {
+    m_drivetrain.setOffset(offset);
   }
 
   /**
@@ -130,10 +158,11 @@ public class RobotContainer {
     // new Trigger(m_controller::getXButton).whileTrue(new readRetroreflectiveTape(m_limelight));
     // new Trigger(m_controller::getXButton).whileTrue(new MoveToLimelight(m_drivetrain, m_limelight));
 
-    new Trigger(resetDriveOrientationControl)
-      .onTrue(new InstantCommand(m_drivetrain::resetPidgey));
+    // new Trigger(resetDriveOrientationControl)
+    //   .onTrue(new InstantCommand(m_drivetrain::resetPidgey));
 
-    new Trigger(resetElevatorAndClawPositionControl)
+    new Trigger(zeroRobotControl)
+      .onTrue(new InstantCommand(m_drivetrain::resetPidgey))
       .onTrue(new ResetElevatorPosition(m_elevator))
       .onTrue(new ResetClawPosition(m_claw));
 
@@ -157,37 +186,105 @@ public class RobotContainer {
     //Elevator
     new Trigger(autoPlaceHighControl)
       .and(this::isConeMode)
-        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorConeUpPos, armHighPlaceConePos));
+        .onTrue(new InstantCommand(this::setToPlaceHighPos))
+        .onTrue(new SequentialCommandGroup(
+          new MoveElevator(m_elevator, elevatorConeUpPos),
+          new WaitCommand(0.6),
+          new SetClawPosition(m_claw, armHighPlaceConePos)
+        ));
 
-    new Trigger(autoPlaceMidControl)
-      .and(this::isConeMode)
-        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorConeMidPos, armMidPlaceConePos)); 
-
-    new Trigger(autoPickUpControl)
-      .and(this::isConeMode)
-        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorPickUpConePos, armConePickupPos));
+    // new Trigger(autoPlaceHighControl)
+    //   .and(this::isConeMode)
+    //   .and(this::isSubstationMode)
+    //     .onTrue(new InstantCommand(this::setToPlaceHighPos))
+    //     .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorConeUpPos, armHighPlaceConePos));
 
     new Trigger(autoPlaceHighControl)
       .and(this::isCubeMode)
-        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorCubeUpPos, armHighPlaceCubePos));
-  
+        .onTrue(new InstantCommand(this::setToPlaceHighPos))
+        .onTrue(new SequentialCommandGroup(
+          new SetClawPositionWaitForFinish(m_claw, armHighPlaceCubePos),
+          new MoveElevator(m_elevator, elevatorCubeUpPos),
+          new WaitCommand(0.4),
+          new ParallelDeadlineGroup(
+            new WaitCommand(0.25), 
+            new RunTempIntake(m_intake, 1)
+          ),
+          new MoveElevator(m_elevator, elevatorTuckPos)
+        ));
+
+    new Trigger(autoPlaceMidControl)
+      .and(this::isConeMode)
+      // .and(this::isFloorMode)
+        .onTrue(new InstantCommand(this::setToPlaceMidPos))
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorConeMidPos, armMidPlaceConePos)); 
+
+    // new Trigger(autoPlaceMidControl)
+    //   .and(this::isConeMode)
+    //   .and(this::isSubstationMode)
+    //     .onTrue(new InstantCommand(this::setToPlaceMidPos))
+    //     .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorConeMidPos, armMidPlaceConePos));
+
     new Trigger(autoPlaceMidControl)
       .and(this::isCubeMode)
-        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorCubeMidPos, armMidPlaceCubePos)); 
+        .onTrue(new InstantCommand(this::setToPlaceMidPos))
+        .onTrue(new SequentialCommandGroup(
+          new SetClawPositionWaitForFinish(m_claw, armTuckPos),
+          new MoveElevator(m_elevator, elevatorCubeMidPos),
+          new WaitCommand(0.1),
+          new ParallelDeadlineGroup(
+            new WaitCommand(0.25), 
+            new RunTempIntake(m_intake, 0.75)
+          ),  
+          new MoveElevator(m_elevator, elevatorTuckPos)
+        )); 
+
+    new Trigger(autoFloorConePickUpControl)
+        .onTrue(new InstantCommand(this::setToPickUpPos))
+        .onTrue(new AutoMoveElevatorAndClawFast(m_elevator, m_claw, elevatorPickUpConePos, armConePickupPos));
+
+    new Trigger(autoPickUpControl)
+      .and(this::isConeMode)
+        .onTrue(new ParallelCommandGroup(
+          new InstantCommand(this::setToPickUpPos),
+          new RunTempIntake(m_intake, kIntakeSpeed),
+          new AutoMoveElevatorAndClawFast(m_elevator, m_claw, elevatorSubstationPos, armSubstationPos)
+        ));
+        // .onTrue(new InstantCommand(this::setToPickUpPos))
+        // .onTrue(new RunTempIntake(m_intake, kIntakeSpeed))
+        // .onTrue(new AutoMoveElevatorAndClawFast(m_elevator, m_claw, elevatorSubstationPos, armSubstationPos));
   
     new Trigger(autoPickUpControl)
       .and(this::isCubeMode)
-        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorPickUpCubePos, armCubePickupPos));
+        .onTrue(new InstantCommand(this::setToPickUpPos))
+        .onTrue(new AutoMoveElevatorAndClawFast(m_elevator, m_claw, elevatorPickUpCubePos, armCubePickupPos));
 
     new Trigger(autoTuckControl)
-      .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorTicksPerInches, armStartPos));
+      .and(this::getIsPickUpPos)
+        .onTrue(new AutoMoveElevatorAndClaw(m_elevator, m_claw, elevatorTuckPos, armTuckPos));
+
+    new Trigger(autoTuckControl)
+      .and(this::getIsNotPickUpPos)
+        .onTrue(new AutoMoveElevatorAndClawFast(m_elevator, m_claw, elevatorTuckPos, armTuckPos));
 
     new Trigger(speedUpControl)
-      .whileTrue(new ChangeMaxSpeed(m_drivetrain, 30))
-      .onFalse(new ChangeMaxSpeed(m_drivetrain, 8));
+      .whileTrue(new ChangeMaxSpeed(m_drivetrain, kFastDriveSpeed))
+      .onFalse(new ChangeMaxSpeed(m_drivetrain, kSlowDriveSpeed));
+
+    // new Trigger(Controls::getRightTrigger)
+    //     .whileTrue(new AutoBalance(m_drivetrain));
 
     new Trigger(changeModeControl)
       .onTrue(new InstantCommand(this::changeMode));
+
+    
+    new Trigger(placeConeOnPoleControl)
+      .and(this::getIsPlaceHighPos)
+        .onTrue(new SetClawPosition(m_claw, armOnHighPole));
+    
+    new Trigger(placeConeOnPoleControl)
+      .and(this::getIsPlaceMidPos)
+        .onTrue(new SetClawPosition(m_claw, armOnMidPole));
     
     // new Trigger(this::isFast)
     //   .and(m_controller::getStartButton)
@@ -203,16 +300,16 @@ public class RobotContainer {
     //     // .onTrue(new ChangeMaxSpeed(m_drivetrain, 10))
     //     // .onFalse(new InstantCommand(this::changeSpeed));
 
-    // new Trigger(Controls::getLeftTrigger)
-    //   .whileTrue(new MoveToRetroreflectiveTape(m_limelight, m_drivetrain)); 
+    new Trigger(autoLineUpControl)
+      .whileTrue(new MoveToRetroreflectiveTape(m_limelight, m_drivetrain)); 
 
     // new Trigger(Controls::getRightTrigger)
-    //   .whileTrue(new MoveTo2DAprilTags(m_limelight, m_drivetrain)); 
+    //   .whileTrue(new MoveToRetroreflectiveTape(m_limelight, m_drivetrain)); 
 
-    new Trigger(autoBalanceControl)
+    // new Trigger(autoBalanceControl)
       // .whileTrue(new PrintCommand("Box wheels"))
       // .whileTrue(new InstantCommand(m_drivetrain::boxWheels));
-      .whileTrue(new AutoBalance(m_drivetrain));
+      // .whileTrue(new AutoBalance(m_drivetrain));
 
     new Trigger(moveElevatorUpControl)
       // .whileTrue(new InstantCommand(m_elevator::printPosition))
@@ -244,6 +341,8 @@ public class RobotContainer {
 
   public void changeMode() {
     coneMode = !coneMode;
+    // LiveWindow.updateValues();
+    // SmartDashboard.updateValues();
     SmartDashboard.putBoolean("Cone Mode", coneMode);
   }
 
@@ -253,6 +352,60 @@ public class RobotContainer {
 
   public boolean isCubeMode() {
     return !coneMode;
+  }
+
+  
+  public void setToTuckPos() {
+    isTuckPos = true;
+    isPickUpPos = false;
+    isPlaceMidPos = false;
+    isPlaceHighPos = false;
+  }
+
+  public void setToPickUpPos() {
+    isTuckPos = false;
+    isPickUpPos = true;
+    isPlaceMidPos = false;
+    isPlaceHighPos = false;
+  }
+
+  public void setToPlaceMidPos() {
+    isTuckPos = false;
+    isPickUpPos = false;
+    isPlaceMidPos = true;
+    isPlaceHighPos = false;
+  }
+
+  public void setToPlaceHighPos() {
+    isTuckPos = false;
+    isPickUpPos = false;
+    isPlaceMidPos = false;
+    isPlaceHighPos = true;
+  }
+
+
+  public boolean getIsPickUpPos() {
+    return isPickUpPos;
+  }
+
+  public boolean getIsNotPickUpPos() {
+    return !isPickUpPos;
+  }
+
+  public boolean getIsPlaceHighPos() {
+    return isPlaceHighPos;
+  }
+
+  public boolean getIsNotPlaceHighPos() {
+    return !isPlaceHighPos;
+  }
+
+  public boolean getIsPlaceMidPos() {
+    return isPlaceMidPos;
+  }
+
+  public boolean getIsNotPlaceMidPos() {
+    return !isPlaceMidPos;
   }
 
   // public void printPOV() {
@@ -283,7 +436,8 @@ public class RobotContainer {
     //   eventMap
     // );
     // An example command will be run in autonomous
-    return m_PlaceCone;
+    // return m_ConeToParkTop;
+    return m_TestPath;
     // return Autos.exampleAuto();
   }
 }

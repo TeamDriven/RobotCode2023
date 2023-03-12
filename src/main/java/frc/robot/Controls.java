@@ -12,8 +12,13 @@ public final class Controls {
     public static final DoubleSupplier turnControl = m_controller::getLeftX;
 
     public static final BooleanSupplier speedUpControl = Controls::getRightTrigger;
-    public static final BooleanSupplier autoBalanceControl = Controls::getLeftTrigger;
+    // public static final BooleanSupplier autoBalanceControl = Controls::getLeftTrigger;
+    public static final BooleanSupplier autoLineUpControl = Controls::getLeftTrigger;
+
     public static final BooleanSupplier changeModeControl = m_controller::getLeftStickButton;
+    // public static final BooleanSupplier changePickupModeControl = m_controller::getBackButton;
+
+    public static final BooleanSupplier placeConeOnPoleControl = m_controller::getRightStickButton;
 
     public static final BooleanSupplier intakeControl = m_controller::getRightBumper;
     public static final BooleanSupplier outtakeControl = m_controller::getLeftBumper;
@@ -24,13 +29,15 @@ public final class Controls {
     public static final BooleanSupplier moveClawUpControl = m_controller::getYButton;
     public static final BooleanSupplier moveClawDownControl = m_controller::getAButton;
 
-    public static final BooleanSupplier resetElevatorAndClawPositionControl = m_controller::getBackButton;
-    public static final BooleanSupplier resetDriveOrientationControl = m_controller::getStartButton;
+    public static final BooleanSupplier zeroRobotControl = m_controller::getStartButton;
+    // public static final BooleanSupplier resetElevatorAndClawPositionControl = m_controller::getBackButton;
+    // public static final BooleanSupplier resetDriveOrientationControl = m_controller::getStartButton;
 
     public static final BooleanSupplier autoPlaceHighControl = Controls::getDpadUp;
     public static final BooleanSupplier autoPlaceMidControl = Controls::getDpadRight;
     public static final BooleanSupplier autoTuckControl = Controls::getDpadLeft;
     public static final BooleanSupplier autoPickUpControl = Controls::getDpadDown;
+    public static final BooleanSupplier autoFloorConePickUpControl = m_controller::getBackButton;
 
 
     public static boolean getDpadUp() {

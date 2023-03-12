@@ -39,8 +39,7 @@ import static frc.robot.Constants.DrivetrainConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   
-  public double maxSpeed = 3; // 3 meters per second
-  public double speedMultiplier;
+  public double maxSpeed = kSlowDriveSpeed; // 1 meters per second
 
   public static final double kMaxAngularSpeed = Math.PI*4; // 1/2 rotation per second
   private static final double kMaxAngularAcceleration = 8 * Math.PI; // radians per second squared
@@ -54,12 +53,17 @@ public class Drivetrain extends SubsystemBase {
   // private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1546138688759355);
   // private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.775713308823037);
   // private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.207007467506754);
-  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 5.1876707666212-Math.PI);
-  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1392184936921343);
-  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 2.7331350973097748-Math.PI);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 2.60001528891379);
+  // private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, -1.0973707506241652-Math.PI);
+  // private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, -1.9870054097122622-Math.PI);
+  // private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, -0.37421458819889747);
+  // private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, -3.762047714867377);
+  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 5.165258172831278-Math.PI);
+  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 4.315691544528398-Math.PI);
+  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.904902984711128);
+  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 2.5062777016095996);
 
   private final static PigeonIMU m_pigey = new PigeonIMU(12);
+  private static double m_offset = 0.0;
 
   private final static double startingPitch = m_pigey.getPitch();
   private final static double startingRoll = m_pigey.getRoll();
@@ -72,7 +76,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
         m_kinematics,
-        Rotation2d.fromDegrees(m_pigey.getFusedHeading()),
+        Rotation2d.fromDegrees(getActualHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -104,6 +108,14 @@ public class Drivetrain extends SubsystemBase {
 
     swerveModuleStates = m_kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
     // m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
+  }
+
+  public void setOffset(double offset) {
+    m_offset = offset;
+  }
+
+  public double getActualHeading() {
+    return m_pigey.getFusedHeading() - m_offset;
   }
 
   public void rememberStartingPosition() {
@@ -148,7 +160,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetOdometry(Pose2d initialPose) {
     m_odometry.resetPosition(
-      Rotation2d.fromDegrees(m_pigey.getFusedHeading()),
+      Rotation2d.fromDegrees(getActualHeading()),
       new SwerveModulePosition[] {
         m_frontLeft.getPosition(),
         m_frontRight.getPosition(),
@@ -163,12 +175,12 @@ public class Drivetrain extends SubsystemBase {
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed * speedMultiplier, ySpeed * speedMultiplier, rot * speedMultiplier,  Rotation2d.fromDegrees(m_pigey.getFusedHeading()))
-                : new ChassisSpeeds(xSpeed * speedMultiplier, ySpeed * speedMultiplier, rot * speedMultiplier));
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,  Rotation2d.fromDegrees(getActualHeading()))
+                : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
     this.swerveModuleStates = swerveModuleStates;
 
-    // System.out.println(m_odometry.getPoseMeters());
+    //  System.out.println(m_odometry.getPoseMeters());
     // m_frontLeft.setDesiredState(swerveModuleStates[0]);
     // m_frontRight.setDesiredState(swerveModuleStates[1]);
     // m_backLeft.setDesiredState(swerveModuleStates[2]);
@@ -188,7 +200,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(SwerveModuleState[] swerveModuleStates) {
-    // System.out.println(m_odometry.getPoseMeters());
+    System.out.println(m_odometry.getPoseMeters());
 
     // for (SwerveModuleState s : swerveModuleStates) {
     //   System.out.println(s);
@@ -197,6 +209,12 @@ public class Drivetrain extends SubsystemBase {
     this.swerveModuleStates = swerveModuleStates;
 
     moveSwerve();
+  }
+
+  public InstantCommand stopDriveTrain(){
+    return new InstantCommand(() -> {
+      boxWheels();
+    });
   }
 
   public void boxWheels() {
@@ -238,14 +256,19 @@ public class Drivetrain extends SubsystemBase {
      m_frontRight.printencoder("fr");
   }
 
+  public void setPidgey(double angle){
+    m_pigey.setFusedHeading(angle);
+  }
+
   public void resetPidgey(){
     m_pigey.setFusedHeading(0);
+    m_offset = 0.0;
   }
   
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     m_odometry.update(
-        Rotation2d.fromDegrees(m_pigey.getFusedHeading()),
+        Rotation2d.fromDegrees(getActualHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -258,11 +281,10 @@ public class Drivetrain extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
-  public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, String trajectoryFileName) {
+  public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, final boolean useAllianceColor, PathPlannerTrajectory trajectory) {
     
     // final Trajectory trajectory = generateTrajectory(waypoints);
     // final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 3.5, 3   );
-    final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 3, 3);
     // System.out.println(trajectory);
     // double Seconds = 0.0;
     // System.out.println("===== Begin Sampling path =====");
@@ -284,7 +306,7 @@ public class Drivetrain extends SubsystemBase {
         PathPlannerState initialSample = (PathPlannerState) trajectory.sample(0);
         Pose2d initialPose = new Pose2d(initialSample.poseMeters.getTranslation(), initialSample.holonomicRotation);
         m_odometry.resetPosition(
-          Rotation2d.fromDegrees(m_pigey.getFusedHeading()),
+          Rotation2d.fromDegrees(getActualHeading()),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -306,6 +328,7 @@ public class Drivetrain extends SubsystemBase {
       (SwerveModuleState[] moduleStates) -> {
         drive(moduleStates);
       },
+      useAllianceColor,
       this
     )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
     // .andThen(new FindPath(
@@ -322,67 +345,17 @@ public class Drivetrain extends SubsystemBase {
     // )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
   }
 
+  public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, String trajectoryFileName) {
+    
+    final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 2, 3);
+    
+    return followPathCommand(shouldResetOdometry, false, trajectory);
+  }
+
   public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, PathPlannerTrajectory trajectory) {
     
-    // final Trajectory trajectory = generateTrajectory(waypoints);
-    // final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 3.5, 3   );
-    // System.out.println(trajectory);
-    // double Seconds = 0.0;
-    // System.out.println("===== Begin Sampling path =====");
-    // while(trajectory.getTotalTimeSeconds() > Seconds) {
-    //   PathPlannerState state = (PathPlannerState) trajectory.sample(Seconds);
-    //   System.out.println(
-    //     "time: " + Seconds
-    //     + ", x: " + state.poseMeters.getX()
-    //     + ", y: " + state.poseMeters.getY()
-    //     + ", angle: " + state.poseMeters.getRotation().getDegrees()
-    //     + ", holo: " + state.holonomicRotation.getDegrees()
-    //   );
-    // Seconds += 0.25;
-    // }
-    // System.out.println("===== End Sampling Path =====");
+    return followPathCommand(shouldResetOdometry, false, trajectory);
 
-    return new InstantCommand(() -> {
-      if (shouldResetOdometry) {
-        PathPlannerState initialSample = (PathPlannerState) trajectory.sample(0);
-        Pose2d initialPose = new Pose2d(initialSample.poseMeters.getTranslation(), initialSample.holonomicRotation);
-        m_odometry.resetPosition(
-          Rotation2d.fromDegrees(m_pigey.getFusedHeading()),
-          new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
-          }, 
-          initialPose);
-      }
-      // m_xController.reset();
-      // m_yController.reset();
-      // m_thetaController.reset();
-    }).andThen(new PPSwerveControllerCommand(
-      trajectory,
-      () -> getPose(),
-      m_kinematics,
-      m_xController,
-      m_yController,
-      m_thetaController,
-      (SwerveModuleState[] moduleStates) -> {
-        drive(moduleStates);
-      },
-      this
-    )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
-    // .andThen(new FindPath(
-    //   trajectory,
-    //   () -> getPose(),
-    //   m_kinematics,
-    //   m_xController,
-    //   m_yController,
-    //   m_thetaController,
-    //   (SwerveModuleState[] moduleStates) -> {
-    //     drive(moduleStates);
-    //   },
-    //   this
-    // )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
   }
 
   public void setMaxSpeed(double speed) {
@@ -420,7 +393,8 @@ public class Drivetrain extends SubsystemBase {
  
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private PIDController m_drivePIDController = new PIDController(0.01, 0, 0); // ki was .001
+  //DO NOT TOUCH M_DRIVEPIDCONTROLLER!!! ASK SWED OR DIELON!
+  private PIDController m_drivePIDController = kAutoDrivePID;
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =

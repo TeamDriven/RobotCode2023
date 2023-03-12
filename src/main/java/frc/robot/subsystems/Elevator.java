@@ -21,7 +21,7 @@ public class Elevator extends SubsystemBase {
     // elevatorMotor1.configFactoryDefault(); //phoenix tuner kept reseting( max speeds)
     // elevatorMotor2.configFactoryDefault();
 
-    MotionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1, 0.8, 0.0, 0.0, 0.2, 4000, 4000);
+    MotionMagicLibrary.setMotionMagicMotorParameters(elevatorMotor1, 0.8, 0.0, 0.0, 0.2, 10000, 10000);
     elevatorMotor1.setInverted(false);
     elevatorMotor2.setInverted(true);
   }

@@ -32,7 +32,7 @@ public class Claw extends SubsystemBase {
 
   public Claw() {
     clawMotor.configFactoryDefault();
-    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, .6, 0.01, 0.0, 1.0, 18000, 18000);
+    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 0.3, 0.01, 0.0, 0.01, 30000, 30000);
     clawMotor.setNeutralMode(NeutralMode.Brake);
     // clawMotor.setInverted(true);
   }

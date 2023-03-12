@@ -53,10 +53,10 @@ public class LimeLight extends SubsystemBase {
     // table.putValue("ledMode", 3);
 
     // final ShuffleboardTab tab = Shuffleboard.getTab(LIMELIGHT);
-    SmartDashboard.putNumber("ta", ta);
-    SmartDashboard.putNumber("ts", ts);
-    SmartDashboard.putNumber("tx", tx);
-    SmartDashboard.putNumber("ty", ty);
+    // SmartDashboard.putNumber("ta", ta);
+    // SmartDashboard.putNumber("ts", ts);
+    // SmartDashboard.putNumber("tx", tx);
+    // SmartDashboard.putNumber("ty", ty);
   }
 
   public void resetLimelight() {
@@ -65,18 +65,18 @@ public class LimeLight extends SubsystemBase {
     ta = 0;
     ts = 0;
 
-    SmartDashboard.putNumber("ta", ta);
-    SmartDashboard.putNumber("ts", ts);
-    SmartDashboard.putNumber("tx", tx);
-    SmartDashboard.putNumber("ty", ty);
-    SmartDashboard.putNumber("Apriltag id", -1);
+    // SmartDashboard.putNumber("ta", ta);
+    // SmartDashboard.putNumber("ts", ts);
+    // SmartDashboard.putNumber("tx", tx);
+    // SmartDashboard.putNumber("ty", ty);
+    // SmartDashboard.putNumber("Apriltag id", -1);
 
     turnOffLimelight();
   }
 
   public double getApriltagID() {
     double id = NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("tid").getDouble(0);
-    SmartDashboard.putNumber("Apriltag id", id);
+    // SmartDashboard.putNumber("Apriltag id", id);
     return id;
   }
 
@@ -88,12 +88,12 @@ public class LimeLight extends SubsystemBase {
     double[] pose = {0.0, 0.0, 0.0};
     try{
       pose = NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("botpose").getDoubleArray(pose);
-      SmartDashboard.putNumber("PoseX", pose[0]);
-      SmartDashboard.putNumber("PoseY", pose[1]);
-      SmartDashboard.putNumber("PoseZ", pose[2]);
-      SmartDashboard.putNumber("PosePitch", pose[3]);
-      SmartDashboard.putNumber("PoseYaw", pose[4]);
-      SmartDashboard.putNumber("PoseRoll", pose[5]);
+      // SmartDashboard.putNumber("PoseX", pose[0]);
+      // SmartDashboard.putNumber("PoseY", pose[1]);
+      // SmartDashboard.putNumber("PoseZ", pose[2]);
+      // SmartDashboard.putNumber("PosePitch", pose[3]);
+      // SmartDashboard.putNumber("PoseYaw", pose[4]);
+      // SmartDashboard.putNumber("PoseRoll", pose[5]);
     } catch(ArrayIndexOutOfBoundsException e) {
       System.out.println("No 3D April tag detected");
     }

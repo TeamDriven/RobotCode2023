@@ -4,6 +4,8 @@
 
 package frc.robot.commands.claw;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Claw;
 
@@ -11,9 +13,9 @@ public class SetClawPosition extends CommandBase {
   Claw m_claw; 
   double m_targetPos;
   /** Creates a new setClawPosition. */
-  public SetClawPosition(Claw claw, double targetPos) {
+  public SetClawPosition(Claw claw, double armOnPole) {
     m_claw = claw;
-    m_targetPos = targetPos; 
+    m_targetPos = armOnPole; 
     addRequirements(claw);
     // Use addRequirements() here to declare subsystem dependencies.
   }

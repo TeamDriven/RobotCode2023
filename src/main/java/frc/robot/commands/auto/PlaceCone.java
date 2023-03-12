@@ -41,7 +41,7 @@ public final class PlaceCone extends SequentialCommandGroup {
         new WaitCommand(1),
         new RunTempIntake(intake, -.5)
       ),
-      new AutoMoveElevatorAndClaw(elevator, claw, elevatorTicksPerInches, armStartPos),
+      new AutoMoveElevatorAndClaw(elevator, claw, elevatorTuckPos, armStartPos),
       drivetrain.followPathCommand(true, "Taxi")
     );
   }
