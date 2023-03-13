@@ -12,11 +12,9 @@ public final class Controls {
     public static final DoubleSupplier turnControl = m_controller::getLeftX;
 
     public static final BooleanSupplier speedUpControl = Controls::getRightTrigger;
-    // public static final BooleanSupplier autoBalanceControl = Controls::getLeftTrigger;
     public static final BooleanSupplier autoLineUpControl = Controls::getLeftTrigger;
 
     public static final BooleanSupplier changeModeControl = m_controller::getLeftStickButton;
-    // public static final BooleanSupplier changePickupModeControl = m_controller::getBackButton;
 
     public static final BooleanSupplier placeConeOnPoleControl = m_controller::getRightStickButton;
 
@@ -30,8 +28,6 @@ public final class Controls {
     public static final BooleanSupplier moveClawDownControl = m_controller::getAButton;
 
     public static final BooleanSupplier zeroRobotControl = m_controller::getStartButton;
-    // public static final BooleanSupplier resetElevatorAndClawPositionControl = m_controller::getBackButton;
-    // public static final BooleanSupplier resetDriveOrientationControl = m_controller::getStartButton;
 
     public static final BooleanSupplier autoPlaceHighControl = Controls::getDpadUp;
     public static final BooleanSupplier autoPlaceMidControl = Controls::getDpadRight;

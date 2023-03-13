@@ -22,36 +22,14 @@ public final class Constants {
 
   public final static class DrivetrainConstants {
     public static final double kSlowDriveSpeed = 1;
-    public static final double kFastDriveSpeed = 4;
+    public static final double kFastDriveSpeed = 6;
 
     public static final PIDController kAutoDrivePID = new PIDController(0.13433, 0, 0);
-    public static final PIDController kTeleOpDrivePID = new PIDController(0.5, 0, 0);
+    public static final PIDController kTeleOpDrivePID = new PIDController(0.75, 0, 0);
 
-    public static final double kPXController = 0.7; //0.7
-    public static final double kPYController = 0.7; //0.7
-    public static final double kPThetaController = 3; //6
-
-    public static final int FLDriveMotorChannel = 3;
-    public static final int FRDriveMotorChannel = 5;
-    public static final int BLDriveMotorChannel = 1;
-    public static final int BRDriveMotorChannel = 7;
-
-    public static final int FLTurningMotorChannel = 4;
-    public static final int FRTurningMotorChannel = 6;
-    public static final int BLTurningMotorChannel = 2;
-    public static final int BRTurningMotorChannel = 8;
-
-    public static final int FLTurningEncoderChannel = 1;
-    public static final int FRTurningEncoderChannel = 2;
-    public static final int BLTurningEncoderChannel = 0;
-    public static final int BRTurningEncoderChannel = 3;
-
-    public static final double FLOffset = 5.649738110618463;
-    public static final double FROffset = 0.9418667305466683+3.14;
-    public static final double BLOffset = 0.16685627318886792;
-    public static final double BROffset = -0.4638748593756933;
-
-    public static final int pigeyDeviceNumber = 11;
+    public static final double kPXController = 0.7;
+    public static final double kPYController = 0.7;
+    public static final double kPThetaController = 3;
 
     public static final double rollTarget = 11;
   }

@@ -9,24 +9,11 @@ import static frc.robot.Constants.DrivetrainConstants.*;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
-
-// import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-// import com.ctre.phoenix.motorcontrol.can.TalonFX;
-// import com.revrobotics.CANSparkMax;
-// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-// import edu.wpi.first.wpilibj.Joystick;
-
-// import com.revrobotics.Rev2mDistanceSensor;
-// import com.revrobotics.Rev2mDistanceSensor.Port;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -43,17 +30,13 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   ShuffleboardTab CoastBrake = Shuffleboard.getTab("CoastBrake");
-  // Shuffleboard.getTab("CoastBrake")
    
 
    GenericEntry lol = 
     CoastBrake.add("SwitchToCoast", false)
     .withWidget(BuiltInWidgets.kToggleSwitch)
     .getEntry();
-
-   //getBooleanArray("SwitchToCoast");
-
-  //private Rev2mDistanceSensor distOnboard; 
+ 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -63,8 +46,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    //distOnboard = new Rev2mDistanceSensor(Port.kOnboard);
-    
 
   }
 
@@ -135,12 +116,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    //if(distOnboard.isRangeValid()) {
-      //SmartDashboard.putNumber("Range Onboard", distOnboard.getRange());
-      //SmartDashboard.putNumber("Timestamp Onboard", distOnboard.getTimestamp());
-    //}
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

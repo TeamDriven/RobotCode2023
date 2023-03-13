@@ -21,7 +21,6 @@ public class MoveToLimelightDriveable extends CommandBase {
   private final double m_deadZone = 0.08;
 
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   /**

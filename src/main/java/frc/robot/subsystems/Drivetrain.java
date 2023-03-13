@@ -10,10 +10,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -30,10 +28,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.drivetrain.FindPath;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
 
@@ -49,14 +43,6 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-0.273, 0.33);
   private final Translation2d m_backRightLocation = new Translation2d(-0.273, -0.33);
 
-  // private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 7.26186181491516);
-  // private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 1.1546138688759355);
-  // private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.775713308823037);
-  // private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 1.207007467506754);
-  // private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, -1.0973707506241652-Math.PI);
-  // private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, -1.9870054097122622-Math.PI);
-  // private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, -0.37421458819889747);
-  // private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, -3.762047714867377);
   private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 5.165258172831278-Math.PI);
   private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 4.315691544528398-Math.PI);
   private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.904902984711128);
@@ -85,21 +71,11 @@ public class Drivetrain extends SubsystemBase {
         });
 
   private Rotation2d m_headingAdjust = new Rotation2d();
-  private double m_rollOffset;
   private Rotation2d m_startYaw;
   private SwerveModuleState[] swerveModuleStates;
-  //Changed Variables
-
-  // HolonomicDriveController pathController = new HolonomicDriveController(
-  //   new PIDController(kPXController, 0, 0),
-  //   new PIDController(kPYController, 0, 0),
-  //   new ProfiledPIDController(kPThetaController, 0, 0, 
-  //     new TrapezoidProfile.Constraints(kMaxAngularSpeed, BLDriveMotorChannel)));
 
   PIDController m_xController = new PIDController(kPXController, 0, 0);
   PIDController m_yController = new PIDController(kPYController, 0, 0);
-  // ProfiledPIDController m_thetaController = new ProfiledPIDController(kPThetaController, 0, 0, 
-  // new TrapezoidProfile.Constraints(kMaxAngularSpeed, BLDriveMotorChannel));
   PIDController m_thetaController = new PIDController(kPThetaController, 0, 0);
 
   public Drivetrain() {
@@ -123,9 +99,6 @@ public class Drivetrain extends SubsystemBase {
   
   }
   public double getYaw(){
-    // System.out.println("Pitch: " + m_pigey.getPitch());
-    // System.out.println("Yaw: " + m_pigey.getYaw());
-    // System.out.println("Roll: " + m_pigey.getRoll());
     return m_pigey.getYaw() - startingYaw;
   }
 
@@ -137,14 +110,6 @@ public class Drivetrain extends SubsystemBase {
     return m_pigey.getPitch() - startingPitch;
   }
 
-// public void zeroRoll(){
-//   m_pigey.
-// }
-
-
- 
-
-
   public void reZeroFromStartingPositon() {
     setHeadingAdjust(Rotation2d.fromDegrees(m_pigey.getCompassHeading()).minus(m_startYaw));
   }
@@ -155,7 +120,6 @@ public class Drivetrain extends SubsystemBase {
 
   private void setHeadingAdjust(final Rotation2d headingAdjust) {
     m_headingAdjust = headingAdjust;
-    // System.out.println("Set heading adjust: " + m_headingAdjust.getDegrees());
   }
 
   public void setDrivePID(PIDController drivePID) {
@@ -188,20 +152,6 @@ public class Drivetrain extends SubsystemBase {
     this.swerveModuleStates = swerveModuleStates;
 
     //  System.out.println(m_odometry.getPoseMeters());
-    // m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    // m_frontRight.setDesiredState(swerveModuleStates[1]);
-    // m_backLeft.setDesiredState(swerveModuleStates[2]);
-    // m_backRight.setDesiredState(swerveModuleStates[3]);
-    //frontright 0.15214992880374822
-    //frontleft -0.07802162695054071
-    //backleft 0.0
-    //backright -0.07353397683834939
-    // m_backLeft.printencoder("bl");
-    //m_backRight.printencoder("br");
-    //m_frontLeft.printencoder("fl");
-    //m_frontRight.printencoder("fr");
-
-    //System.out.println(Rotation2d.fromDegrees(m_pigey.getFusedHeading()));
 
     moveSwerve();
   }
@@ -247,14 +197,6 @@ public class Drivetrain extends SubsystemBase {
     m_backRight.setDesiredState(swerveModuleStates[3]);
     updateOdometry();
   }
-
-  //public void boxWheels() {
-    //m_frontLeft.Rotation2d(angleDeg:45);
-    //m_frontRight.Rotation2d(angleDeg:-45);
-    //m_backRight.Rotation2d(angleDeg:45);
-    //m_backLeft.Rotation2d(angleDeg:-45);    
-
-  //}
 
   public void printEncoders() {
     m_backLeft.printencoder("bl");
@@ -322,9 +264,9 @@ public class Drivetrain extends SubsystemBase {
           }, 
           initialPose);
       }
-      // m_xController.reset();
-      // m_yController.reset();
-      // m_thetaController.reset();
+      m_xController.reset();
+      m_yController.reset();
+      m_thetaController.reset();
     }).andThen(new PPSwerveControllerCommand(
       trajectory,
       () -> getPose(),
@@ -338,18 +280,6 @@ public class Drivetrain extends SubsystemBase {
       useAllianceColor,
       this
     )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
-    // .andThen(new FindPath(
-    //   trajectory,
-    //   () -> getPose(),
-    //   m_kinematics,
-    //   m_xController,
-    //   m_yController,
-    //   m_thetaController,
-    //   (SwerveModuleState[] moduleStates) -> {
-    //     drive(moduleStates);
-    //   },
-    //   this
-    // )).andThen(() -> drive(0.0, 0.0, 0.0, true), this);
   }
 
   public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, String trajectoryFileName) {
@@ -398,12 +328,8 @@ public class Drivetrain extends SubsystemBase {
   
   private final DutyCycleEncoder m_turningEncoder;
  
-
-  // Gains are for example purposes only - must be determined for your own robot!
-  //DO NOT TOUCH M_DRIVEPIDCONTROLLER!!! ASK SWED OR DIELON!
   private PIDController m_drivePIDController = kAutoDrivePID;
 
-  // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
       new ProfiledPIDController(
           0.5,
@@ -412,9 +338,8 @@ public class Drivetrain extends SubsystemBase {
           new TrapezoidProfile.Constraints(
               kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
-  // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
+  // private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
@@ -475,7 +400,6 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @return The current position of the module
    */
-  //TODO: Check to make sure this is right
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(m_driveMotor.getSelectedSensorPosition() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get() * Math.PI * 2 - offSet));
     // return new SwerveModulePosition(m_driveMotor.getSelectedSensorVelocity() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get()));

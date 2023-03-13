@@ -4,8 +4,6 @@
 
 package frc.robot.commands.claw;
 
-import static frc.robot.Constants.MotionMagicConstants.*;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Claw;
