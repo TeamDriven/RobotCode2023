@@ -21,8 +21,8 @@ public final class Constants {
   public static final double kIntakeSpeed = 1;
 
   public final static class DrivetrainConstants {
-    public static final double kSlowDriveSpeed = 2;
-    public static final double kFastDriveSpeed = 8;
+    public static final double kSlowDriveSpeed = 1;
+    public static final double kFastDriveSpeed = 4;
 
     public static final PIDController kAutoDrivePID = new PIDController(0.13433, 0, 0);
     public static final PIDController kTeleOpDrivePID = new PIDController(0.5, 0, 0);
@@ -100,8 +100,8 @@ public final class Constants {
     public static double armHighPlaceAutoConePos = armTicksPerDegree * 35;
     public static double armMidPlaceAutoConePos = armTicksPerDegree * 45;
 
-    public static double armOnHighPole = armTicksPerDegree * 75;
-    public static double armOnMidPole = armTicksPerDegree * 70;
+    public static double armOnHighPole = armTicksPerDegree * 30;
+    public static double armOnMidPole = armTicksPerDegree * 30;
 
     public static double armPlacePosAuto = armTicksPerDegree * 65;
     public static double armMaxPos = armTicksPerDegree * 180;

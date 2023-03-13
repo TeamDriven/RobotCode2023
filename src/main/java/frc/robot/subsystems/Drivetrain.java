@@ -158,6 +158,13 @@ public class Drivetrain extends SubsystemBase {
     // System.out.println("Set heading adjust: " + m_headingAdjust.getDegrees());
   }
 
+  public void setDrivePID(PIDController drivePID) {
+    m_frontLeft.changeDrivePID(drivePID);
+    m_frontRight.changeDrivePID(drivePID);
+    m_backLeft.changeDrivePID(drivePID);
+    m_backRight.changeDrivePID(drivePID);
+  }
+
   public void resetOdometry(Pose2d initialPose) {
     m_odometry.resetPosition(
       Rotation2d.fromDegrees(getActualHeading()),
@@ -472,6 +479,10 @@ public class Drivetrain extends SubsystemBase {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(m_driveMotor.getSelectedSensorPosition() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get() * Math.PI * 2 - offSet));
     // return new SwerveModulePosition(m_driveMotor.getSelectedSensorVelocity() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get()));
+  }
+
+  public void changeDrivePID(PIDController drivePID) {
+    m_drivePIDController = drivePID;
   }
 
   public void printData() {

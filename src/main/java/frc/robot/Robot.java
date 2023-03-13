@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.DrivetrainConstants.*;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -87,7 +89,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.boxWheels();
-    
+
     if(lol.getBoolean(false)){
       m_robotContainer.changeClawMode(NeutralMode.Coast);
     } else{
@@ -102,6 +104,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.changeClawMode(NeutralMode.Brake);
+    m_robotContainer.changeDrivePIDController(kAutoDrivePID);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -117,6 +120,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.changeDrivePIDController(kTeleOpDrivePID);
     m_robotContainer.changeOffset(180);
     m_robotContainer.changeClawMode(NeutralMode.Brake);
     // This makes sure that the autonomous stops running when

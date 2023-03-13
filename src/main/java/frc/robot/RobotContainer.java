@@ -54,6 +54,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.OldIntake;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -128,6 +129,10 @@ public class RobotContainer {
 
   public void changeOffset(double offset) {
     m_drivetrain.setOffset(offset);
+  }
+
+  public void changeDrivePIDController(PIDController drivePID) {
+    m_drivetrain.setDrivePID(drivePID);
   }
 
   /**
