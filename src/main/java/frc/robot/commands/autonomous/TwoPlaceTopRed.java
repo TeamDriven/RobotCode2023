@@ -24,9 +24,9 @@ import frc.robot.commands.automation.PlaceCubeHighAuto;
 import frc.robot.commands.automation.ZeroElevatorAndClaw;
 import frc.robot.commands.claw.SetClawPosition;
 import frc.robot.commands.drivetrain.AutoBalance;
-import frc.robot.commands.drivetrain.BoxWheels;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.MoveToLimelight;
+import frc.robot.commands.elevator.MoveElevator;
 import frc.robot.commands.limelight.MoveTo2DAprilTags;
 import frc.robot.commands.limelight.read2DAprilTagSnapshot;
 import frc.robot.commands.limelight.read2DAprilTags;
@@ -36,52 +36,57 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
 
-public final class TwoPlaceParkTopBlue extends SequentialCommandGroup {
+public final class TwoPlaceTopRed extends SequentialCommandGroup {
 
   /** Example static factory for an autonomous command. */
   // public static CommandBase exampleAuto(ExampleSubsystem subsystem) {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
   
-  public TwoPlaceParkTopBlue(Drivetrain drivetrain, Intake intake, Elevator elevator, Claw claw, LimeLight limeLight) {
+  public TwoPlaceTopRed(Drivetrain drivetrain, Intake intake, Elevator elevator, Claw claw, LimeLight limeLight) {
     List<PathPlannerTrajectory> pathList = PathPlanner.loadPathGroup(
-      "TwoPlaceParkTopBlue", 
+      "TwoPlaceParkTopRed", 
       new PathConstraints(3, 4), 
       new PathConstraints(3, 3),
-      new PathConstraints(3, 4)
+      new PathConstraints(3, 3)
     );
     addCommands(
+      new ZeroElevatorAndClaw(elevator, claw),
+      new SetClawPosition(claw, armTuckPos),
+      new WaitCommand(0.1),
+      new PlaceConeHighAuto(elevator, claw, intake, drivetrain),
       new ParallelDeadlineGroup(
-        new WaitCommand(14.75),
+        drivetrain.followPathCommand(true, pathList.get(0)),
         new SequentialCommandGroup(
-          new ZeroElevatorAndClaw(elevator, claw),
-          new SetClawPosition(claw, armTuckPos),
-          new WaitCommand(0.1),
-          new PlaceConeHighAuto(elevator, claw, intake, drivetrain),
-          new ParallelDeadlineGroup(
-            drivetrain.followPathCommand(true, pathList.get(0)),
-            new SequentialCommandGroup(
-              new WaitCommand(1),
-              new ParallelCommandGroup(
-                new MoveElevatorAndClawFast(elevator, claw, elevatorPickUpCubePos, armTicksPerDegree * 90),
-                new RunTempIntake(intake, -1)
-              )
-            )
-          ),
+          new WaitCommand(1),
           new ParallelCommandGroup(
-            new MoveElevatorAndClaw(elevator, claw, elevatorTuckPos, armTuckPos),
-            drivetrain.followPathCommand(false, pathList.get(1))
-          ),
-          new RunTempIntake(intake, 0.4).withTimeout(0.2),
-          drivetrain.followPathCommand(false, pathList.get(2)),
-          new ParallelDeadlineGroup(
-            new WaitCommand(2), 
-            new Drive(drivetrain, -3.5, 0, 0, true)
-          ),
-          new AutoBalance(drivetrain)
+            new MoveElevatorAndClawFast(elevator, claw, elevatorPickUpCubePos, armTicksPerDegree * 90),
+            new RunTempIntake(intake, -1)
+          )
         )
       ),
-      new BoxWheels(drivetrain)
+      // new ParallelDeadlineGroup(
+      //   drivetrain.followPathCommand(false, pathList.get(1)),
+      //   new RunTempIntake(intake, -1)
+      // ),
+      new ParallelCommandGroup(
+        new MoveElevatorAndClaw(elevator, claw, elevatorTuckPos, armTuckPos),
+        drivetrain.followPathCommand(false, pathList.get(1))
+      ),
+      // new read2DAprilTagSnapshot(limeLight).withTimeout(0.05),
+      // new ParallelDeadlineGroup(
+      //   new MoveToLimelight(drivetrain, limeLight),
+      //   new read2DAprilTags(limeLight)
+      // ),
+      // new PlaceCubeHighAuto(elevator, claw, intake),
+      new RunTempIntake(intake, 0.4).withTimeout(0.2)
+      // drivetrain.followPathCommand(false, pathList.get(2)),
+      // new ParallelDeadlineGroup(
+      //   new WaitCommand(2), 
+      //   new Drive(drivetrain, -3.5, 0, 0, true)
+      // ),
+      // new AutoBalance(drivetrain),
+      // new InstantCommand(drivetrain::boxWheels)
     );
   }
 }

@@ -94,7 +94,7 @@ public class LimeLight extends SubsystemBase {
       // SmartDashboard.putNumber("PoseYaw", pose[4]);
       // SmartDashboard.putNumber("PoseRoll", pose[5]);
     } catch(ArrayIndexOutOfBoundsException e) {
-      System.out.println("No 3D April tag detected");
+      // System.out.println("No 3D April tag detected");
     }
     return pose;
   }

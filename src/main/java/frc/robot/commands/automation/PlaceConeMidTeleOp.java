@@ -21,17 +21,17 @@ import frc.robot.subsystems.Elevator;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PlaceConeHighTeleOp extends SequentialCommandGroup {
+public class PlaceConeMidTeleOp extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public PlaceConeHighTeleOp(Elevator elevator, Claw claw, Drivetrain drivetrain) {
+  public PlaceConeMidTeleOp(Elevator elevator, Claw claw, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new changeNeutralMode(drivetrain, NeutralMode.Brake),
       new SetClawPositionWaitForFinish(claw, armTuckPos),
-      new MoveElevator(elevator, elevatorConeUpPos),
-      new WaitCommand(0.6),
-      new SetClawPosition(claw, armHighPlaceConePos),
+      new MoveElevator(elevator, elevatorConeMidPos),
+      new WaitCommand(0.4),
+      new SetClawPosition(claw, armMidPlaceConePos),
       new changeNeutralMode(drivetrain, NeutralMode.Coast)
     );
   }

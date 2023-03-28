@@ -11,7 +11,7 @@ import static frc.robot.Constants.DrivetrainConstants.*;
 public class AutoBalance extends CommandBase {
   /** Creates a new AutoBalance. */
   Drivetrain m_drivetrain;
-  double speed = 0.3;
+  double speed = 0.2;
   public AutoBalance(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
     addRequirements(m_drivetrain);
@@ -24,8 +24,8 @@ public class AutoBalance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Roll: " + m_drivetrain.getRoll());
-    System.out.println("Yaw: " + m_drivetrain.getYaw());
+    //System.out.println("Roll: " + m_drivetrain.getRoll());
+    //System.out.println("Yaw: " + m_drivetrain.getYaw());
     if (m_drivetrain.getYaw() > 90 || m_drivetrain.getYaw() < -90) {
       if (m_drivetrain.getRoll() > rollTarget){
         m_drivetrain.drive(-speed, 0, 0, false);

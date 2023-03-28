@@ -15,6 +15,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Intake() {
     intakeRollers.setNeutralMode(NeutralMode.Brake);
+    intakeRollers.setInverted(true);
   }
 
   public void runIntake(double speed) {

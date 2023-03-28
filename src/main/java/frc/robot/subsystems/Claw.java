@@ -10,17 +10,20 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.MotionMagicLibrary;
 
 public class Claw extends SubsystemBase {
   public TalonFX clawMotor = new TalonFX(11);
-  // public DigitalInput testInput = new DigitalInput(4);
+  public DigitalInput limitSwitch = new DigitalInput(4);
+
+  // public DigitalInput testInput = new lInput(4);
   public double m_targetPos;
 
   public Claw() {
     clawMotor.configFactoryDefault();
-    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 0.3, 0.01, 0.0, 0.01, 30000, 30000);
+    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 0.1, 0.0, 0.0, 0.01, 30000, 30000); //0.01
     clawMotor.setNeutralMode(NeutralMode.Brake);
     // clawMotor.setInverted(true);
   }
@@ -32,6 +35,10 @@ public class Claw extends SubsystemBase {
   public void setClawPosition(double position) {
     m_targetPos = position;
     clawMotor.set(ControlMode.MotionMagic, m_targetPos);
+  }
+
+  public void runMotor(double speed) {
+    clawMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public void runMotorForward() {
@@ -50,6 +57,10 @@ public class Claw extends SubsystemBase {
     clawMotor.setNeutralMode(mode);
   }
 
+  public boolean isLimitSwitchPressed() {
+    return !limitSwitch.get();
+  }
+
   public double getVelocity() {
     return clawMotor.getSelectedSensorVelocity();
   }
@@ -61,7 +72,7 @@ public class Claw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+    // System.out.println(getCurrentPosition());
   }
 
   @Override

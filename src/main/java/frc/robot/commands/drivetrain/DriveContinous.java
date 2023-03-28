@@ -40,6 +40,7 @@ public class DriveContinous extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xSpeed =
@@ -59,7 +60,7 @@ public class DriveContinous extends CommandBase {
     // the right by default.
     final var rot =
         -m_rotLimiter.calculate(MathUtil.applyDeadband(turnControl.getAsDouble(), m_deadZone))
-            * Drivetrain.kMaxAngularSpeed;
+            * Drivetrain.kMaxAngularSpeed * 0.25;
           
 
       m_drivetrain.drive(xSpeed, ySpeed, rot, true);

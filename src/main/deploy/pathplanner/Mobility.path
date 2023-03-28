@@ -2,55 +2,48 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 3.0,
-        "y": 4.0
+        "x": 1.92,
+        "y": 0.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9705273391414786,
-        "y": 4.0
+        "x": 2.895591297601996,
+        "y": 0.503160150400186
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "sequential",
-        "waitBehavior": "before",
-        "waitTime": 3.0
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 4.0,
-        "y": 4.0
+        "x": 6.5,
+        "y": 0.7
       },
       "prevControl": {
-        "x": 3.4679961938102277,
-        "y": 4.0
+        "x": 5.5,
+        "y": 0.7000000000000002
       },
       "nextControl": null,
-      "holonomicAngle": 0.0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "sequential",
-        "waitBehavior": "before",
-        "waitTime": 3.0
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     }
   ],
-  "markers": [
-    {
-      "position": 1.0,
-      "names": [
-        "Mark1"
-      ]
-    }
-  ]
+  "markers": []
 }

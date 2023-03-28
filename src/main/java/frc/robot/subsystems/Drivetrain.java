@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -25,6 +26,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,10 +45,10 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-0.273, 0.33);
   private final Translation2d m_backRightLocation = new Translation2d(-0.273, -0.33);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 5.165258172831278-Math.PI);
-  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 4.315691544528398-Math.PI);
-  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 5.904902984711128);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 2.5062777016095996);
+  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, -4.236877465179643, 0);
+  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, -11.434887507371725, 0);
+  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, -0.6007490281662093, 0);
+  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 2.5110097256623702, Math.PI);
 
   private final static PigeonIMU m_pigey = new PigeonIMU(12);
   private static double m_offset = 0.0;
@@ -90,6 +92,10 @@ public class Drivetrain extends SubsystemBase {
     m_offset = offset;
   }
 
+  public void adjustOffset(double offset) {
+    m_offset -= offset;
+  }
+
   public double getActualHeading() {
     return m_pigey.getFusedHeading() - m_offset;
   }
@@ -129,6 +135,13 @@ public class Drivetrain extends SubsystemBase {
     m_backRight.changeDrivePID(drivePID);
   }
 
+  public void setNeutralMode(NeutralMode mode) {
+    m_frontLeft.changeNeutralMode(mode);
+    m_frontRight.changeNeutralMode(mode);
+    m_backLeft.changeNeutralMode(mode);
+    m_backRight.changeNeutralMode(mode);
+  }
+
   public void resetOdometry(Pose2d initialPose) {
     m_odometry.resetPosition(
       Rotation2d.fromDegrees(getActualHeading()),
@@ -151,13 +164,17 @@ public class Drivetrain extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
     this.swerveModuleStates = swerveModuleStates;
 
+    // for (SwerveModuleState s : swerveModuleStates) {
+    //   System.out.println(s);
+    // }
+
     //  System.out.println(m_odometry.getPoseMeters());
 
     moveSwerve();
   }
 
   public void drive(SwerveModuleState[] swerveModuleStates) {
-    System.out.println(m_odometry.getPoseMeters());
+    //System.out.println(m_odometry.getPoseMeters());
 
     // for (SwerveModuleState s : swerveModuleStates) {
     //   System.out.println(s);
@@ -200,9 +217,9 @@ public class Drivetrain extends SubsystemBase {
 
   public void printEncoders() {
     m_backLeft.printencoder("bl");
-     m_backRight.printencoder("br");
-     m_frontLeft.printencoder("fl");
-     m_frontRight.printencoder("fr");
+    m_backRight.printencoder("br");
+    m_frontLeft.printencoder("fl");
+    m_frontRight.printencoder("fr");
   }
 
   public void setPidgey(double angle){
@@ -211,7 +228,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetPidgey(){
     m_pigey.setFusedHeading(0);
-    m_offset = 0.0;
+    m_offset = 180.0;
   }
   
   /** Updates the field relative position of the robot. */
@@ -303,6 +320,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // updateOdometry();
+    SmartDashboard.putNumber("Pidgey value", getActualHeading());
 
     moveSwerve();
   }
@@ -315,6 +333,8 @@ public class Drivetrain extends SubsystemBase {
   public class SwerveModule {
     // double COUNTS_PER_METER = 51213;
     double COUNTS_PER_METER = 57032;
+    double INTERNAL_ENCODER_COUNTS_PER_ROTATION = 2048;
+    double TURNING_GEAR_RATIO = 12.8;
  // private static final double kWheelRadius = 0.0508;
 //  private static final int kEncoderResolution = 4096;
 
@@ -325,6 +345,7 @@ public class Drivetrain extends SubsystemBase {
   private final TalonFX m_turningMotor;
 
   private final double offSet;
+  private final double internalOffset;
   
   private final DutyCycleEncoder m_turningEncoder;
  
@@ -355,7 +376,8 @@ public class Drivetrain extends SubsystemBase {
       int driveMotorChannel,
       int turningMotorChannel,
       int turningEncoderChannel,
-      double _offSet)
+      double _offSet,
+      double _internalOffset)
        {
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_turningMotor = new TalonFX(turningMotorChannel);
@@ -366,6 +388,7 @@ public class Drivetrain extends SubsystemBase {
     //m_driveEncoder = new Encoder(driveEncoderChannelA, driveEncoderChannelB);
     m_turningEncoder = new DutyCycleEncoder(turningEncoderChannel);
     offSet = _offSet;
+    internalOffset = _internalOffset;
 
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
@@ -401,12 +424,25 @@ public class Drivetrain extends SubsystemBase {
    * @return The current position of the module
    */
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(m_driveMotor.getSelectedSensorPosition() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get() * Math.PI * 2 - offSet));
+    return new SwerveModulePosition(m_driveMotor.getSelectedSensorPosition() / COUNTS_PER_METER, new Rotation2d(getTurnLocation()));
     // return new SwerveModulePosition(m_driveMotor.getSelectedSensorVelocity() / COUNTS_PER_METER, new Rotation2d(m_turningEncoder.get()));
+  }
+
+  private double getTurnLocation() {
+    if (m_turningEncoder.isConnected()) {
+      return m_turningEncoder.getDistance() * Math.PI*2 -offSet;
+    } else {
+      System.out.println("Encoder is out, Please fix");
+      return (m_turningMotor.getSelectedSensorPosition() / INTERNAL_ENCODER_COUNTS_PER_ROTATION / TURNING_GEAR_RATIO) * Math.PI*2 -internalOffset;
+    }
   }
 
   public void changeDrivePID(PIDController drivePID) {
     m_drivePIDController = drivePID;
+  }
+
+  public void changeNeutralMode(NeutralMode mode) {
+    m_driveMotor.setNeutralMode(mode);
   }
 
   public void printData() {
@@ -419,7 +455,7 @@ public class Drivetrain extends SubsystemBase {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    double tempEncoderCycle = m_turningEncoder.getDistance() * Math.PI*2 -offSet;
+    double tempEncoderCycle = getTurnLocation(); // normally use m_turningEncoder.getDistance()
     double encoderUpperLimit = Math.PI;
     double encoderLowerLimit = -Math.PI;
 

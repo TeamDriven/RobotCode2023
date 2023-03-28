@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_robotContainer.boxWheels();
+    // m_robotContainer.boxWheels();
 
     if(lol.getBoolean(false)){
       m_robotContainer.changeClawMode(NeutralMode.Coast);

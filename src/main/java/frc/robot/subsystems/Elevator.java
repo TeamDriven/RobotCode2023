@@ -9,12 +9,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import frc.robot.MotionMagicLibrary;
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
   WPI_TalonSRX elevatorMotor1 = new WPI_TalonSRX(9);
   VictorSPX elevatorMotor2 = new VictorSPX(10);
+  public DigitalInput limitSwitch = new DigitalInput(5);
   public double targetPos = 0;
   /** Creates a new ExampleSubsystem. */
   public Elevator() {
@@ -38,6 +39,10 @@ public class Elevator extends SubsystemBase {
   public void runElevator(double speed) {
     elevatorMotor1.set(ControlMode.PercentOutput, speed);
     elevatorMotor2.follow(elevatorMotor1);
+  }
+
+  public boolean isLimitSwitchPressed() {
+    return !limitSwitch.get();
   }
 
   public void printPosition() {
