@@ -11,11 +11,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.RunTempIntake;
-import frc.robot.commands.claw.SetClawPositionWaitForFinish;
+import frc.robot.commands.RunIntake;
+import frc.robot.commands.arm.SetArmPositionWaitForFinish;
 import frc.robot.commands.drivetrain.changeNeutralMode;
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -25,19 +25,19 @@ import frc.robot.subsystems.Intake;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceCubeHighTeleOp extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public PlaceCubeHighTeleOp(Elevator elevator, Claw claw, Intake intake, Drivetrain drivetrain) {
+  public PlaceCubeHighTeleOp(Elevator elevator, Arm arm, Intake intake, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new changeNeutralMode(drivetrain, NeutralMode.Brake),
-      new SetClawPositionWaitForFinish(claw, armHighPlaceCubePos),
+      new SetArmPositionWaitForFinish(arm, armHighPlaceCubePos),
       new MoveElevator(elevator, elevatorCubeUpPos),
       new WaitCommand(1.0),
       new ParallelDeadlineGroup(
         new WaitCommand(0.25), 
-        new RunTempIntake(intake, 0.5)
+        new RunIntake(intake, 0.5)
       ),
-      new MoveElevatorAndClawFast(elevator, claw, elevatorTuckPos, armTuckPos),
+      new MoveElevatorAndArmFast(elevator, arm, elevatorTuckPos, armTuckPos),
       new changeNeutralMode(drivetrain, NeutralMode.Coast)
     );
   }

@@ -12,7 +12,7 @@ public class AutoResetElevatorPosition extends CommandBase {
   Elevator m_elevator; 
   double timeOut = 1.0;
   double startingTime;
-  /** Creates a new setClawPosition. */
+  /** Creates a new setArmPosition. */
   public AutoResetElevatorPosition(Elevator elevator) {
     m_elevator = elevator;
     addRequirements(elevator);

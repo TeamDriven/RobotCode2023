@@ -13,9 +13,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
-import static frc.robot.Constants.DrivetrainConstants.*;
-
-import org.opencv.core.Mat;
 
 public class AutoTurnToSubstation extends CommandBase {
   /** Creates a new AutoBalance. */

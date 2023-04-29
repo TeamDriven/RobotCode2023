@@ -2,31 +2,30 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.claw;
+package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Arm;
 
-public class SetClawPosition extends CommandBase {
-  Claw m_claw; 
+public class ResetArmPosition extends CommandBase {
+  Arm m_arm; 
   double m_targetPos;
-  /** Creates a new setClawPosition. */
-  public SetClawPosition(Claw claw, double armOnPole) {
-    m_claw = claw;
-    m_targetPos = armOnPole; 
-    addRequirements(claw);
+  /** Creates a new setArmPosition. */
+  public ResetArmPosition(Arm arm) {
+    m_arm = arm;
+    addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_arm.zeroPosition();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_claw.setClawPosition(m_targetPos);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -35,7 +34,6 @@ public class SetClawPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
     return true;
   }
 }

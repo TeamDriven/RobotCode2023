@@ -2,27 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.arm;
 
-import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Arm;
 
-/** An example command that uses an example subsystem. */
-public class RunTempIntake extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Intake m_Intake;
-  double m_speed;
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public RunTempIntake(Intake subsystem, double speed) {
-    m_Intake = subsystem;
-    m_speed = speed;
+public class SetArmPosition extends CommandBase {
+  Arm m_arm; 
+  double m_targetPos;
+  /** Creates a new setArmPosition. */
+  public SetArmPosition(Arm arm, double armOnPole) {
+    m_arm = arm;
+    m_targetPos = armOnPole; 
+    addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -32,18 +25,17 @@ public class RunTempIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.runIntake(m_speed);
+    m_arm.setArmPosition(m_targetPos);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_Intake.runIntake(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    
+    return true;
   }
 }

@@ -25,9 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -331,14 +329,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    // System.out.println(getPose());
-    // This method will be called once per scheduler run
-    // updateOdometry();
-    // SmartDashboard.putNumber("Pidgey value", getActualHeading());
-
-    // moveSwerve(); //TODO: when zeroing wheel comment out this line
-  }
+  public void periodic() {}
 
   @Override
   public void simulationPeriodic() {

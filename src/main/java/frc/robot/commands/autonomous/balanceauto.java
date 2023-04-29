@@ -9,14 +9,14 @@ import frc.robot.commands.drivetrain.AutoBalance;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain;
 
-public final class  balanceauto extends SequentialCommandGroup {
+public final class BalanceAuto extends SequentialCommandGroup {
 
   /** Example static factory for an autonomous command. */
   // public static CommandBase exampleAuto(ExampleSubsystem subsystem) {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public balanceauto(final Drivetrain m_Drivetrain) {
+  public BalanceAuto(final Drivetrain m_Drivetrain) {
     addCommands(
       new Drive(m_Drivetrain, -1.5, 0, 0, true).withTimeout(2),
       new AutoBalance(m_Drivetrain)

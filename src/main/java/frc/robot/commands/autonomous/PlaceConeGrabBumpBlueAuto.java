@@ -17,15 +17,13 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.RunTempIntake;
-import frc.robot.commands.automation.MoveElevatorAndClaw;
-import frc.robot.commands.automation.MoveElevatorAndClawFast;
+import frc.robot.commands.RunIntake;
+import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.automation.MoveElevatorAndArm;
+import frc.robot.commands.automation.MoveElevatorAndArmFast;
 import frc.robot.commands.automation.PlaceConeHighAuto;
-import frc.robot.commands.automation.ZeroElevatorAndClaw;
-import frc.robot.commands.claw.SetClawPosition;
-import frc.robot.commands.drivetrain.AutoBalance;
-import frc.robot.commands.drivetrain.Drive;
-import frc.robot.subsystems.Claw;
+import frc.robot.commands.automation.ZeroElevatorAndArm;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -37,7 +35,7 @@ public final class PlaceConeGrabBumpBlueAuto extends SequentialCommandGroup {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public PlaceConeGrabBumpBlueAuto(final Drivetrain m_Drivetrain, Elevator elevator, Claw claw, Intake intake) {
+  public PlaceConeGrabBumpBlueAuto(final Drivetrain m_Drivetrain, Elevator elevator, Arm arm, Intake intake) {
     List<PathPlannerTrajectory> pathList = PathPlanner.loadPathGroup(
       "PlaceGrabChargeBumpBlue", 
       new PathConstraints(1.5, 1.5), 
@@ -47,21 +45,21 @@ public final class PlaceConeGrabBumpBlueAuto extends SequentialCommandGroup {
     PIDController pTheta1 = new PIDController(0.65, 0, 0);
     
     addCommands(
-      new ZeroElevatorAndClaw(elevator, claw),
-      new SetClawPosition(claw, armTuckPos),
+      new ZeroElevatorAndArm(elevator, arm),
+      new SetArmPosition(arm, armTuckPos),
       new WaitCommand(0.1),
-      new PlaceConeHighAuto(elevator, claw, intake, m_Drivetrain),
+      new PlaceConeHighAuto(elevator, arm, intake, m_Drivetrain),
       new ParallelDeadlineGroup(
         m_Drivetrain.followPathCommand(true, pathList.get(0), pTheta1),
         new SequentialCommandGroup(
           new WaitCommand(1),
           new ParallelCommandGroup(
-            new MoveElevatorAndClawFast(elevator, claw, elevatorPickUpCubePos, armCubePickupPos),
-            new RunTempIntake(intake, -1)
+            new MoveElevatorAndArmFast(elevator, arm, elevatorPickUpCubePos, armCubePickupPos),
+            new RunIntake(intake, -1)
           )
         )
       ),
-      new MoveElevatorAndClaw(elevator, claw, elevatorTuckPos, armTuckPos)
+      new MoveElevatorAndArm(elevator, arm, elevatorTuckPos, armTuckPos)
     );
   }
 }

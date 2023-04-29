@@ -18,7 +18,7 @@ public class MoveToRetroreflectiveTape extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new readRetroreflectiveTape(limeLight),
+      new ReadRetroreflectiveTape(limeLight),
       new MoveToLimelightDriveable(drivetrain, limeLight, heading)
     );
   }

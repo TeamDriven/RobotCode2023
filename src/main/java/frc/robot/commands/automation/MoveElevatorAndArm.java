@@ -5,24 +5,24 @@
 package frc.robot.commands.automation;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.claw.SetClawPositionWaitForFinish;
+import frc.robot.commands.arm.SetArmPositionWaitForFinish;
 import frc.robot.commands.elevator.MoveElevatorWaitForFinish;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import static frc.robot.Constants.MotionMagicConstants.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class MoveElevatorAndClaw extends SequentialCommandGroup {
+public class MoveElevatorAndArm extends SequentialCommandGroup {
   /** Creates a new AutoPlaceConeHigh. */
-  public MoveElevatorAndClaw(Elevator elevator, Claw claw, double elevatorPos, double clawPos) {
+  public MoveElevatorAndArm(Elevator elevator, Arm arm, double elevatorPos, double armPos) {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetClawPositionWaitForFinish(claw, armTuckPos), //was arm up pos
+      new SetArmPositionWaitForFinish(arm, armTuckPos), //was arm up pos
       new MoveElevatorWaitForFinish(elevator, elevatorPos),
-      new SetClawPositionWaitForFinish(claw, clawPos)
+      new SetArmPositionWaitForFinish(arm, armPos)
       // new ParallelDeadlineGroup(
       //    new WaitCommand(1), 
       //    new RunTempIntake(intake, -0.5)

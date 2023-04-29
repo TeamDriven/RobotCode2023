@@ -2,25 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.claw;
+package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Arm;
 
-public class SetClawPositionWaitForFinish extends CommandBase {
-  Claw m_claw; 
-  double m_targetPos;
-
-  double tolerance = 250;
-  double pauseTime = 0.2;
-
+public class AutoResetArmPosition extends CommandBase {
+  Arm m_arm; 
+  double timeOut = 1.0;
   double startingTime;
-  /** Creates a new setClawPosition. */
-  public SetClawPositionWaitForFinish(Claw claw, double targetPos) {
-    m_claw = claw;
-    m_targetPos = targetPos; 
-    addRequirements(claw);
+  public AutoResetArmPosition(Arm arm) {
+    m_arm = arm;
+    addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -33,20 +27,23 @@ public class SetClawPositionWaitForFinish extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_claw.setClawPosition(m_targetPos);
+    m_arm.runMotor(-0.2);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_arm.stopMotor();
+    m_arm.zeroPosition();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // System.out.println(m_claw.getVelocity());
-    if (Math.abs(m_claw.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
+    if (m_arm.isLimitSwitchPressed() || Timer.getFPGATimestamp() >= startingTime + timeOut) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 }

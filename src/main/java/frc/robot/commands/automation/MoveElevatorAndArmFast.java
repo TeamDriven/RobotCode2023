@@ -5,22 +5,24 @@
 package frc.robot.commands.automation;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.claw.AutoResetClawPosition;
-import frc.robot.commands.elevator.AutoResetElevatorPosition;
-import frc.robot.subsystems.Claw;
+import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.elevator.MoveElevatorWaitForFinish;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
-
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ZeroElevatorAndClaw extends SequentialCommandGroup {
-  /** Creates a new ZeroElevatorAndClaw. */
-  public ZeroElevatorAndClaw(Elevator elevator, Claw claw) {
+public class MoveElevatorAndArmFast extends SequentialCommandGroup {
+  /** Creates a new AutoPlaceConeHigh. */
+  public MoveElevatorAndArmFast(Elevator elevator, Arm arm, double elevatorPos, double armPos) {
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoResetElevatorPosition(elevator),
-      new AutoResetClawPosition(claw)
+      new SetArmPosition(arm, armPos),
+      new MoveElevatorWaitForFinish(elevator, elevatorPos)
     );
+
+
   }
 }

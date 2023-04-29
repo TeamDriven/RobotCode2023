@@ -24,8 +24,8 @@ public final class Controls {
     public static final BooleanSupplier moveElevatorUpControl = m_controller::getXButton;
     public static final BooleanSupplier moveElevatorDownControl = m_controller::getBButton;
 
-    public static final BooleanSupplier moveClawUpControl = m_controller::getYButton;
-    public static final BooleanSupplier moveClawDownControl = m_controller::getAButton;
+    public static final BooleanSupplier moveArmUpControl = m_controller::getYButton;
+    public static final BooleanSupplier moveArmDownControl = m_controller::getAButton;
 
     public static final BooleanSupplier zeroRobotControl = m_controller::getStartButton;
 

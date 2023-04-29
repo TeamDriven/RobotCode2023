@@ -10,11 +10,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.claw.SetClawPosition;
-import frc.robot.commands.claw.SetClawPositionWaitForFinish;
-import frc.robot.commands.drivetrain.changeNeutralMode;
+import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.drivetrain.ChangeNeutralMode;
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 
@@ -23,15 +22,15 @@ import frc.robot.subsystems.Elevator;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceConeHighFromPrePlaceTeleOp extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public PlaceConeHighFromPrePlaceTeleOp(Elevator elevator, Claw claw, Drivetrain drivetrain) {
+  public PlaceConeHighFromPrePlaceTeleOp(Elevator elevator, Arm arm, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new changeNeutralMode(drivetrain, NeutralMode.Brake),
+      new ChangeNeutralMode(drivetrain, NeutralMode.Brake),
       new MoveElevator(elevator, elevatorConeUpPos),
       new WaitCommand(0.3),
-      new SetClawPosition(claw, armHighPlaceConePos),
-      new changeNeutralMode(drivetrain, NeutralMode.Coast)
+      new SetArmPosition(arm, armHighPlaceConePos),
+      new ChangeNeutralMode(drivetrain, NeutralMode.Coast)
     );
   }
 }

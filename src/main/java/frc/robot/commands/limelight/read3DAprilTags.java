@@ -9,7 +9,7 @@ import frc.robot.subsystems.LimeLight;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class read3DAprilTags extends CommandBase {
+public class Read3DAprilTags extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LimeLight m_limelight;
 
@@ -18,7 +18,7 @@ public class read3DAprilTags extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public read3DAprilTags(LimeLight subsystem) {
+  public Read3DAprilTags(LimeLight subsystem) {
     m_limelight = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_limelight);

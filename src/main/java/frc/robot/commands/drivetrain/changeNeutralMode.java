@@ -12,11 +12,11 @@ import frc.robot.subsystems.Drivetrain;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class changeNeutralMode extends InstantCommand {
+public class ChangeNeutralMode extends InstantCommand {
   Drivetrain m_drivetrain;
   NeutralMode m_mode;
 
-  public changeNeutralMode(Drivetrain drivetrain, NeutralMode mode) {
+  public ChangeNeutralMode(Drivetrain drivetrain, NeutralMode mode) {
     m_drivetrain = drivetrain;
     m_mode = mode;
 

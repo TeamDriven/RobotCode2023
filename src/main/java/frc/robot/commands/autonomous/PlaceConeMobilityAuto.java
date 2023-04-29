@@ -8,12 +8,10 @@ import static frc.robot.Constants.MotionMagicConstants.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.automation.PlaceConeHighAuto;
-import frc.robot.commands.automation.ZeroElevatorAndClaw;
-import frc.robot.commands.claw.SetClawPosition;
-import frc.robot.commands.drivetrain.AutoBalance;
-import frc.robot.commands.drivetrain.Drive;
-import frc.robot.subsystems.Claw;
+import frc.robot.commands.automation.ZeroElevatorAndArm;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -25,12 +23,12 @@ public final class PlaceConeMobilityAuto extends SequentialCommandGroup {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public PlaceConeMobilityAuto(final Drivetrain m_Drivetrain, Elevator elevator, Claw claw, Intake intake) {
+  public PlaceConeMobilityAuto(final Drivetrain m_Drivetrain, Elevator elevator, Arm arm, Intake intake) {
     addCommands(
-      new ZeroElevatorAndClaw(elevator, claw),
-      new SetClawPosition(claw, armTuckPos),
+      new ZeroElevatorAndArm(elevator, arm),
+      new SetArmPosition(arm, armTuckPos),
       new WaitCommand(0.1),
-      new PlaceConeHighAuto(elevator, claw, intake, m_Drivetrain),
+      new PlaceConeHighAuto(elevator, arm, intake, m_Drivetrain),
       m_Drivetrain.followPathCommand(true, "Mobility")
 
     );

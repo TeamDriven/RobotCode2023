@@ -9,7 +9,7 @@ import frc.robot.subsystems.LimeLight;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class readRetroreflectiveTapeSnapshot extends CommandBase {
+public class ReadRetroreflectiveTapeSnapshot extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LimeLight m_limelight;
 
@@ -18,7 +18,7 @@ public class readRetroreflectiveTapeSnapshot extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public readRetroreflectiveTapeSnapshot(LimeLight subsystem) {
+  public ReadRetroreflectiveTapeSnapshot(LimeLight subsystem) {
     m_limelight = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_limelight);

@@ -7,14 +7,10 @@ package frc.robot.commands.automation;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.RunTempIntake;
-import frc.robot.commands.drivetrain.AutoTurn;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.drivetrain.AutoTurnToSubstation;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -24,12 +20,12 @@ import frc.robot.subsystems.Intake;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PickUpSubstationCone extends ParallelCommandGroup {
   /** Creates a new PickUpSubstationCone. */
-  public PickUpSubstationCone(Drivetrain drivetrain, Intake intake, Elevator elevator, Claw claw) {
+  public PickUpSubstationCone(Drivetrain drivetrain, Intake intake, Elevator elevator, Arm arm) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RunTempIntake(intake, kIntakeSpeed),
-      new MoveElevatorAndClawFast(elevator, claw, elevatorSubstationPos, armSubstationPos),
+      new RunIntake(intake, kIntakeSpeed),
+      new MoveElevatorAndArmFast(elevator, arm, elevatorSubstationPos, armSubstationPos),
       new AutoTurnToSubstation(drivetrain)
     );
   }

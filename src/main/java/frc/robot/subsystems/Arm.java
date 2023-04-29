@@ -14,47 +14,47 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.MotionMagicLibrary;
 
-public class Claw extends SubsystemBase {
-  public TalonFX clawMotor = new TalonFX(11);
+public class Arm extends SubsystemBase {
+  public TalonFX armMotor = new TalonFX(11);
   public DigitalInput limitSwitch = new DigitalInput(4);
 
   // public DigitalInput testInput = new lInput(4);
   public double m_targetPos;
 
-  public Claw() {
-    clawMotor.configFactoryDefault();
-    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 0.1, 0.0, 0.0, 0.01, 30000, 30000); //0.1
-    clawMotor.setNeutralMode(NeutralMode.Brake);
-    // clawMotor.setInverted(true);
+  public Arm() {
+    armMotor.configFactoryDefault();
+    MotionMagicLibrary.setMotionMagicMotorParameters(armMotor, 0.1, 0.0, 0.0, 0.01, 30000, 30000); //0.1
+    armMotor.setNeutralMode(NeutralMode.Brake);
+    // armMotor.setInverted(true);
   }
 
   public void zeroPosition() {
-    clawMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
+    armMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
   }
 
-  public void setClawPosition(double position) {
+  public void setArmPosition(double position) {
     m_targetPos = position;
-    clawMotor.set(ControlMode.MotionMagic, m_targetPos);
+    armMotor.set(ControlMode.MotionMagic, m_targetPos);
   }
 
   public void runMotor(double speed) {
-    clawMotor.set(ControlMode.PercentOutput, speed);
+    armMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public void runMotorForward() {
-    clawMotor.set(ControlMode.PercentOutput, -0.5);
+    armMotor.set(ControlMode.PercentOutput, -0.5);
   }
 
   public void runMotorBackward() {
-    clawMotor.set(ControlMode.PercentOutput, 0.5);
+    armMotor.set(ControlMode.PercentOutput, 0.5);
   }
 
   public void stopMotor() {
-    clawMotor.set(ControlMode.PercentOutput, 0.0);
+    armMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
   public void changeMode(NeutralMode mode){
-    clawMotor.setNeutralMode(mode);
+    armMotor.setNeutralMode(mode);
   }
 
   public boolean isLimitSwitchPressed() {
@@ -62,11 +62,11 @@ public class Claw extends SubsystemBase {
   }
 
   public double getVelocity() {
-    return clawMotor.getSelectedSensorVelocity();
+    return armMotor.getSelectedSensorVelocity();
   }
 
   public double getCurrentPosition() {
-    return clawMotor.getSelectedSensorPosition();
+    return armMotor.getSelectedSensorPosition();
   }
   
   @Override

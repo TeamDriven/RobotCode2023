@@ -4,30 +4,11 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.MotionMagicConstants.*;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.MotionMagicLibrary;
 
 public class LED extends SubsystemBase {
-
-  // public AddressableLED m_led = new AddressableLED(23);
-  // public AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
-
-  private PowerDistribution m_pdp;
   private PneumaticHub LEDController = new PneumaticHub(22);
   private Solenoid stripOneRed = LEDController.makeSolenoid(0);
   private Solenoid stripOneBlue = LEDController.makeSolenoid(1);
@@ -38,12 +19,7 @@ public class LED extends SubsystemBase {
 
   // public DigitalInput testInput = new lInput(4);
 
-  public LED(PowerDistribution pdp) {
-    m_pdp = pdp;
-    // Reuse buffer
-    // Default to a length of 60, start empty output
-    // Length is expensive to set, so only set it once, then just update data
-  }
+  public LED() {}
 
   public void setYellow() {
     stripOneRed.set(true);

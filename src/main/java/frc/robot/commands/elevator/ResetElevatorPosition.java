@@ -10,7 +10,7 @@ import frc.robot.subsystems.Elevator;
 public class ResetElevatorPosition extends CommandBase {
   Elevator m_elevator; 
   double m_targetPos;
-  /** Creates a new setClawPosition. */
+  /** Creates a new setArmPosition. */
   public ResetElevatorPosition(Elevator elevator) {
     m_elevator = elevator;
     addRequirements(elevator);

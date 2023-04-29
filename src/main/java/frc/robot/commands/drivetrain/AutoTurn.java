@@ -11,7 +11,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
-import static frc.robot.Constants.DrivetrainConstants.*;
 
 public class AutoTurn extends CommandBase {
   /** Creates a new AutoBalance. */
