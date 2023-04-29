@@ -39,7 +39,7 @@ public class PlaceConeHighAuto extends SequentialCommandGroup {
         new RunTempIntake(intake, -.5)
       ),
       new SetClawPosition(claw, armTuckPos),
-      new WaitCommand(0.05),
+      new WaitCommand(0.1),
       new MoveElevator(elevator, elevatorTuckPos),
       new changeNeutralMode(drivetrain, NeutralMode.Coast)
     );

@@ -23,22 +23,16 @@ import frc.robot.subsystems.Intake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PlaceCubeHighAuto extends SequentialCommandGroup {
+public class TuckFromPlace extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public PlaceCubeHighAuto(Elevator elevator, Claw claw, Intake intake, Drivetrain drivetrain) {
+  public TuckFromPlace(Elevator elevator, Claw claw, Intake intake, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new changeNeutralMode(drivetrain, NeutralMode.Brake),
-      new SetClawPosition(claw, armHighPlaceCubePos),
-      new WaitCommand(0.35),
-      new MoveElevator(elevator, elevatorTicksPerInches * 55),
-      new WaitCommand(1.0),
-      new ParallelDeadlineGroup(
-        new WaitCommand(0.25), 
-        new RunTempIntake(intake, 0.5)
-      ),
-      new MoveElevatorAndClawFast(elevator, claw, elevatorTuckPos, armTuckPos),
+      new SetClawPosition(claw, armTuckPos),
+      new WaitCommand(0.1),
+      new MoveElevator(elevator, elevatorTuckPos),
       new changeNeutralMode(drivetrain, NeutralMode.Coast)
     );
   }

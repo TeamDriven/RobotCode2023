@@ -11,12 +11,12 @@ public final class Controls {
     public static final DoubleSupplier yMoveControl = m_controller::getRightX;
     public static final DoubleSupplier turnControl = m_controller::getLeftX;
 
-    public static final BooleanSupplier speedUpControl = Controls::getRightTrigger;
+    public static final BooleanSupplier lockWheelsControl = Controls::getRightTrigger;
     public static final BooleanSupplier autoLineUpControl = Controls::getLeftTrigger;
 
     public static final BooleanSupplier changeModeControl = m_controller::getLeftStickButton;
 
-    public static final BooleanSupplier placeConeOnPoleControl = m_controller::getRightStickButton;
+    public static final BooleanSupplier prePlaceControl = m_controller::getRightStickButton;
 
     public static final BooleanSupplier intakeControl = m_controller::getRightBumper;
     public static final BooleanSupplier outtakeControl = m_controller::getLeftBumper;
@@ -31,9 +31,10 @@ public final class Controls {
 
     public static final BooleanSupplier autoPlaceHighControl = Controls::getDpadUp;
     public static final BooleanSupplier autoPlaceMidControl = Controls::getDpadRight;
-    public static final BooleanSupplier autoTuckControl = Controls::getDpadLeft;
-    public static final BooleanSupplier autoPickUpControl = Controls::getDpadDown;
-    public static final BooleanSupplier autoFloorConePickUpControl = m_controller::getBackButton;
+    public static final BooleanSupplier autoTuckControl = Controls::getDpadDown;
+    // public static final BooleanSupplier autoPickUpControl = Controls::getDpadDown;
+    public static final BooleanSupplier autoSubstationConePickUpControl = Controls::getDpadLeft;
+    public static final BooleanSupplier autoDoubleSubstationConePickUpControl = m_controller::getBackButton;
 
 
     public static boolean getDpadUp() {

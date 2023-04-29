@@ -42,6 +42,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean isLimitSwitchPressed() {
+    // System.out.println(!limitSwitch.get());
     return !limitSwitch.get();
   }
 
@@ -55,6 +56,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // System.out.println(isLimitSwitchPressed());
     // This method will be called once per scheduler run
   }
 

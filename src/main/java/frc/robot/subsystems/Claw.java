@@ -23,7 +23,7 @@ public class Claw extends SubsystemBase {
 
   public Claw() {
     clawMotor.configFactoryDefault();
-    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 0.1, 0.0, 0.0, 0.01, 30000, 30000); //0.01
+    MotionMagicLibrary.setMotionMagicMotorParameters(clawMotor, 0.1, 0.0, 0.0, 0.01, 30000, 30000); //0.1
     clawMotor.setNeutralMode(NeutralMode.Brake);
     // clawMotor.setInverted(true);
   }
@@ -73,6 +73,7 @@ public class Claw extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // System.out.println(getCurrentPosition());
+    // System.out.println(isLimitSwitchPressed());
   }
 
   @Override

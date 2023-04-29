@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,10 +46,10 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-0.273, 0.33);
   private final Translation2d m_backRightLocation = new Translation2d(-0.273, -0.33);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, -4.236877465179643, 0);
-  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, -11.434887507371725, 0);
-  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, -0.6007490281662093, 0);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 2.5110097256623702, Math.PI);
+  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 2.035754289534901, 0);
+  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2,-0.020100538618711538, 0);
+  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, -0.584270745967643, 0);
+  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, -1.945028390103366, 0);
 
   private final static PigeonIMU m_pigey = new PigeonIMU(12);
   private static double m_offset = 0.0;
@@ -78,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
 
   PIDController m_xController = new PIDController(kPXController, 0, 0);
   PIDController m_yController = new PIDController(kPYController, 0, 0);
-  PIDController m_thetaController = new PIDController(kPThetaController, 0, 0);
+  PIDController m_thetaController = new PIDController(kPThetaController, kIThetaController, 0);
 
   public Drivetrain() {
     m_startYaw = new Rotation2d();
@@ -174,8 +175,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(SwerveModuleState[] swerveModuleStates) {
-    //System.out.println(m_odometry.getPoseMeters());
+    // System.out.println(m_odometry.getPoseMeters());
 
+    // System.out.println(DriverStation.getMatchTime());
     // for (SwerveModuleState s : swerveModuleStates) {
     //   System.out.println(s);
     // }
@@ -205,6 +207,7 @@ public class Drivetrain extends SubsystemBase {
     // };
     // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     // this.swerveModuleStates = swerveModuleStates;
+    moveSwerve();
   }
 
   public void moveSwerve() {
@@ -230,6 +233,11 @@ public class Drivetrain extends SubsystemBase {
     m_pigey.setFusedHeading(0);
     m_offset = 180.0;
   }
+
+  public void resetPidgeyToSubStation(){
+    m_pigey.setFusedHeading(0);
+    m_offset = 270;
+  }
   
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
@@ -247,7 +255,7 @@ public class Drivetrain extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
-  public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, final boolean useAllianceColor, PathPlannerTrajectory trajectory) {
+  public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, final boolean useAllianceColor, PathPlannerTrajectory trajectory, PIDController pXController, PIDController pYController, PIDController pThetaController) {
     
     // final Trajectory trajectory = generateTrajectory(waypoints);
     // final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 3.5, 3   );
@@ -281,16 +289,16 @@ public class Drivetrain extends SubsystemBase {
           }, 
           initialPose);
       }
-      m_xController.reset();
-      m_yController.reset();
-      m_thetaController.reset();
+      pXController.reset();
+      pYController.reset();
+      pThetaController.reset();
     }).andThen(new PPSwerveControllerCommand(
       trajectory,
       () -> getPose(),
       m_kinematics,
-      m_xController,
-      m_yController,
-      m_thetaController,
+      pXController,
+      pYController,
+      pThetaController,
       (SwerveModuleState[] moduleStates) -> {
         drive(moduleStates);
       },
@@ -301,14 +309,20 @@ public class Drivetrain extends SubsystemBase {
 
   public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, String trajectoryFileName) {
     
-    final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 2, 3);
+    final PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFileName, 3, 4);
     
-    return followPathCommand(shouldResetOdometry, false, trajectory);
+    return followPathCommand(shouldResetOdometry, false, trajectory, m_xController, m_yController, m_thetaController);
   }
 
   public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, PathPlannerTrajectory trajectory) {
     
-    return followPathCommand(shouldResetOdometry, false, trajectory);
+    return followPathCommand(shouldResetOdometry, false, trajectory, m_xController, m_yController, m_thetaController);
+
+  }
+
+  public SequentialCommandGroup followPathCommand(final boolean shouldResetOdometry, PathPlannerTrajectory trajectory, PIDController pThetaController) {
+    
+    return followPathCommand(shouldResetOdometry, false, trajectory, m_xController, m_yController, pThetaController);
 
   }
 
@@ -318,11 +332,12 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // System.out.println(getPose());
     // This method will be called once per scheduler run
     // updateOdometry();
-    SmartDashboard.putNumber("Pidgey value", getActualHeading());
+    // SmartDashboard.putNumber("Pidgey value", getActualHeading());
 
-    moveSwerve();
+    // moveSwerve(); //TODO: when zeroing wheel comment out this line
   }
 
   @Override
@@ -432,7 +447,7 @@ public class Drivetrain extends SubsystemBase {
     if (m_turningEncoder.isConnected()) {
       return m_turningEncoder.getDistance() * Math.PI*2 -offSet;
     } else {
-      System.out.println("Encoder is out, Please fix");
+      // System.out.println("Encoder is out, Please fix");
       return (m_turningMotor.getSelectedSensorPosition() / INTERNAL_ENCODER_COUNTS_PER_ROTATION / TURNING_GEAR_RATIO) * Math.PI*2 -internalOffset;
     }
   }

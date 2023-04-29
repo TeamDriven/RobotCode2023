@@ -37,7 +37,7 @@ public class PlaceCubeHighTeleOp extends SequentialCommandGroup {
         new WaitCommand(0.25), 
         new RunTempIntake(intake, 0.5)
       ),
-      new MoveElevator(elevator, elevatorTuckPos),
+      new MoveElevatorAndClawFast(elevator, claw, elevatorTuckPos, armTuckPos),
       new changeNeutralMode(drivetrain, NeutralMode.Coast)
     );
   }

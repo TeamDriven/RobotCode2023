@@ -4,11 +4,14 @@
 
 package frc.robot.commands.autonomous;
 
+import static frc.robot.Constants.MotionMagicConstants.*;
+
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.automation.PlaceConeHighAuto;
 import frc.robot.commands.automation.ZeroElevatorAndClaw;
+import frc.robot.commands.claw.SetClawPosition;
 import frc.robot.commands.drivetrain.AutoBalance;
 import frc.robot.commands.drivetrain.BoxWheels;
 import frc.robot.commands.drivetrain.Drive;
@@ -30,9 +33,11 @@ public final class PlaceConeBalanceAuto extends SequentialCommandGroup {
         new WaitCommand(14.75), 
         new SequentialCommandGroup(
           new ZeroElevatorAndClaw(elevator, claw),
+          new SetClawPosition(claw, armTuckPos),
+          new WaitCommand(0.1),
           new PlaceConeHighAuto(elevator, claw, intake, m_Drivetrain),
-          new Drive(m_Drivetrain, -3, 0, 0, true).withTimeout(5),
-          new Drive(m_Drivetrain, 3, 0, 0, true).withTimeout(2.5),
+          new Drive(m_Drivetrain, -3, 0, 0, true).withTimeout(4.5),
+          new Drive(m_Drivetrain, 3, 0, 0, true).withTimeout(2.6),
           new AutoBalance(m_Drivetrain)
         )
       ),

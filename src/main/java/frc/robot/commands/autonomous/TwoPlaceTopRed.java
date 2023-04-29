@@ -11,6 +11,8 @@ import java.util.List;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -46,47 +48,39 @@ public final class TwoPlaceTopRed extends SequentialCommandGroup {
   public TwoPlaceTopRed(Drivetrain drivetrain, Intake intake, Elevator elevator, Claw claw, LimeLight limeLight) {
     List<PathPlannerTrajectory> pathList = PathPlanner.loadPathGroup(
       "TwoPlaceParkTopRed", 
-      new PathConstraints(3, 4), 
+      new PathConstraints(3, 3), 
       new PathConstraints(3, 3),
       new PathConstraints(3, 3)
     );
+
+    PIDController pTheta1 = new PIDController(2.5, 0, 0);
+    PIDController pTheta2 = new PIDController(1.5, 0, 0);
+    // PIDController pTheta3 = new PIDController(2.5, 0, 0);
+
     addCommands(
       new ZeroElevatorAndClaw(elevator, claw),
       new SetClawPosition(claw, armTuckPos),
       new WaitCommand(0.1),
       new PlaceConeHighAuto(elevator, claw, intake, drivetrain),
       new ParallelDeadlineGroup(
-        drivetrain.followPathCommand(true, pathList.get(0)),
+        drivetrain.followPathCommand(true, pathList.get(0), pTheta1),
         new SequentialCommandGroup(
           new WaitCommand(1),
           new ParallelCommandGroup(
-            new MoveElevatorAndClawFast(elevator, claw, elevatorPickUpCubePos, armTicksPerDegree * 90),
+            new MoveElevatorAndClawFast(elevator, claw, elevatorPickUpCubePos, armCubePickupPos),
             new RunTempIntake(intake, -1)
           )
         )
       ),
-      // new ParallelDeadlineGroup(
-      //   drivetrain.followPathCommand(false, pathList.get(1)),
-      //   new RunTempIntake(intake, -1)
-      // ),
       new ParallelCommandGroup(
         new MoveElevatorAndClaw(elevator, claw, elevatorTuckPos, armTuckPos),
-        drivetrain.followPathCommand(false, pathList.get(1))
+        drivetrain.followPathCommand(false, pathList.get(1), pTheta2)
       ),
-      // new read2DAprilTagSnapshot(limeLight).withTimeout(0.05),
-      // new ParallelDeadlineGroup(
-      //   new MoveToLimelight(drivetrain, limeLight),
-      //   new read2DAprilTags(limeLight)
-      // ),
-      // new PlaceCubeHighAuto(elevator, claw, intake),
-      new RunTempIntake(intake, 0.4).withTimeout(0.2)
-      // drivetrain.followPathCommand(false, pathList.get(2)),
-      // new ParallelDeadlineGroup(
-      //   new WaitCommand(2), 
-      //   new Drive(drivetrain, -3.5, 0, 0, true)
-      // ),
-      // new AutoBalance(drivetrain),
-      // new InstantCommand(drivetrain::boxWheels)
+      // new RunTempIntake(intake, 0.4).withTimeout(0.2)
+      new ParallelDeadlineGroup(
+        new PlaceCubeHighAuto(elevator, claw, intake, drivetrain),
+        new Drive(drivetrain, 0, 0, 0, true)
+      )
     );
   }
 }

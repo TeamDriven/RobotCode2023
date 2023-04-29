@@ -15,12 +15,12 @@ import frc.robot.subsystems.LimeLight;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class MoveTo2DAprilTags extends ParallelCommandGroup {
   /** Creates a new MoveTo2DAprilTags. */
-  public MoveTo2DAprilTags(LimeLight limeLight, Drivetrain drivetrain) {
+  public MoveTo2DAprilTags(LimeLight limeLight, Drivetrain drivetrain, double heading) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new read2DAprilTags(limeLight),
-      new MoveToLimelightDriveable(drivetrain, limeLight)
+      new MoveToLimelightDriveable(drivetrain, limeLight, heading)
     );
   }
 }

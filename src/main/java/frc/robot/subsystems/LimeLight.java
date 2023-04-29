@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimeLight extends SubsystemBase {
@@ -84,7 +85,7 @@ public class LimeLight extends SubsystemBase {
    * @return An array of doubles in the order of X, Y, Z, Pitch, Yaw, Roll
    */
   public double[] getRobotPose() {
-    double[] pose = {0.0, 0.0, 0.0};
+    double[] pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     try{
       pose = NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("botpose").getDoubleArray(pose);
       // SmartDashboard.putNumber("PoseX", pose[0]);

@@ -11,7 +11,7 @@ import static frc.robot.Constants.DrivetrainConstants.*;
 public class AutoBalance extends CommandBase {
   /** Creates a new AutoBalance. */
   Drivetrain m_drivetrain;
-  double speed = 0.2;
+  double speed = 0.2; //0.2
   public AutoBalance(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
     addRequirements(m_drivetrain);

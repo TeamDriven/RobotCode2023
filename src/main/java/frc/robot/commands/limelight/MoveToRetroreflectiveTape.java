@@ -14,12 +14,12 @@ import frc.robot.subsystems.LimeLight;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class MoveToRetroreflectiveTape extends ParallelCommandGroup {
   /** Creates a new MoveTo2DAprilTags. */
-  public MoveToRetroreflectiveTape(LimeLight limeLight, Drivetrain drivetrain) {
+  public MoveToRetroreflectiveTape(LimeLight limeLight, Drivetrain drivetrain, double heading) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new readRetroreflectiveTape(limeLight),
-      new MoveToLimelightDriveable(drivetrain, limeLight)
+      new MoveToLimelightDriveable(drivetrain, limeLight, heading)
     );
   }
 }

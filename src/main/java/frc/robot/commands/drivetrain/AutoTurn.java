@@ -46,6 +46,7 @@ public class AutoTurn extends CommandBase {
   public void execute() {
     currentHeading = m_drivetrain.getActualHeading();
     double rot = 0;
+    
     // double targetHeading = m_heading;
     // double speed = 0.01;
 
@@ -94,9 +95,9 @@ public class AutoTurn extends CommandBase {
   @Override
   public boolean isFinished() {
     // System.out.println("target: " + m_heading + " current: " + currentHeading);
-    if (m_turningPIDController.atSetpoint()) {
-      return true;
-    }
+    // if (m_turningPIDController.atSetpoint()) {
+    //   return true;
+    // }
     return false;
   }
 }

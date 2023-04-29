@@ -18,10 +18,16 @@ public class MoveToLimelightDriveable extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivetrain m_drivetrain;
   private final LimeLight m_limelight; 
+  double m_heading;
+  double currentHeading;
+  boolean hasInterruptedTurn;
 
   private final double m_deadZone = 0.08;
 
-  private PIDController m_drivePIDController = new PIDController(0.01, 0.0, 0.0);
+  private PIDController m_turningPIDController = new PIDController(0.01, 0.0, 0.0);
+
+  private PIDController m_YdrivePIDController = new PIDController(0.005, 0.0, 0.0); //0.01
+  private PIDController m_XdrivePIDController = new PIDController(0.01, 0.0, 0.0);
 
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
@@ -31,35 +37,70 @@ public class MoveToLimelightDriveable extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveToLimelightDriveable(Drivetrain subsystem, LimeLight limelight) {
+  public MoveToLimelightDriveable(Drivetrain subsystem, LimeLight limelight, double heading) {
     m_drivetrain = subsystem;
     m_limelight = limelight;
+    m_heading = heading;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_drivetrain);
 
-    m_drivePIDController.setTolerance(1);
-    m_drivePIDController.setSetpoint(0);
+    m_turningPIDController.setTolerance(1);
+    m_turningPIDController.enableContinuousInput(-180, 180);
+    m_turningPIDController.setSetpoint(m_heading);
+
+    m_YdrivePIDController.setTolerance(1);
+    m_YdrivePIDController.setSetpoint(0);
+    m_XdrivePIDController.setTolerance(1);
+    m_XdrivePIDController.setSetpoint(0);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    hasInterruptedTurn = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double ySpeed = m_drivePIDController.calculate(-m_limelight.getTX());
-    if (m_drivePIDController.atSetpoint()) {
+    currentHeading = m_drivetrain.getActualHeading();
+    double rot = 0;
+    hasInterruptedTurn = Math.abs(turnControl.getAsDouble()) > 0.1 || hasInterruptedTurn;
+
+    while (currentHeading > 180) {
+      currentHeading -= 360;
+    }
+    while (currentHeading < -180) {
+      currentHeading += 360;
+    }
+
+    rot = m_turningPIDController.calculate(currentHeading);
+
+    if (hasInterruptedTurn) {
+      rot =
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(turnControl.getAsDouble(), m_deadZone))
+            * Drivetrain.kMaxAngularSpeed * 0.25;
+    } else if (m_turningPIDController.atSetpoint()) {
+      rot = 0;
+    }
+
+    double ySpeed = m_YdrivePIDController.calculate(-m_limelight.getTX());
+    if (m_YdrivePIDController.atSetpoint()) {
       ySpeed = 0;
     }
 
-    final var xSpeed =
-      -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
-          * m_drivetrain.maxSpeed;
-      
-    final var rot =
-      -m_rotLimiter.calculate(MathUtil.applyDeadband(turnControl.getAsDouble(), m_deadZone))
-           * Drivetrain.kMaxAngularSpeed * 0.25;
+    double xSpeed;
+    if (Math.abs(xMoveControl.getAsDouble()) > m_deadZone) {
+      xSpeed =
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
+            * m_drivetrain.maxSpeed;
+    } else {
+      xSpeed = m_XdrivePIDController.calculate(-m_limelight.getTY());
+      // System.out.println(-m_limelight.getTY());
+      if (m_XdrivePIDController.atSetpoint() || -m_limelight.getTY() < 0.0) {
+        xSpeed = 0;
+      }
+    }
              
     m_drivetrain.drive(xSpeed, ySpeed, rot, true);
   }
