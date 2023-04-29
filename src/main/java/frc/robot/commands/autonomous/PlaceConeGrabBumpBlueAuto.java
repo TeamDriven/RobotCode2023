@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomous;
 
 import static frc.robot.Constants.MotionMagicConstants.*;
+import static frc.robot.SubsystemInstances.*;
 
 import java.util.List;
 
@@ -23,10 +24,6 @@ import frc.robot.commands.automation.MoveElevatorAndArm;
 import frc.robot.commands.automation.MoveElevatorAndArmFast;
 import frc.robot.commands.automation.PlaceConeHighAuto;
 import frc.robot.commands.automation.ZeroElevatorAndArm;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
 
 public final class PlaceConeGrabBumpBlueAuto extends SequentialCommandGroup {
 
@@ -35,7 +32,7 @@ public final class PlaceConeGrabBumpBlueAuto extends SequentialCommandGroup {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public PlaceConeGrabBumpBlueAuto(final Drivetrain m_Drivetrain, Elevator elevator, Arm arm, Intake intake) {
+  public PlaceConeGrabBumpBlueAuto() {
     List<PathPlannerTrajectory> pathList = PathPlanner.loadPathGroup(
       "PlaceGrabChargeBumpBlue", 
       new PathConstraints(1.5, 1.5), 
@@ -45,21 +42,21 @@ public final class PlaceConeGrabBumpBlueAuto extends SequentialCommandGroup {
     PIDController pTheta1 = new PIDController(0.65, 0, 0);
     
     addCommands(
-      new ZeroElevatorAndArm(elevator, arm),
-      new SetArmPosition(arm, armTuckPos),
+      new ZeroElevatorAndArm(),
+      new SetArmPosition(armTuckPos),
       new WaitCommand(0.1),
-      new PlaceConeHighAuto(elevator, arm, intake, m_Drivetrain),
+      new PlaceConeHighAuto(),
       new ParallelDeadlineGroup(
-        m_Drivetrain.followPathCommand(true, pathList.get(0), pTheta1),
+        drivetrain.followPathCommand(true, pathList.get(0), pTheta1),
         new SequentialCommandGroup(
           new WaitCommand(1),
           new ParallelCommandGroup(
-            new MoveElevatorAndArmFast(elevator, arm, elevatorPickUpCubePos, armCubePickupPos),
-            new RunIntake(intake, -1)
+            new MoveElevatorAndArmFast(elevatorPickUpCubePos, armCubePickupPos),
+            new RunIntake(-1)
           )
         )
       ),
-      new MoveElevatorAndArm(elevator, arm, elevatorTuckPos, armTuckPos)
+      new MoveElevatorAndArm(elevatorTuckPos, armTuckPos)
     );
   }
 }

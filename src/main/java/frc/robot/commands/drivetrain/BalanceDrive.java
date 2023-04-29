@@ -5,6 +5,7 @@
 package frc.robot.commands.drivetrain;
 
 import static frc.robot.Controls.*;
+import static frc.robot.SubsystemInstances.*;
 
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.MathUtil;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class BalanceDrive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivetrain m_drivetrain;
 
   private final double m_deadZone = 0.08;
 
@@ -27,10 +27,9 @@ public class BalanceDrive extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public BalanceDrive(Drivetrain subsystem) {
-    m_drivetrain = subsystem;
+  public BalanceDrive() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_drivetrain);
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -45,19 +44,19 @@ public class BalanceDrive extends CommandBase {
 
       final var xSpeed =
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
 
       final var ySpeed =
         -m_yspeedLimiter.calculate(MathUtil.applyDeadband(yMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
 
       final var rot =
         -m_rotLimiter.calculate(MathUtil.applyDeadband(turnControl.getAsDouble(), m_deadZone))
             * Drivetrain.kMaxAngularSpeed * 0.25; 
 
-      m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+      drivetrain.drive(xSpeed, ySpeed, rot, true);
     } else {
-      m_drivetrain.boxWheels();
+      drivetrain.boxWheels();
     }
   }
   // Called once the command ends or is interrupted.

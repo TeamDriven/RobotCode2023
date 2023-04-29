@@ -5,6 +5,7 @@
 package frc.robot.commands.drivetrain;
 
 import static frc.robot.Controls.*;
+import static frc.robot.SubsystemInstances.*;
 
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.MathUtil;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class DriveContinous extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivetrain m_drivetrain;
 
   private final double m_deadZone = 0.08;
 
@@ -27,10 +27,9 @@ public class DriveContinous extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveContinous(Drivetrain subsystem) {
-    m_drivetrain = subsystem;
+  public DriveContinous() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_drivetrain);
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -45,14 +44,14 @@ public class DriveContinous extends CommandBase {
     // negative values when we push forward.
     final var xSpeed =
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
         -m_yspeedLimiter.calculate(MathUtil.applyDeadband(yMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
@@ -63,7 +62,7 @@ public class DriveContinous extends CommandBase {
             * Drivetrain.kMaxAngularSpeed * 0.25;
           
 
-      m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+      drivetrain.drive(xSpeed, ySpeed, rot, true);
   }
 
   // Called once the command ends or is interrupted.

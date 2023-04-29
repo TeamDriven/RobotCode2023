@@ -4,44 +4,42 @@
 
 package frc.robot.commands.limelight;
 
-import frc.robot.subsystems.LimeLight;
+import static frc.robot.SubsystemInstances.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class Read2DAprilTags extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final LimeLight m_limelight;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Read2DAprilTags(LimeLight subsystem) {
-    m_limelight = subsystem;
+  public Read2DAprilTags() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_limelight);
+    addRequirements(limelight);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_limelight.turnOnLimelight();
-    m_limelight.setLimelightPipeline(0);
+    limelight.turnOnLimelight();
+    limelight.setLimelightPipeline(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_limelight.updateLimeLight();
-    m_limelight.getApriltagID();
+    limelight.updateLimeLight();
+    limelight.getApriltagID();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_limelight.resetLimelight();
+    limelight.resetLimelight();
   }
 
   // Returns true when the command should end.

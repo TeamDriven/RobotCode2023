@@ -4,15 +4,15 @@
 
 package frc.robot.commands.elevator;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj.Timer;
 // import static frc.robot.Constants.MotionMagicConstants.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
 
 /** An example command that uses an example subsystem. */
 public class MoveElevatorWaitForFinish extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Elevator m_elevator;
   private final double m_targetPos;
 
   double tolerance = 50;
@@ -26,12 +26,11 @@ public class MoveElevatorWaitForFinish extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveElevatorWaitForFinish(Elevator subsystem, double targetPos) {
-    m_elevator = subsystem;
+  public MoveElevatorWaitForFinish(double targetPos) {
     m_targetPos = targetPos;
     
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_elevator);
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -47,7 +46,7 @@ public class MoveElevatorWaitForFinish extends CommandBase {
     // if (m_elevator.targetPos == targetPos) {
       //targetPos = elevatorStartPos;
     // }
-    m_elevator.motionMagicElevator(m_targetPos);
+    elevator.motionMagicElevator(m_targetPos);
   }
 
   // Called once the command ends or is interrupted.
@@ -60,7 +59,7 @@ public class MoveElevatorWaitForFinish extends CommandBase {
   @Override
   public boolean isFinished() {
     //System.out.println(m_elevator.getVelocity());
-    if (Math.abs(m_elevator.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
+    if (Math.abs(elevator.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
       return true;
     }
     return false;

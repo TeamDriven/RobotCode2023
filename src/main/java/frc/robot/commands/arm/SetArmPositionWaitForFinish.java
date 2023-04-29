@@ -4,12 +4,12 @@
 
 package frc.robot.commands.arm;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
 
 public class SetArmPositionWaitForFinish extends CommandBase {
-  Arm m_arm; 
   double m_targetPos;
 
   double tolerance = 250;
@@ -17,8 +17,7 @@ public class SetArmPositionWaitForFinish extends CommandBase {
 
   double startingTime;
   /** Creates a new setArmPosition. */
-  public SetArmPositionWaitForFinish(Arm arm, double targetPos) {
-    m_arm = arm;
+  public SetArmPositionWaitForFinish(double targetPos) {
     m_targetPos = targetPos; 
     addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,7 +32,7 @@ public class SetArmPositionWaitForFinish extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_arm.setArmPosition(m_targetPos);
+    arm.setArmPosition(m_targetPos);
   }
 
   // Called once the command ends or is interrupted.
@@ -43,8 +42,8 @@ public class SetArmPositionWaitForFinish extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // System.out.println(m_arm.getVelocity());
-    if (Math.abs(m_arm.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
+    // System.out.println(arm.getVelocity());
+    if (Math.abs(arm.getVelocity()) < tolerance && Timer.getFPGATimestamp() >= startingTime + pauseTime) {
       return true;
     }
     return false;

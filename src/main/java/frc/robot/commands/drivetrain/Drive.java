@@ -4,7 +4,8 @@
 
 package frc.robot.commands.drivetrain;
 
-import frc.robot.subsystems.Drivetrain;
+import static frc.robot.SubsystemInstances.*;
+
 // import edu.wpi.first.math.MathUtil;
 // import edu.wpi.first.math.filter.SlewRateLimiter;
 // import edu.wpi.first.wpilibj.XboxController;
@@ -13,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class Drive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivetrain m_drivetrain;
   private final double m_xSpeed;
   private final double m_ySpeed;
   private final double m_rot;
@@ -24,14 +24,13 @@ public class Drive extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Drive(Drivetrain subsystem, double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    m_drivetrain = subsystem;
+  public Drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     m_xSpeed = xSpeed;
     m_ySpeed = ySpeed;
     m_rot = rot;
     m_fieldRelative = fieldRelative;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_drivetrain);
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -41,7 +40,7 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      m_drivetrain.drive(m_xSpeed, m_ySpeed, m_rot, m_fieldRelative);
+      drivetrain.drive(m_xSpeed, m_ySpeed, m_rot, m_fieldRelative);
   }
   
 

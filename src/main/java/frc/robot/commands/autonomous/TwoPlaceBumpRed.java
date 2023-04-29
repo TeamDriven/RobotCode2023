@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomous;
 
 import static frc.robot.Constants.MotionMagicConstants.*;
+import static frc.robot.SubsystemInstances.*;
 
 import java.util.List;
 
@@ -24,10 +25,6 @@ import frc.robot.commands.automation.MoveElevatorAndArmFast;
 import frc.robot.commands.automation.PlaceConeHighAuto;
 import frc.robot.commands.automation.ZeroElevatorAndArm;
 import frc.robot.commands.drivetrain.Drive;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
 
 public final class TwoPlaceBumpRed extends SequentialCommandGroup {
 
@@ -36,7 +33,7 @@ public final class TwoPlaceBumpRed extends SequentialCommandGroup {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public TwoPlaceBumpRed(final Drivetrain m_Drivetrain, Elevator elevator, Arm arm, Intake intake) {
+  public TwoPlaceBumpRed() {
     List<PathPlannerTrajectory> pathList = PathPlanner.loadPathGroup(
       "PlaceGrabChargeBumpRed", 
       new PathConstraints(1.5, 1.5), 
@@ -47,28 +44,28 @@ public final class TwoPlaceBumpRed extends SequentialCommandGroup {
     PIDController pTheta2 = new PIDController(0.5, 0, 0);
 
     addCommands(
-      new ZeroElevatorAndArm(elevator, arm),
-      new SetArmPosition(arm, armTuckPos),
+      new ZeroElevatorAndArm(),
+      new SetArmPosition(armTuckPos),
       new WaitCommand(0.1),
-      new PlaceConeHighAuto(elevator, arm, intake, m_Drivetrain),
+      new PlaceConeHighAuto(),
       new ParallelDeadlineGroup(
-        m_Drivetrain.followPathCommand(true, pathList.get(0), pTheta1),
+        drivetrain.followPathCommand(true, pathList.get(0), pTheta1),
         new SequentialCommandGroup(
           new WaitCommand(1),
           new ParallelCommandGroup(
-            new MoveElevatorAndArmFast(elevator, arm, elevatorPickUpCubePos, armCubePickupPos),
-            new RunIntake(intake, -1)
+            new MoveElevatorAndArmFast(elevatorPickUpCubePos, armCubePickupPos),
+            new RunIntake(-1)
           )
         )
       ),
       new ParallelCommandGroup(
-        m_Drivetrain.followPathCommand(false, pathList.get(1), pTheta2),
-        new MoveElevatorAndArm(elevator, arm, elevatorTuckPos, armTuckPos)
+        drivetrain.followPathCommand(false, pathList.get(1), pTheta2),
+        new MoveElevatorAndArm(elevatorTuckPos, armTuckPos)
       ),
       new ParallelDeadlineGroup(
-        // new PlaceCubeHighAuto(elevator, arm, intake, m_Drivetrain),
-        new RunIntake(intake, 0.5),
-        new Drive(m_Drivetrain, 0, 0, 0, true)
+        // new PlaceCubeHighAuto(drivetrain),
+        new RunIntake(0.5),
+        new Drive(0, 0, 0, true)
       )
     );
   }

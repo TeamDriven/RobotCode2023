@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
+import static frc.robot.SubsystemInstances.*;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -72,9 +73,9 @@ public class Robot extends TimedRobot {
     // m_robotContainer.boxWheels();
 
     if(lol.getBoolean(false)){
-      m_robotContainer.changeArmMode(NeutralMode.Coast);
+      arm.changeMode(NeutralMode.Coast);
     } else{
-      m_robotContainer.changeArmMode(NeutralMode.Brake);
+      arm.changeMode(NeutralMode.Brake);
     }
   }
 
@@ -84,8 +85,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_robotContainer.changeArmMode(NeutralMode.Brake);
-    m_robotContainer.changeDrivePIDController(kAutoDrivePID);
+    arm.changeMode(NeutralMode.Brake);
+    drivetrain.setDrivePID(kAutoDrivePID);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -101,10 +102,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.changeDrivePIDController(kTeleOpDrivePID);
-    m_robotContainer.changeOffset(180);
-    m_robotContainer.changeArmMode(NeutralMode.Brake);
-    m_robotContainer.changeDriveNeutralMode(NeutralMode.Coast);
+    drivetrain.setDrivePID(kTeleOpDrivePID);
+    drivetrain.setOffset(180);
+    arm.changeMode(NeutralMode.Brake);
+    drivetrain.setNeutralMode(NeutralMode.Coast);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -128,7 +129,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    m_robotContainer.testEncoder();
+    drivetrain.printEncoders();
   }
 
   /** This function is called once when the robot is first started up. */

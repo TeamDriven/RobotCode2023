@@ -4,17 +4,16 @@
 
 package frc.robot.commands.elevator;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
 
 public class AutoResetElevatorPosition extends CommandBase {
-  Elevator m_elevator; 
   double timeOut = 1.0;
   double startingTime;
   /** Creates a new setArmPosition. */
-  public AutoResetElevatorPosition(Elevator elevator) {
-    m_elevator = elevator;
+  public AutoResetElevatorPosition() {
     addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -28,21 +27,21 @@ public class AutoResetElevatorPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_elevator.runElevator(-0.3);
+    elevator.runElevator(-0.3);
     // System.out.println("Elevator: " + m_elevator.isLimitSwitchPressed());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_elevator.runElevator(0);
-    m_elevator.zeroPosition();
+    elevator.runElevator(0);
+    elevator.zeroPosition();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_elevator.isLimitSwitchPressed() || Timer.getFPGATimestamp() >= startingTime + timeOut) {
+    if (elevator.isLimitSwitchPressed() || Timer.getFPGATimestamp() >= startingTime + timeOut) {
       return true;
     } else {
       return false;

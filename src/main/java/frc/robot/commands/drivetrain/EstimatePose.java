@@ -4,8 +4,8 @@
 
 package frc.robot.commands.drivetrain;
 
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.LimeLight;
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -13,17 +13,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class EstimatePose extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivetrain m_drivetrain;
-  private final LimeLight m_limelight; 
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public EstimatePose(Drivetrain subsystem, LimeLight limelight) {
-    m_drivetrain = subsystem;
-    m_limelight = limelight;
+  public EstimatePose() {
     // Use addRequirements() here to declare subsystem dependencies.
     // addRequirements(m_drivetrain);
   }
@@ -35,7 +31,7 @@ public class EstimatePose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double[] position = m_limelight.getRobotPose();
+    double[] position = limelight.getRobotPose();
     // for (double h : position) {
     //   System.out.print(":" + h + ":\n");
     // }
@@ -43,7 +39,7 @@ public class EstimatePose extends CommandBase {
     // System.out.println("X: " + pose.getX() + " Y: " + pose.getY() + " Rot: " + pose.getRotation());
     if (position[0] == 0 && position[1] == 0 && position[3] == 0) {}
     else {
-      m_drivetrain.resetOdometry(pose);
+      drivetrain.resetOdometry(pose);
     }
   }
 

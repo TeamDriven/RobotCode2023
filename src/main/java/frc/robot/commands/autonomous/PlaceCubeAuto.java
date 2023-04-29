@@ -11,10 +11,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.automation.PlaceCubeHighTeleOp;
 import frc.robot.commands.automation.ZeroElevatorAndArm;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
 
 public final class PlaceCubeAuto extends SequentialCommandGroup {
 
@@ -23,12 +19,12 @@ public final class PlaceCubeAuto extends SequentialCommandGroup {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public PlaceCubeAuto(final Drivetrain m_Drivetrain, Elevator elevator, Arm arm, Intake intake) {
+  public PlaceCubeAuto() {
     addCommands(
-      new ZeroElevatorAndArm(elevator, arm),
-      new SetArmPosition(arm, armTuckPos),
+      new ZeroElevatorAndArm(),
+      new SetArmPosition(armTuckPos),
       new WaitCommand(0.1),
-      new PlaceCubeHighTeleOp(elevator, arm, intake, m_Drivetrain)
+      new PlaceCubeHighTeleOp()
     );
   }
 }

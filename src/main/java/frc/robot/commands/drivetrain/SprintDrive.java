@@ -4,6 +4,8 @@
 
 package frc.robot.commands.drivetrain;
 
+import static frc.robot.SubsystemInstances.*;
+
 import static frc.robot.Controls.*;
 
 import frc.robot.subsystems.Drivetrain;
@@ -14,23 +16,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class SprintDrive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivetrain m_drivetrain;
 
-  private final double m_deadZone = 0.08;
+  private final double deadZone = 0.08;
 
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter xspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SprintDrive(Drivetrain subsystem) {
-    m_drivetrain = subsystem;
+  public SprintDrive() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_drivetrain);
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -44,26 +44,26 @@ public class SprintDrive extends CommandBase {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+        -xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), deadZone))
+            * drivetrain.maxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(yMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+        -yspeedLimiter.calculate(MathUtil.applyDeadband(yMoveControl.getAsDouble(), deadZone))
+            * drivetrain.maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final var rot =
-        -m_rotLimiter.calculate(MathUtil.applyDeadband(turnControl.getAsDouble(), m_deadZone))
+        -rotLimiter.calculate(MathUtil.applyDeadband(turnControl.getAsDouble(), deadZone))
             * Drivetrain.kMaxAngularSpeed;
           
 
-      m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+      drivetrain.drive(xSpeed, ySpeed, rot, true);
   }
 
   // Called once the command ends or is interrupted.

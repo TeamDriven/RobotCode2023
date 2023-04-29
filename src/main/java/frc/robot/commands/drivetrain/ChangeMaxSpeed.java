@@ -4,18 +4,17 @@
 
 package frc.robot.commands.drivetrain;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Drivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ChangeMaxSpeed extends InstantCommand {
-  Drivetrain m_drivetrain;
   double m_maxSpeed;
 
-  public ChangeMaxSpeed(Drivetrain drivetrain, double maxSpeed) {
-    m_drivetrain = drivetrain;
+  public ChangeMaxSpeed(double maxSpeed) {
     m_maxSpeed = maxSpeed;
 
     addRequirements(drivetrain);
@@ -24,6 +23,6 @@ public class ChangeMaxSpeed extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivetrain.setMaxSpeed(m_maxSpeed);
+    drivetrain.setMaxSpeed(m_maxSpeed);
   }
 }

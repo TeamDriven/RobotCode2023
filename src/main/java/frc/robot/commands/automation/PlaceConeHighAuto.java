@@ -13,35 +13,32 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.drivetrain.changeNeutralMode;
+import frc.robot.commands.drivetrain.ChangeNeutralMode;
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
+
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceConeHighAuto extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public PlaceConeHighAuto(Elevator elevator, Arm arm, Intake intake, Drivetrain drivetrain) {
+  public PlaceConeHighAuto() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new changeNeutralMode(drivetrain, NeutralMode.Brake),
-      new MoveElevator(elevator, elevatorConeUpAutoPos),
+      new ChangeNeutralMode(NeutralMode.Brake),
+      new MoveElevator(elevatorConeUpAutoPos),
       new WaitCommand(0.6),
-      new SetArmPosition(arm, armHighPlaceConePos),
+      new SetArmPosition(armHighPlaceConePos),
       new WaitCommand(0.7),
       new ParallelDeadlineGroup(
         new WaitCommand(0.25),
-        new RunIntake(intake, -.5)
+        new RunIntake(-.5)
       ),
-      new SetArmPosition(arm, armTuckPos),
+      new SetArmPosition(armTuckPos),
       new WaitCommand(0.1),
-      new MoveElevator(elevator, elevatorTuckPos),
-      new changeNeutralMode(drivetrain, NeutralMode.Coast)
+      new MoveElevator(elevatorTuckPos),
+      new ChangeNeutralMode(NeutralMode.Coast)
     );
   }
 }

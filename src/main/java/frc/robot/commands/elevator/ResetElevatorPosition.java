@@ -4,15 +4,14 @@
 
 package frc.robot.commands.elevator;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
 
 public class ResetElevatorPosition extends CommandBase {
-  Elevator m_elevator; 
   double m_targetPos;
   /** Creates a new setArmPosition. */
-  public ResetElevatorPosition(Elevator elevator) {
-    m_elevator = elevator;
+  public ResetElevatorPosition() {
     addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -20,7 +19,7 @@ public class ResetElevatorPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevator.zeroPosition();
+    elevator.zeroPosition();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

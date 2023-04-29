@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.MotionMagicConstants.*;
 import static frc.robot.Controls.*;
+import static frc.robot.SubsystemInstances.*;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -51,17 +52,8 @@ import frc.robot.commands.drivetrain.ChangeNeutralMode;
 import frc.robot.commands.elevator.RunElevator;
 import frc.robot.commands.limelight.MoveTo2DAprilTags;
 import frc.robot.commands.limelight.MoveToRetroreflectiveTape;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LimeLight;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LED;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -78,14 +70,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final PowerDistribution pdp = new PowerDistribution(30, ModuleType.kRev);
-
-  private final LED m_LED = new LED();
-  private final Arm m_arm = new Arm();
-  private final Drivetrain m_drivetrain = new Drivetrain();
-  private final LimeLight m_limelight = new LimeLight();
-  private final Elevator m_elevator = new Elevator();
-  private final Intake m_intake = new Intake(pdp);
 
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -109,60 +93,36 @@ public class RobotContainer {
 
     SmartDashboard.putBoolean("Cone Mode", coneMode);
   
-    m_drivetrain.setDefaultCommand(new DriveContinous(m_drivetrain));
+    drivetrain.setDefaultCommand(new DriveContinous());
 
-    m_chooser.setDefaultOption("Two Place And Balance Blue", new TwoPlaceParkTopBlue(m_drivetrain, m_intake, m_elevator, m_arm, m_limelight));
-    m_chooser.addOption("Two Place And Balance Red", new TwoPlaceParkTopRed(m_drivetrain, m_intake, m_elevator, m_arm, m_limelight));
-    m_chooser.addOption("Two Place Blue", new TwoPlaceTopBlue(m_drivetrain, m_intake, m_elevator, m_arm, m_limelight));
-    m_chooser.addOption("Two Place Red", new TwoPlaceTopRed(m_drivetrain, m_intake, m_elevator, m_arm, m_limelight));
-    m_chooser.addOption("Two Place Bump Blue", new TwoPlaceBumpBlue(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Two Place Bump Red", new TwoPlaceBumpRed(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cone and mobility", new PlaceConeMobilityAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cube and mobility", new PlaceCubeMobilityAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cone and balance", new PlaceConeBalanceAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cone LEFT and balance", new PlaceConeLeftBalanceAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cone RIGHT and balance", new PlaceConeRightBalanceAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cube and balance", new PlaceCubeBalanceAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cone only", new PlaceConeAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cube only", new PlaceCubeAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Balance only", new BalanceAuto(m_drivetrain));
-    m_chooser.addOption("Place Three Blue", new ThreePlaceTopBlue(m_drivetrain, m_intake, m_elevator, m_arm, m_limelight));
-    m_chooser.addOption("Place Three Red", new ThreePlaceTopRed(m_drivetrain, m_intake, m_elevator, m_arm, m_limelight));
-    m_chooser.addOption("Place cone grab bump Blue", new PlaceConeGrabBumpBlueAuto(m_drivetrain, m_elevator, m_arm, m_intake));
-    m_chooser.addOption("Place cone grab bump Red", new PlaceConeGrabBumpAutoRed(m_drivetrain, m_elevator, m_arm, m_intake)); 
+    m_chooser.setDefaultOption("Two Place And Balance Blue", new TwoPlaceParkTopBlue());
+    m_chooser.addOption("Two Place And Balance Red", new TwoPlaceParkTopRed());
+    m_chooser.addOption("Two Place Blue", new TwoPlaceTopBlue());
+    m_chooser.addOption("Two Place Red", new TwoPlaceTopRed());
+    m_chooser.addOption("Two Place Bump Blue", new TwoPlaceBumpBlue());
+    m_chooser.addOption("Two Place Bump Red", new TwoPlaceBumpRed());
+    m_chooser.addOption("Place cone and mobility", new PlaceConeMobilityAuto());
+    m_chooser.addOption("Place cube and mobility", new PlaceCubeMobilityAuto());
+    m_chooser.addOption("Place cone and balance", new PlaceConeBalanceAuto());
+    m_chooser.addOption("Place cone LEFT and balance", new PlaceConeLeftBalanceAuto());
+    m_chooser.addOption("Place cone RIGHT and balance", new PlaceConeRightBalanceAuto());
+    m_chooser.addOption("Place cube and balance", new PlaceCubeBalanceAuto());
+    m_chooser.addOption("Place cone only", new PlaceConeAuto());
+    m_chooser.addOption("Place cube only", new PlaceCubeAuto());
+    m_chooser.addOption("Balance only", new BalanceAuto());
+    m_chooser.addOption("Place Three Blue", new ThreePlaceTopBlue());
+    m_chooser.addOption("Place Three Red", new ThreePlaceTopRed());
+    m_chooser.addOption("Place cone grab bump Blue", new PlaceConeGrabBumpBlueAuto());
+    m_chooser.addOption("Place cone grab bump Red", new PlaceConeGrabBumpAutoRed()); 
     SmartDashboard.putData(m_chooser);
 
-    m_LED.setYellow();
+    LED.setYellow();
   }
 
-  public void testEncoder() {
-    m_drivetrain.printEncoders();
-  }
-
-  public void boxWheels() {
-    m_drivetrain.boxWheels();
-  }
-
-  public void changeArmMode(NeutralMode mode) {
-    m_arm.changeMode(mode);
-  }
-
-  public void changeDriveNeutralMode(NeutralMode mode) {
-    m_drivetrain.setNeutralMode(mode);
-  }
-
-  public void changeOffset(double offset) {
-    m_drivetrain.adjustOffset(offset);
-  }
-
-  public void changeDrivePIDController(PIDController drivePID) {
-    m_drivetrain.setDrivePID(drivePID);
-  }
-
-  private void testBindings() {
+  public void testBindings() {
     new Trigger(m_controller::getAButton)
       // .onTrue(new InstantCommand(m_LED::turnOnRed));
-      .whileTrue(new InstantCommand(this::testEncoder));
+      .whileTrue(new InstantCommand(drivetrain::printEncoders));
 
     // new Trigger(m_controller::getBButton)
     //   .onTrue(new InstantCommand(m_LED::turnOnBlue));
@@ -178,100 +138,100 @@ public class RobotContainer {
 
     new Trigger(this::isConeMode)
       .and(this::isPieceNotIn)
-        .whileTrue(new InstantCommand(m_LED::setYellow));
+        .whileTrue(new InstantCommand(LED::setYellow));
 
     new Trigger(this::isConeMode)
       .and(this::isPieceIn)
-        .whileTrue(new FlashYellow(m_LED));
+        .whileTrue(new FlashYellow());
 
     new Trigger(this::isCubeMode)
       .and(this::isPieceNotIn)
-        .whileTrue(new InstantCommand(m_LED::setPurple));
+        .whileTrue(new InstantCommand(LED::setPurple));
 
     new Trigger(this::isCubeMode)
       .and(this::isPieceIn)
-        .whileTrue(new FlashPurple(m_LED));
+        .whileTrue(new FlashPurple());
 
     new Trigger(this::isPieceIn)
       .and(this::getIsPickUpPos)
         .onTrue(new SequentialCommandGroup(
           new WaitCommand(0.15),
-          new MoveElevatorAndArm(m_elevator, m_arm, elevatorTuckPos, armTuckPos),
+          new MoveElevatorAndArm(elevatorTuckPos, armTuckPos),
           new InstantCommand(this::setToTuckPos)
         ));
 
     new Trigger(this::isPieceIn)
       .and(this::getIsDoubleSubstationPos)
         .onTrue(new InstantCommand(this::setToTuckPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorTuckPos, armTuckPos));
+        .onTrue(new MoveElevatorAndArmFast(elevatorTuckPos, armTuckPos));
     
     new Trigger(zeroRobotControl)
-      .onTrue(new InstantCommand(m_drivetrain::resetPidgey))
-      .onTrue(new ZeroElevatorAndArm(m_elevator, m_arm));
+      .onTrue(new InstantCommand(drivetrain::resetPidgey))
+      .onTrue(new ZeroElevatorAndArm());
       
     new Trigger(intakeControl)
       .and(this::isConeMode)
         .onTrue(new InstantCommand(this::setToPickUpPos))
         .onTrue(new ParallelCommandGroup(
-          new RunIntake(m_intake, kIntakeSpeed),
-          new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorPickUpConePos, armConePickupPos)
+          new RunIntake(kIntakeSpeed),
+          new MoveElevatorAndArmFast(elevatorPickUpConePos, armConePickupPos)
         ));
 
     new Trigger(outtakeControl)
       .and(this::isConeMode)
       .and(this::getIsPlaceHighPos)
-        .whileTrue(new RunIntake(m_intake, -kIntakeSpeed))
+        .whileTrue(new RunIntake(-kIntakeSpeed))
         .onTrue(new InstantCommand(this::setToTuckPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new TuckFromPlace(m_elevator, m_arm, m_intake, m_drivetrain));
+        .onTrue(new TuckFromPlace());
 
     new Trigger(outtakeControl)
       .and(this::isConeMode)
       .and(this::getIsNotPickUpPos)
       .and(this::getIsNotPlaceHighPos)
-        .whileTrue(new RunIntake(m_intake, -kIntakeSpeed))
+        .whileTrue(new RunIntake(-kIntakeSpeed))
         .onTrue(new InstantCommand(this::setToTuckPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorTuckPos, armTuckPos));
+        .onTrue(new MoveElevatorAndArmFast(elevatorTuckPos, armTuckPos));
 
     new Trigger(outtakeControl)
       .and(this::isConeMode)
       .and(this::getIsPickUpPos)
-        .whileTrue(new RunIntake(m_intake, -kIntakeSpeed))
+        .whileTrue(new RunIntake(-kIntakeSpeed))
         .onTrue(new InstantCommand(this::setToTuckPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new MoveElevatorAndArm(m_elevator, m_arm, elevatorTuckPos, armTuckPos));
+        .onTrue(new MoveElevatorAndArm(elevatorTuckPos, armTuckPos));
 
     new Trigger(intakeControl)
       .and(this::isCubeMode)
         .onTrue(new InstantCommand(this::setToPickUpPos))
         .onTrue(new ParallelCommandGroup(
-          new RunIntake(m_intake, -kIntakeSpeed),
-          new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorPickUpCubePos, armCubePickupPos)
+          new RunIntake(-kIntakeSpeed),
+          new MoveElevatorAndArmFast(elevatorPickUpCubePos, armCubePickupPos)
         ));
   
     new Trigger(outtakeControl)
       .and(this::isCubeMode)
       .and(this::getIsNotPickUpPos)
-        .whileTrue(new RunIntake(m_intake, 0.5))
+        .whileTrue(new RunIntake(0.5))
         .onTrue(new InstantCommand(this::setToTuckPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorTuckPos, armTuckPos));
+        .onTrue(new MoveElevatorAndArmFast(elevatorTuckPos, armTuckPos));
 
     new Trigger(outtakeControl)
       .and(this::isCubeMode)
       .and(this::getIsPickUpPos)
-        .whileTrue(new RunIntake(m_intake, 0.5))
+        .whileTrue(new RunIntake(0.5))
         .onTrue(new InstantCommand(this::setToTuckPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new MoveElevatorAndArm(m_elevator, m_arm, elevatorTuckPos, armTuckPos));
+        .onTrue(new MoveElevatorAndArm(elevatorTuckPos, armTuckPos));
 
     new Trigger(autoPlaceHighControl)
       .and(this::isConeMode)
       .and(this::getIsNotPrePlacePos)
         .onTrue(new InstantCommand(this::setToPlaceHighPos))
-        .onTrue(new PlaceConeHighTeleOp(m_elevator, m_arm, m_drivetrain));
+        .onTrue(new PlaceConeHighTeleOp());
 
     new Trigger(autoPlaceHighControl)
       .and(this::isConeMode)
       .and(this::getIsPrePlacePos)
         .onTrue(new SequentialCommandGroup(
-          new PlaceConeHighFromPrePlaceTeleOp(m_elevator, m_arm, m_drivetrain),
+          new PlaceConeHighFromPrePlaceTeleOp(),
           new InstantCommand(this::setToPlaceHighPos)
         ));
 
@@ -279,7 +239,7 @@ public class RobotContainer {
       .and(this::isCubeMode)
       .and(this::getIsNotPrePlacePos)
         .onTrue(new SequentialCommandGroup(
-          new PlaceCubeHighTeleOp(m_elevator, m_arm, m_intake, m_drivetrain),
+          new PlaceCubeHighTeleOp(),
           new InstantCommand(this::setToTuckPos)
         ));
 
@@ -287,7 +247,7 @@ public class RobotContainer {
       .and(this::isCubeMode)
       .and(this::getIsPrePlacePos)
         .onTrue(new SequentialCommandGroup(
-          new PlaceCubeHighFromPrePlaceTeleOp(m_elevator, m_arm, m_intake, m_drivetrain),
+          new PlaceCubeHighFromPrePlaceTeleOp(),
           new InstantCommand(this::setToTuckPos)
         ));
 
@@ -295,19 +255,19 @@ public class RobotContainer {
       .and(this::isConeMode)
       .and(this::getIsNotPrePlacePos)
         .onTrue(new InstantCommand(this::setToPlaceMidPos))
-        .onTrue(new PlaceConeMidTeleOp(m_elevator, m_arm, m_drivetrain)); 
+        .onTrue(new PlaceConeMidTeleOp()); 
     
     new Trigger(autoPlaceMidControl)
       .and(this::isConeMode)
       .and(this::getIsPrePlacePos)
         .onTrue(new InstantCommand(this::setToPlaceMidPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new SetArmPosition(m_arm, armMidPlaceConePos)); 
+        .onTrue(new SetArmPosition(armMidPlaceConePos)); 
 
     new Trigger(autoPlaceMidControl)
       .and(this::isCubeMode)
       .and(this::getIsNotPrePlacePos)
         .onTrue(new SequentialCommandGroup(
-          new PlaceCubeMidTeleOp(m_elevator, m_arm, m_intake, m_drivetrain),
+          new PlaceCubeMidTeleOp(),
           new InstantCommand(this::setToTuckPos)
         ));
 
@@ -315,8 +275,8 @@ public class RobotContainer {
       .and(this::isCubeMode)
       .and(this::getIsPrePlacePos)
         .onTrue(new SequentialCommandGroup(
-          new RunIntake(m_intake, 0.5).withTimeout(0.25),
-          new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorTuckPos, armTuckPos),
+          new RunIntake(0.5).withTimeout(0.25),
+          new MoveElevatorAndArmFast(elevatorTuckPos, armTuckPos),
           new InstantCommand(this::setToTuckPos)
         ));
 
@@ -324,101 +284,101 @@ public class RobotContainer {
       .and(this::isConeMode)
         .onTrue(new ParallelCommandGroup(
           new InstantCommand(this::setToPickUpPos),
-          new RunIntake(m_intake, kIntakeSpeed),
-          new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorSubstationPos, armSubstationPos)
+          new RunIntake(kIntakeSpeed),
+          new MoveElevatorAndArmFast(elevatorSubstationPos, armSubstationPos)
         ))
-        .whileTrue(new AutoTurnToSubstation(m_drivetrain));
+        .whileTrue(new AutoTurnToSubstation());
 
     new Trigger(autoDoubleSubstationConePickUpControl)
       .and(this::isConeMode)
           .onTrue(new ParallelCommandGroup(
             new InstantCommand(this::setToDoubleSubstationPos),
-            new RunIntake(m_intake, kIntakeSpeed),
-            new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorDoubleSubstationPos, armDoubleSubstationPos)
+            new RunIntake(kIntakeSpeed),
+            new MoveElevatorAndArmFast(elevatorDoubleSubstationPos, armDoubleSubstationPos)
           ))
-          .whileTrue(new AutoTurn(m_drivetrain, 0));
+          .whileTrue(new AutoTurn(0));
 
     new Trigger(autoDoubleSubstationConePickUpControl)
       .and(this::isCubeMode)
-          .whileTrue(new RunIntake(m_intake, 1.0));
+          .whileTrue(new RunIntake(1.0));
 
     new Trigger(autoTuckControl)
       .and(this::getIsPickUpPos)
         .onTrue(new InstantCommand(this::setToTuckPos).beforeStarting(new WaitCommand(0.2)))
-        .onTrue(new MoveElevatorAndArm(m_elevator, m_arm, elevatorTuckPos, armTuckPos));
+        .onTrue(new MoveElevatorAndArm(elevatorTuckPos, armTuckPos));
 
     new Trigger(autoTuckControl)
       .and(this::getIsNotPickUpPos)
         .onTrue(new InstantCommand(this::setToTuckPos))
-        .onTrue(new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorTuckPos, armTuckPos));
+        .onTrue(new MoveElevatorAndArmFast(elevatorTuckPos, armTuckPos));
 
     new Trigger(this::getIsTuckPos)
       .and(this::isConeMode)
-        .onTrue(new RunIntake(m_intake, 0.2));
+        .onTrue(new RunIntake(0.2));
 
     new Trigger(this::getIsTuckPos)
       .and(this::isCubeMode)
-        .onTrue(new RunIntake(m_intake, -0.15));
+        .onTrue(new RunIntake(-0.15));
 
     new Trigger(lockWheelsControl)
-      .onTrue(new ChangeNeutralMode(m_drivetrain, NeutralMode.Brake))
-      .whileTrue(new BalanceDrive(m_drivetrain))
-      .onFalse(new ChangeNeutralMode(m_drivetrain, NeutralMode.Coast));
+      .onTrue(new ChangeNeutralMode(NeutralMode.Brake))
+      .whileTrue(new BalanceDrive())
+      .onFalse(new ChangeNeutralMode(NeutralMode.Coast));
 
     new Trigger(changeModeControl)
-      .whileTrue(new RunIntake(m_intake, 0.0))
+      .whileTrue(new RunIntake(0.0))
       .onTrue(new InstantCommand(this::changeMode));
     
     new Trigger(prePlaceControl)
       .and(this::isConeMode)
         .onTrue(new InstantCommand(this::setToPrePlacePos))
-        .onTrue(new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorConeMidPos, armPrePlacePos));
+        .onTrue(new MoveElevatorAndArmFast(elevatorConeMidPos, armPrePlacePos));
 
     new Trigger(prePlaceControl)
       .and(this::isCubeMode)
         .onTrue(new InstantCommand(this::setToPrePlacePos))
-        .onTrue(new MoveElevatorAndArmFast(m_elevator, m_arm, elevatorCubeMidPos, armMidPlaceCubePos));
+        .onTrue(new MoveElevatorAndArmFast(elevatorCubeMidPos, armMidPlaceCubePos));
 
     new Trigger(autoLineUpControl)
       .and(this::isConeMode)
-        .whileTrue(new MoveToRetroreflectiveTape(m_limelight, m_drivetrain, 180));
+        .whileTrue(new MoveToRetroreflectiveTape(180));
     
     new Trigger(autoLineUpControl)
       .and(this::isCubeMode)
         .whileTrue(new SequentialCommandGroup(
-          new AutoTurn(m_drivetrain, 180),
-          new MoveTo2DAprilTags(m_limelight, m_drivetrain, 180)
+          new AutoTurn(180),
+          new MoveTo2DAprilTags(180)
         ));
 
     new Trigger(moveElevatorUpControl)
-      .whileTrue(new RunElevator(m_elevator, 0.5))
-      .onFalse(new RunElevator(m_elevator, 0.0));
+      .whileTrue(new RunElevator(0.5))
+      .onFalse(new RunElevator(0.0));
     
     new Trigger(moveElevatorDownControl)
-      .whileTrue(new RunElevator(m_elevator, -.5))
-      .onFalse(new RunElevator(m_elevator, 0.0));
+      .whileTrue(new RunElevator(-.5))
+      .onFalse(new RunElevator(0.0));
 
     new Trigger(moveArmUpControl)
-      .whileTrue(new InstantCommand(m_arm::runMotorForward))
-      .onFalse(new InstantCommand(m_arm::stopMotor));
+      .whileTrue(new InstantCommand(arm::runMotorForward))
+      .onFalse(new InstantCommand(arm::stopMotor));
 
       
     new Trigger(moveArmDownControl)
-      .whileTrue(new InstantCommand(m_arm::runMotorBackward))
-      .onFalse(new InstantCommand(m_arm::stopMotor));
+      .whileTrue(new InstantCommand(arm::runMotorBackward))
+      .onFalse(new InstantCommand(arm::stopMotor));
  
   }
 
   public boolean isPieceIn() {
     if (isTuckPos && timeSinceLastMove.get() > 0.5) {
-      if (isConeMode() && m_intake.getCurrentDraw() > 2){
+      if (isConeMode() && intake.getCurrentDraw() > 2){
         return true;
-      } else if (isCubeMode() && m_intake.getCurrentDraw() > 1.2) {
+      } else if (isCubeMode() && intake.getCurrentDraw() > 1.2) {
         return true;
       } else {
         return false;
       }
-    } else if (m_intake.getCurrentDraw() > 25 && timeSinceLastMove.get() > 0.5) {
+    } else if (intake.getCurrentDraw() > 25 && timeSinceLastMove.get() > 0.5) {
       return true;
     } else {
       return false;

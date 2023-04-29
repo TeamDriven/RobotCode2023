@@ -5,9 +5,9 @@
 package frc.robot.commands.drivetrain;
 
 import static frc.robot.Controls.*;
+import static frc.robot.SubsystemInstances.*;
 
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.LimeLight;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class MoveToLimelightDriveable extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivetrain m_drivetrain;
-  private final LimeLight m_limelight; 
   double m_heading;
   double currentHeading;
   boolean hasInterruptedTurn;
@@ -37,12 +35,10 @@ public class MoveToLimelightDriveable extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveToLimelightDriveable(Drivetrain subsystem, LimeLight limelight, double heading) {
-    m_drivetrain = subsystem;
-    m_limelight = limelight;
+  public MoveToLimelightDriveable(double heading) {
     m_heading = heading;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_drivetrain);
+    addRequirements(drivetrain);
 
     m_turningPIDController.setTolerance(1);
     m_turningPIDController.enableContinuousInput(-180, 180);
@@ -63,7 +59,7 @@ public class MoveToLimelightDriveable extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentHeading = m_drivetrain.getActualHeading();
+    currentHeading = drivetrain.getActualHeading();
     double rot = 0;
     hasInterruptedTurn = Math.abs(turnControl.getAsDouble()) > 0.1 || hasInterruptedTurn;
 
@@ -84,7 +80,7 @@ public class MoveToLimelightDriveable extends CommandBase {
       rot = 0;
     }
 
-    double ySpeed = m_YdrivePIDController.calculate(-m_limelight.getTX());
+    double ySpeed = m_YdrivePIDController.calculate(-limelight.getTX());
     if (m_YdrivePIDController.atSetpoint()) {
       ySpeed = 0;
     }
@@ -93,16 +89,16 @@ public class MoveToLimelightDriveable extends CommandBase {
     if (Math.abs(xMoveControl.getAsDouble()) > m_deadZone) {
       xSpeed =
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
     } else {
-      xSpeed = m_XdrivePIDController.calculate(-m_limelight.getTY());
+      xSpeed = m_XdrivePIDController.calculate(-limelight.getTY());
       // System.out.println(-m_limelight.getTY());
-      if (m_XdrivePIDController.atSetpoint() || -m_limelight.getTY() < 0.0) {
+      if (m_XdrivePIDController.atSetpoint() || -limelight.getTY() < 0.0) {
         xSpeed = 0;
       }
     }
              
-    m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+    drivetrain.drive(xSpeed, ySpeed, rot, true);
   }
 
   // Called once the command ends or is interrupted.

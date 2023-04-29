@@ -7,7 +7,6 @@ package frc.robot.commands.autonomous;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drivetrain.AutoBalance;
 import frc.robot.commands.drivetrain.Drive;
-import frc.robot.subsystems.Drivetrain;
 
 public final class BalanceAuto extends SequentialCommandGroup {
 
@@ -16,10 +15,10 @@ public final class BalanceAuto extends SequentialCommandGroup {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public BalanceAuto(final Drivetrain m_Drivetrain) {
+  public BalanceAuto() {
     addCommands(
-      new Drive(m_Drivetrain, -1.5, 0, 0, true).withTimeout(2),
-      new AutoBalance(m_Drivetrain)
+      new Drive(-1.5, 0, 0, true).withTimeout(2),
+      new AutoBalance()
       // new Drive(m_Drivetrain,0,0,0,false)
     );
   }

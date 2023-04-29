@@ -7,20 +7,18 @@ package frc.robot.commands.automation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorWaitForFinish;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Elevator;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class MoveElevatorAndArmFast extends SequentialCommandGroup {
   /** Creates a new AutoPlaceConeHigh. */
-  public MoveElevatorAndArmFast(Elevator elevator, Arm arm, double elevatorPos, double armPos) {
+  public MoveElevatorAndArmFast(double elevatorPos, double armPos) {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetArmPosition(arm, armPos),
-      new MoveElevatorWaitForFinish(elevator, elevatorPos)
+      new SetArmPosition(armPos),
+      new MoveElevatorWaitForFinish(elevatorPos)
     );
 
 

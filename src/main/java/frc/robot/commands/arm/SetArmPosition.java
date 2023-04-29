@@ -4,15 +4,14 @@
 
 package frc.robot.commands.arm;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
 
 public class SetArmPosition extends CommandBase {
-  Arm m_arm; 
   double m_targetPos;
   /** Creates a new setArmPosition. */
-  public SetArmPosition(Arm arm, double armOnPole) {
-    m_arm = arm;
+  public SetArmPosition(double armOnPole) {
     m_targetPos = armOnPole; 
     addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -25,7 +24,7 @@ public class SetArmPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_arm.setArmPosition(m_targetPos);
+    arm.setArmPosition(m_targetPos);
   }
 
   // Called once the command ends or is interrupted.

@@ -5,6 +5,7 @@
 package frc.robot.commands.drivetrain;
 
 import static frc.robot.Controls.*;
+import static frc.robot.SubsystemInstances.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -12,11 +13,9 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
 
 public class AutoTurnToSubstation extends CommandBase {
   /** Creates a new AutoBalance. */
-  Drivetrain m_drivetrain;
   // double m_heading;
   double currentHeading;
   // double leeway = 1;
@@ -28,9 +27,8 @@ public class AutoTurnToSubstation extends CommandBase {
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   
-  public AutoTurnToSubstation(Drivetrain drivetrain) {
-    m_drivetrain = drivetrain;
-    addRequirements(m_drivetrain);
+  public AutoTurnToSubstation() {
+    addRequirements(drivetrain);
 
     m_turningPIDController.setTolerance(1);
     m_turningPIDController.enableContinuousInput(-180, 180);
@@ -56,7 +54,7 @@ public class AutoTurnToSubstation extends CommandBase {
   public void execute() {
     double m_heading = turnToAlliance();
     m_turningPIDController.setSetpoint(m_heading);
-    currentHeading = m_drivetrain.getActualHeading();
+    currentHeading = drivetrain.getActualHeading();
     double rot = 0;
 
     // double speed = 0.1;
@@ -69,11 +67,11 @@ public class AutoTurnToSubstation extends CommandBase {
     
     final var xSpeed =
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
 
     final var ySpeed =
         -m_yspeedLimiter.calculate(MathUtil.applyDeadband(yMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
 
     while (currentHeading > 180) {
       currentHeading -= 360;
@@ -95,13 +93,13 @@ public class AutoTurnToSubstation extends CommandBase {
     //   }
     // }
 
-    m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+    drivetrain.drive(xSpeed, ySpeed, rot, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(0, 0, 0, true);
+    drivetrain.drive(0, 0, 0, true);
   }
 
   // Returns true when the command should end.

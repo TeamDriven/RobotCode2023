@@ -6,20 +6,18 @@ package frc.robot.commands.limelight;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.drivetrain.MoveToLimelightDriveable;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.LimeLight;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class MoveTo2DAprilTags extends ParallelCommandGroup {
   /** Creates a new MoveTo2DAprilTags. */
-  public MoveTo2DAprilTags(LimeLight limeLight, Drivetrain drivetrain, double heading) {
+  public MoveTo2DAprilTags(double heading) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new Read2DAprilTags(limeLight),
-      new MoveToLimelightDriveable(drivetrain, limeLight, heading)
+      new Read2DAprilTags(),
+      new MoveToLimelightDriveable(heading)
     );
   }
 }

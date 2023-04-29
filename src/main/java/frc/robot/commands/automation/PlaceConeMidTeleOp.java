@@ -12,27 +12,24 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.arm.SetArmPositionWaitForFinish;
-import frc.robot.commands.drivetrain.changeNeutralMode;
+import frc.robot.commands.drivetrain.ChangeNeutralMode;
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceConeMidTeleOp extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public PlaceConeMidTeleOp(Elevator elevator, Arm arm, Drivetrain drivetrain) {
+  public PlaceConeMidTeleOp() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new changeNeutralMode(drivetrain, NeutralMode.Brake),
-      new SetArmPositionWaitForFinish(arm, armTuckPos),
-      new MoveElevator(elevator, elevatorConeMidPos),
+      new ChangeNeutralMode(NeutralMode.Brake),
+      new SetArmPositionWaitForFinish(armTuckPos),
+      new MoveElevator(elevatorConeMidPos),
       new WaitCommand(0.4),
-      new SetArmPosition(arm, armMidPlaceConePos),
-      new changeNeutralMode(drivetrain, NeutralMode.Coast)
+      new SetArmPosition(armMidPlaceConePos),
+      new ChangeNeutralMode(NeutralMode.Coast)
     );
   }
 }

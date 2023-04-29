@@ -4,16 +4,14 @@
 
 package frc.robot.commands.drivetrain;
 
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.LimeLight;
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class MoveToLimelight extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivetrain m_drivetrain;
-  private final LimeLight m_limelight; 
 
   private PIDController m_drivePIDController = new PIDController(0.01, 0.0, 0.0);
 
@@ -23,11 +21,9 @@ public class MoveToLimelight extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveToLimelight(Drivetrain subsystem, LimeLight limelight) {
-    m_drivetrain = subsystem;
-    m_limelight = limelight;
+  public MoveToLimelight() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_drivetrain);
+    addRequirements(drivetrain);
 
     m_drivePIDController.setTolerance(1);
     m_drivePIDController.setSetpoint(0);
@@ -40,12 +36,12 @@ public class MoveToLimelight extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double ySpeed = m_drivePIDController.calculate(m_limelight.getTX());
+    double ySpeed = m_drivePIDController.calculate(limelight.getTX());
     if (m_drivePIDController.atSetpoint()) {
       ySpeed = 0;
     }
              
-    m_drivetrain.drive(0.0, ySpeed, 0.0, true);
+    drivetrain.drive(0.0, ySpeed, 0.0, true);
   }
 
   // Called once the command ends or is interrupted.

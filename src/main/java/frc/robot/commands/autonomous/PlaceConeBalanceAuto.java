@@ -15,10 +15,6 @@ import frc.robot.commands.automation.ZeroElevatorAndArm;
 import frc.robot.commands.drivetrain.AutoBalance;
 import frc.robot.commands.drivetrain.BoxWheels;
 import frc.robot.commands.drivetrain.Drive;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
 
 public final class PlaceConeBalanceAuto extends SequentialCommandGroup {
 
@@ -27,21 +23,21 @@ public final class PlaceConeBalanceAuto extends SequentialCommandGroup {
   //   return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public PlaceConeBalanceAuto(final Drivetrain m_Drivetrain, Elevator elevator, Arm arm, Intake intake) {
+  public PlaceConeBalanceAuto() {
     addCommands(
       new ParallelDeadlineGroup(
         new WaitCommand(14.75), 
         new SequentialCommandGroup(
-          new ZeroElevatorAndArm(elevator, arm),
-          new SetArmPosition(arm, armTuckPos),
+          new ZeroElevatorAndArm(),
+          new SetArmPosition(armTuckPos),
           new WaitCommand(0.1),
-          new PlaceConeHighAuto(elevator, arm, intake, m_Drivetrain),
-          new Drive(m_Drivetrain, -3, 0, 0, true).withTimeout(4.5),
-          new Drive(m_Drivetrain, 3, 0, 0, true).withTimeout(2.6),
-          new AutoBalance(m_Drivetrain)
+          new PlaceConeHighAuto(),
+          new Drive(-3, 0, 0, true).withTimeout(4.5),
+          new Drive(3, 0, 0, true).withTimeout(2.6),
+          new AutoBalance()
         )
       ),
-      new BoxWheels(m_Drivetrain)
+      new BoxWheels()
     );
   }
 }

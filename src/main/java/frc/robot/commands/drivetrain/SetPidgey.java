@@ -4,18 +4,16 @@
 
 package frc.robot.commands.drivetrain;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Drivetrain;
+import static frc.robot.SubsystemInstances.*;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SetPidgey extends InstantCommand {
-  Drivetrain m_drivetrain;
   double m_angle;
 
-  public SetPidgey(Drivetrain drivetrain, double angle) {
-    m_drivetrain = drivetrain;
+  public SetPidgey(double angle) {
     m_angle = angle;
 
     addRequirements(drivetrain);
@@ -24,6 +22,6 @@ public class SetPidgey extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivetrain.setPidgey(m_angle);
+    drivetrain.setPidgey(m_angle);
   }
 }

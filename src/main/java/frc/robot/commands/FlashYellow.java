@@ -4,26 +4,25 @@
 
 package frc.robot.commands;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.LED;
 
 public class FlashYellow extends CommandBase {
-  private LED m_led;
   private Timer m_timer;
   private boolean isOn;
   /** Creates a new FlashPurple. */
-  public FlashYellow(LED led) {
-    m_led = led;
+  public FlashYellow() {
     m_timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(led);
+    addRequirements(LED);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_led.setYellow();
+    LED.setYellow();
     isOn = true;
     m_timer.start();
   }
@@ -33,9 +32,9 @@ public class FlashYellow extends CommandBase {
   public void execute() {
     if (m_timer.get() > 0.25) {
       if (isOn) {
-        m_led.turnOff();
+        LED.turnOff();
       } else {
-        m_led.setYellow();
+        LED.setYellow();
       }
       isOn = !isOn;
       m_timer.reset();

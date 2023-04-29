@@ -4,14 +4,14 @@
 
 package frc.robot.commands.elevator;
 
+import static frc.robot.SubsystemInstances.*;
+
 // import static frc.robot.Constants.MotionMagicConstants.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
 
 /** An example command that uses an example subsystem. */
 public class RunElevator extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Elevator m_elevator;
   private final double m_speed;
 
   double tolerance = 250;
@@ -23,12 +23,12 @@ public class RunElevator extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RunElevator(Elevator subsystem, double speed) {
-    m_elevator = subsystem;
+  public RunElevator(double speed) {
+    
     m_speed = speed;
     
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_elevator);
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -38,7 +38,7 @@ public class RunElevator extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_elevator.runElevator(m_speed);
+    elevator.runElevator(m_speed);
   }
 
   // Called once the command ends or is interrupted.

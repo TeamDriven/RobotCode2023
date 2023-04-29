@@ -11,27 +11,23 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.drivetrain.changeNeutralMode;
+import frc.robot.commands.drivetrain.ChangeNeutralMode;
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TuckFromPlace extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public TuckFromPlace(Elevator elevator, Arm arm, Intake intake, Drivetrain drivetrain) {
+  public TuckFromPlace() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new changeNeutralMode(drivetrain, NeutralMode.Brake),
-      new SetArmPosition(arm, armTuckPos),
+      new ChangeNeutralMode(NeutralMode.Brake),
+      new SetArmPosition(armTuckPos),
       new WaitCommand(0.1),
-      new MoveElevator(elevator, elevatorTuckPos),
-      new changeNeutralMode(drivetrain, NeutralMode.Coast)
+      new MoveElevator(elevatorTuckPos),
+      new ChangeNeutralMode(NeutralMode.Coast)
     );
   }
 }

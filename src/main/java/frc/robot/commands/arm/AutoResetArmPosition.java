@@ -4,16 +4,15 @@
 
 package frc.robot.commands.arm;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
 
 public class AutoResetArmPosition extends CommandBase {
-  Arm m_arm; 
   double timeOut = 1.0;
   double startingTime;
-  public AutoResetArmPosition(Arm arm) {
-    m_arm = arm;
+  public AutoResetArmPosition() {
     addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -27,20 +26,20 @@ public class AutoResetArmPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_arm.runMotor(-0.2);
+    arm.runMotor(-0.2);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_arm.stopMotor();
-    m_arm.zeroPosition();
+    arm.stopMotor();
+    arm.zeroPosition();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_arm.isLimitSwitchPressed() || Timer.getFPGATimestamp() >= startingTime + timeOut) {
+    if (arm.isLimitSwitchPressed() || Timer.getFPGATimestamp() >= startingTime + timeOut) {
       return true;
     } else {
       return false;

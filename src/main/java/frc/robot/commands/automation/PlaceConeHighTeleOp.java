@@ -14,25 +14,22 @@ import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.arm.SetArmPositionWaitForFinish;
 import frc.robot.commands.drivetrain.ChangeNeutralMode;
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceConeHighTeleOp extends SequentialCommandGroup {
   /** Creates a new AutoPlaceHigh. */
-  public PlaceConeHighTeleOp(Elevator elevator, Arm arm, Drivetrain drivetrain) {
+  public PlaceConeHighTeleOp() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ChangeNeutralMode(drivetrain, NeutralMode.Brake),
-      new SetArmPositionWaitForFinish(arm, armTuckPos),
-      new MoveElevator(elevator, elevatorConeUpPos),
+      new ChangeNeutralMode(NeutralMode.Brake),
+      new SetArmPositionWaitForFinish(armTuckPos),
+      new MoveElevator(elevatorConeUpPos),
       new WaitCommand(0.6),
-      new SetArmPosition(arm, armHighPlaceConePos),
-      new ChangeNeutralMode(drivetrain, NeutralMode.Coast)
+      new SetArmPosition(armHighPlaceConePos),
+      new ChangeNeutralMode(NeutralMode.Coast)
     );
   }
 }

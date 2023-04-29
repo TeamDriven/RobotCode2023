@@ -5,16 +5,15 @@
 package frc.robot.commands.drivetrain;
 
 import static frc.robot.Controls.*;
+import static frc.robot.SubsystemInstances.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
 
 public class AutoTurn extends CommandBase {
   /** Creates a new AutoBalance. */
-  Drivetrain m_drivetrain;
   double m_heading;
   double currentHeading;
   // double leeway = 10;
@@ -26,10 +25,9 @@ public class AutoTurn extends CommandBase {
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   
-  public AutoTurn(Drivetrain drivetrain, double heading) {
-    m_drivetrain = drivetrain;
+  public AutoTurn(double heading) {
     m_heading = heading;
-    addRequirements(m_drivetrain);
+    addRequirements(drivetrain);
     
     m_turningPIDController.setTolerance(1);
     m_turningPIDController.enableContinuousInput(-180, 180);
@@ -43,7 +41,7 @@ public class AutoTurn extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentHeading = m_drivetrain.getActualHeading();
+    currentHeading = drivetrain.getActualHeading();
     double rot = 0;
     
     // double targetHeading = m_heading;
@@ -60,11 +58,11 @@ public class AutoTurn extends CommandBase {
     
     final var xSpeed =
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
 
     final var ySpeed =
         -m_yspeedLimiter.calculate(MathUtil.applyDeadband(yMoveControl.getAsDouble(), m_deadZone))
-            * m_drivetrain.maxSpeed;
+            * drivetrain.maxSpeed;
     
     // currentHeading = (currentHeading % 360) - 180;
 
@@ -81,13 +79,13 @@ public class AutoTurn extends CommandBase {
     }
     // System.out.println("Rot: " + rot + " atSetpoint: " + m_turningPIDController.atSetpoint());
 
-    m_drivetrain.drive(xSpeed, ySpeed, rot, true);
+    drivetrain.drive(xSpeed, ySpeed, rot, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(0, 0, 0, true);
+    drivetrain.drive(0, 0, 0, true);
   }
 
   // Returns true when the command should end.

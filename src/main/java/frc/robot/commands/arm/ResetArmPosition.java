@@ -4,15 +4,14 @@
 
 package frc.robot.commands.arm;
 
+import static frc.robot.SubsystemInstances.*;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
 
 public class ResetArmPosition extends CommandBase {
-  Arm m_arm; 
   double m_targetPos;
   /** Creates a new setArmPosition. */
-  public ResetArmPosition(Arm arm) {
-    m_arm = arm;
+  public ResetArmPosition() {
     addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -20,7 +19,7 @@ public class ResetArmPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.zeroPosition();
+    arm.zeroPosition();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
