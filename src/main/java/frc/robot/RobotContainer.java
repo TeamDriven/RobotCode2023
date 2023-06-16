@@ -355,7 +355,7 @@ public class RobotContainer {
       .onFalse(new RunElevator(0.0));
     
     new Trigger(moveElevatorDownControl)
-      .whileTrue(new RunElevator(-.5))
+      .whileTrue(new RunElevator(-0.5))
       .onFalse(new RunElevator(0.0));
 
     new Trigger(moveArmUpControl)
