@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    System.out.printf("( ͡° ͜ʖ ͡°)\r\n");
     drivetrain.setDrivePID(kTeleOpDrivePID);
     drivetrain.setOffset(180);
     arm.changeMode(NeutralMode.Brake);
