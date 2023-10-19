@@ -25,7 +25,7 @@ public class TuckFromPlace extends SequentialCommandGroup {
     addCommands(
       new ChangeNeutralMode(NeutralMode.Brake),
       new SetArmPosition(armTuckPos),
-      new WaitCommand(0.1),
+      new WaitCommand(0.2),
       new MoveElevator(elevatorTuckPos),
       new ChangeNeutralMode(NeutralMode.Coast)
     );

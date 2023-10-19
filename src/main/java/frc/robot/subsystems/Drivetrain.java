@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -44,12 +45,13 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-0.273, 0.33);
   private final Translation2d m_backRightLocation = new Translation2d(-0.273, -0.33);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 2.035754289534901, 0);
-  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2,-0.020100538618711538, 0);
-  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, -0.584270745967643, 0);
-  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, -1.945028390103366, 0);
+  private final SwerveModule m_frontLeft = new SwerveModule(3, 4, 1, 5.218461988227713-Math.PI, 0);
+  private final SwerveModule m_frontRight = new SwerveModule(1, 2, 2, 9.431431618556575-Math.PI, 0);
+  private final SwerveModule m_backLeft = new SwerveModule(5, 6, 0, 8.872063492778341-Math.PI, 0);
+  private final SwerveModule m_backRight = new SwerveModule(7, 8, 3, 5.864943967193715-Math.PI, 0);
 
-  private final static PigeonIMU m_pigey = new PigeonIMU(12);
+  
+  private final static Pigeon2 m_pigey = new Pigeon2(12);
   private static double m_offset = 0.0;
 
   private final static double startingPitch = m_pigey.getPitch();
@@ -81,7 +83,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     m_startYaw = new Rotation2d();
-    m_pigey.setFusedHeading(0);
+    m_pigey.setYaw(0);
 
     swerveModuleStates = m_kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
     // m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -96,7 +98,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getActualHeading() {
-    return m_pigey.getFusedHeading() - m_offset;
+    return m_pigey.getYaw() - m_offset;
   }
 
   public void rememberStartingPosition() {
@@ -224,16 +226,16 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setPidgey(double angle){
-    m_pigey.setFusedHeading(angle);
+    m_pigey.setYaw(angle);
   }
 
   public void resetPidgey(){
-    m_pigey.setFusedHeading(0);
+    m_pigey.setYaw(0);
     m_offset = 180.0;
   }
 
   public void resetPidgeyToSubStation(){
-    m_pigey.setFusedHeading(0);
+    m_pigey.setYaw(0);
     m_offset = 270;
   }
   
@@ -329,7 +331,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    // System.out.println(m_pigey.getYaw());
+  }
 
   @Override
   public void simulationPeriodic() {

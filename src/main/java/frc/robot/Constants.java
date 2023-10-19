@@ -48,15 +48,15 @@ public final class Constants {
 
     public static double elevatorConeUpPos = elevatorTicksPerInches * 54;
     public static double elevatorConeUpAutoPos = elevatorTicksPerInches * 52;
-    public static double elevatorConeMidPos = elevatorTicksPerInches * 28;
-    public static double elevatorPickUpConePos = elevatorTicksPerInches * 15; 
+    public static double elevatorConeMidPos = elevatorTicksPerInches * 30;
+    public static double elevatorPickUpConePos = elevatorTicksPerInches * 12.5; 
 
-    public static double elevatorCubeUpPos = elevatorTicksPerInches * 52;
-    public static double elevatorCubeMidPos = elevatorTicksPerInches * 25;
+    public static double elevatorCubeUpPos = elevatorTicksPerInches * 54;
+    public static double elevatorCubeMidPos = elevatorTicksPerInches * 27;
     public static double elevatorPickUpCubePos = elevatorTicksPerInches * 11;
 
     public static double elevatorPrePlacePos = elevatorTicksPerInches * 29;
-    public static double elevatorTuckPos = elevatorTicksPerInches * 2;
+    public static double elevatorTuckPos = elevatorTicksPerInches * 6;
 
     public static double elevatorSubstationPos = elevatorTicksPerInches * 3;
     public static double elevatorDoubleSubstationPos = elevatorTicksPerInches * 38;
@@ -69,9 +69,9 @@ public final class Constants {
     public static double armTuckPos = armTicksPerDegree * 10;
     public static double armUpPos = armTicksPerDegree * 13;
 
-    public static double armConePickupPos = armTicksPerDegree * 90;
-    public static double armHighPlaceConePos = armTicksPerDegree * 74;
-    public static double armMidPlaceConePos = armTicksPerDegree * 74;
+    public static double armConePickupPos = armTicksPerDegree * 87.5;
+    public static double armHighPlaceConePos = armTicksPerDegree * 75;
+    public static double armMidPlaceConePos = armTicksPerDegree * 70;
 
     public static double armCubePickupPos = armTicksPerDegree * 77;
     public static double armHighPlaceCubePos = armTicksPerDegree * 25;

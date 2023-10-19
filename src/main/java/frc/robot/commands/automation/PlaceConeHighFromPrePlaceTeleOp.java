@@ -25,7 +25,7 @@ public class PlaceConeHighFromPrePlaceTeleOp extends SequentialCommandGroup {
     addCommands(
       new ChangeNeutralMode(NeutralMode.Brake),
       new MoveElevator(elevatorConeUpPos),
-      new WaitCommand(0.3),
+      new WaitCommand(0.4),
       new SetArmPosition(armHighPlaceConePos),
       new ChangeNeutralMode(NeutralMode.Coast)
     );

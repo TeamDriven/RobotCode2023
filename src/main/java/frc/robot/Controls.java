@@ -7,9 +7,13 @@ import edu.wpi.first.wpilibj.XboxController;
 public final class Controls {
     public static final XboxController m_controller = new XboxController(0);
 
-    public static final DoubleSupplier xMoveControl = m_controller::getRightY;
-    public static final DoubleSupplier yMoveControl = m_controller::getRightX;
-    public static final DoubleSupplier turnControl = m_controller::getLeftX;
+    // public static final DoubleSupplier xMoveControl = m_controller::getRightY;
+    // public static final DoubleSupplier yMoveControl = m_controller::getRightX;
+    // public static final DoubleSupplier turnControl = m_controller::getLeftX;
+
+    public static final DoubleSupplier xMoveControl = m_controller::getLeftY;
+    public static final DoubleSupplier yMoveControl = m_controller::getLeftX;
+    public static final DoubleSupplier turnControl = m_controller::getRightX;
 
     public static final BooleanSupplier lockWheelsControl = Controls::getRightTrigger;
     public static final BooleanSupplier autoLineUpControl = Controls::getLeftTrigger;

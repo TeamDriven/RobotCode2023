@@ -48,6 +48,7 @@ import frc.robot.commands.drivetrain.AutoTurn;
 import frc.robot.commands.drivetrain.AutoTurnToSubstation;
 import frc.robot.commands.drivetrain.BalanceDrive;
 import frc.robot.commands.drivetrain.DriveContinous;
+import frc.robot.commands.drivetrain.DriveContinousPosition;
 import frc.robot.commands.drivetrain.ChangeNeutralMode;
 import frc.robot.commands.elevator.RunElevator;
 import frc.robot.commands.limelight.MoveTo2DAprilTags;
@@ -351,11 +352,11 @@ public class RobotContainer {
         ));
 
     new Trigger(moveElevatorUpControl)
-      .whileTrue(new RunElevator(0.5))
+      .whileTrue(new RunElevator(1.0)) //0.5
       .onFalse(new RunElevator(0.0));
     
     new Trigger(moveElevatorDownControl)
-      .whileTrue(new RunElevator(-0.5))
+      .whileTrue(new RunElevator(-1.0)) //-0.5
       .onFalse(new RunElevator(0.0));
 
     new Trigger(moveArmUpControl)
@@ -378,7 +379,7 @@ public class RobotContainer {
       } else {
         return false;
       }
-    } else if (intake.getCurrentDraw() > 25 && timeSinceLastMove.get() > 0.5) {
+    } else if (intake.getCurrentDraw() > 20 && timeSinceLastMove.get() > 0.5) {
       return true;
     } else {
       return false;

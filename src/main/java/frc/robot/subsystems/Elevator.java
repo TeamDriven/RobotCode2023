@@ -10,6 +10,9 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import frc.robot.MotionMagicLibrary;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
@@ -28,6 +31,16 @@ public class Elevator extends SubsystemBase {
   public void zeroPosition() {
     elevatorMotor1.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
   }
+
+  // public InstantCommand motionMagicElevator(double position) {
+  //   // System.out.println("run");
+  //   return new InstantCommand(() -> {
+  //     targetPos = position;
+  //     elevatorMotor1.set(ControlMode.MotionMagic, targetPos);
+  //     elevatorMotor2.follow(elevatorMotor1);
+  //   },
+  //   this);
+  // }
 
   public void motionMagicElevator(double position) {
     // System.out.println("run");

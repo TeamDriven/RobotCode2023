@@ -4,9 +4,11 @@
 
 package frc.robot.commands.automation;
 
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.arm.AutoResetArmPosition;
 import frc.robot.commands.elevator.AutoResetElevatorPosition;
+import frc.robot.commands.elevator.RunElevator;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -18,7 +20,11 @@ public class ZeroElevatorAndArm extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AutoResetElevatorPosition(),
-      new AutoResetArmPosition()
+      new ParallelDeadlineGroup(
+        new AutoResetArmPosition(), 
+        new RunElevator(-0.6)
+      ),
+      new RunElevator(0.0)
     );
   }
 }
